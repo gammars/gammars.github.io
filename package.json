@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "build:posts": "node scripts/build-posts.js"
+  }
+}

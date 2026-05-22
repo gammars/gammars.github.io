@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人技术博客与学习笔记">
+    <title>My Blogs</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="返回首页">My Blogs</a>
+      <nav class="nav" aria-label="主导航">
+        <a href="#home" data-view="home">首页</a>
+        <a href="#about" data-view="about">关于</a>
+        <a href="#tags" data-view="tags">标签</a>
+        <a href="#categories" data-view="categories">分类</a>
+        <a href="#archive" data-view="archive">归档</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">
+        <span aria-hidden="true">◐</span>
+      </button>
+    </header>
+
+    <main class="shell">
+      <aside class="profile-panel" aria-label="个人信息">
+        <div class="profile-card">
+          <img class="profile-cover" src="assets/profile-card.png" alt="博客封面图">
+          <div class="avatar" aria-hidden="true">博</div>
+          <h1 id="profileName">你的名字</h1>
+          <p id="profileBio">记录技术、课程、阅读与生活里的清醒瞬间。</p>
+          <dl class="stats" aria-label="站点概览">
+            <div>
+              <dt id="postCount">0</dt>
+              <dd>日志</dd>
+            </div>
+            <div>
+              <dt id="categoryCount">0</dt>
+              <dd>分类</dd>
+            </div>
+            <div>
+              <dt id="tagCount">0</dt>
+              <dd>标签</dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="mailto:you@example.com">Email</a>
+          </div>
+        </div>
+
+        <section class="side-section">
+          <h2>搜索</h2>
+          <label class="search-box">
+            <span class="sr-only">搜索文章</span>
+            <input id="searchInput" type="search" placeholder="搜索标题、标签、内容">
+          </label>
+        </section>
+
+        <section class="side-section">
+          <h2>链接</h2>
+          <ul class="plain-list">
+            <li><a href="https://pages.github.com/" target="_blank" rel="noreferrer">GitHub Pages</a></li>
+            <li><a href="https://hexo.io/" target="_blank" rel="noreferrer">Hexo</a></li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="content-panel" aria-live="polite">
+        <div id="viewHeader" class="view-header"></div>
+        <div id="app"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© <span id="year"></span> My Blogs</span>
+      <span>Built for GitHub Pages</span>
+    </footer>
+
+    <script src="assets/posts.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
