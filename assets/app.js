@@ -101,7 +101,10 @@ function renderArticle(id) {
 }
 
 function renderBlock(block) {
-  if (block.type === "h3") return `<h3>${escapeHtml(block.text)}</h3>`;
+  if (/^h[1-4]$/.test(block.type)) {
+    const level = block.type[1];
+    return `<h${level}>${escapeHtml(block.text)}</h${level}>`;
+  }
   if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
   if (block.type === "code") return `<pre><code>${escapeHtml(block.text)}</code></pre>`;
   return `<p>${escapeHtml(block.text)}</p>`;

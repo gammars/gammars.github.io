@@ -97,7 +97,7 @@ function parseMarkdown(markdown) {
       continue;
     }
 
-    const heading = line.match(/^(#{2,4})\s+(.+)$/);
+    const heading = line.match(/^(#{1,4})\s+(.+)$/);
     const bullet = line.match(/^\s*[-*]\s+(.+)$/);
 
     if (!line.trim()) {
@@ -106,7 +106,8 @@ function parseMarkdown(markdown) {
     } else if (heading) {
       flushParagraph();
       flushList();
-      blocks.push({ type: "h3", text: heading[2].trim() });
+      const level = heading[1].length;
+      blocks.push({ type: `h${level}`, text: heading[2].trim() });
     } else if (bullet) {
       flushParagraph();
       list.push(bullet[1].trim());

@@ -74,3 +74,5 @@ git push -u origin main
 ```
 
 推送后，在仓库 `Settings > Pages` 中把 `Build and deployment > Source` 选为 `GitHub Actions`。之后每次 push 到 `main` 都会自动构建并发布。
+
+git remote add origin https://github.com/gammars/gammars.github.io.git
