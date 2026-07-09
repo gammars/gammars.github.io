@@ -243,10 +243,9 @@ a:hover {
 }
 
 .toc-panel {
-  position: fixed;
+  position: sticky;
   top: 88px;
-  right: 18px;
-  width: 220px;
+  align-self: start;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 18px;
@@ -254,7 +253,6 @@ a:hover {
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
-  z-index: 5;
 }
 
 .toc-title {
@@ -527,6 +525,10 @@ a:hover {
 
   .profile-panel {
     position: static;
+  }
+
+  .toc-panel {
+    display: none;
   }
 
   .archive-item {
