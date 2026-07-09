@@ -215,7 +215,10 @@ function updateHash() {
 }
 
 function applyHash() {
-  const parts = location.hash.replace(/^#/, "").split("/");
+  const hash = location.hash.replace(/^#/, "");
+  // Ignore TOC anchor links (they start with "h-")
+  if (hash.startsWith("h-")) return;
+  const parts = hash.split("/");
   state.view = parts[0] || "home";
   state.filter = null;
   if (parts[1] && parts[2]) {
