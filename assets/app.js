@@ -105,7 +105,7 @@ function renderToc(post) {
     <div class="toc-title">目录</div>
     <ul class="toc-list">
       ${headings.map(b => {
-        const id = b.id || `h-${b.type}-${b.text.replace(/\s+/g, "-").slice(0, 40)}`;
+        const id = headingId(b);
         const cls = b.type === "h1" ? "toc-h1" : b.type === "h2" ? "toc-h2" : "toc-h3";
         return `<li><a href="#${id}" class="${cls}" data-toc="${id}">${b.text}</a></li>`;
       }).join("")}
@@ -135,12 +135,17 @@ function renderArticle(id) {
   updateTocActive();
 }
 
+function headingId(b) {
+  if (b.id) return b.id;
+  const plain = b.text.replace(/<[^>]+>/g, "");
+  return `h-${plain.replace(/\s+/g, "-").replace(/[^\w\-]/g, "").slice(0, 50)}`;
+}
+
 function renderBlock(block) {
   if (block.type === "hr") return "<hr>";
   if (/^h[1-4]$/.test(block.type)) {
     const level = block.type[1];
-    const plain = block.text.replace(/<[^>]+>/g, "");
-    const id = block.id || `h-${plain.replace(/\s+/g, "-").replace(/[^\w\-]/g, "").slice(0, 50)}`;
+    const id = headingId(block);
     return `<h${level} id="${id}">${block.text}</h${level}>`;
   }
   if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
