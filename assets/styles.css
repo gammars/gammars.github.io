@@ -107,9 +107,9 @@ a:hover {
 
 .shell {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 880px);
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr) minmax(180px, 220px);
   gap: 28px;
-  width: min(1240px, calc(100% - 36px));
+  width: min(1320px, calc(100% - 36px));
   margin: 32px auto;
   align-items: start;
 }
@@ -240,6 +240,65 @@ a:hover {
 .content-panel {
   min-height: 70vh;
   padding: clamp(20px, 4vw, 42px);
+}
+
+.toc-panel {
+  position: sticky;
+  top: 88px;
+  align-self: start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.toc-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.toc-list a {
+  display: block;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: var(--muted);
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.toc-list a:hover {
+  color: var(--accent-strong);
+  background: var(--soft);
+}
+
+.toc-list a.is-active {
+  color: var(--accent-strong);
+  border-left-color: var(--accent);
+  background: var(--soft);
+}
+
+.toc-h2 {
+  padding-left: 16px !important;
+}
+
+.toc-h3 {
+  padding-left: 32px !important;
+  font-size: 12px !important;
 }
 
 .view-header {
@@ -466,6 +525,11 @@ a:hover {
 
   .profile-panel {
     position: static;
+  }
+
+  .toc-panel {
+    position: static;
+    max-height: none;
   }
 
   .archive-item {

@@ -14,6 +14,18 @@ const state = {
 const app = document.querySelector("#app");
 const viewHeader = document.querySelector("#viewHeader");
 const searchInput = document.querySelector("#searchInput");
+const tocEl = document.querySelector("#toc");
+
+function updateTocActive() {
+  if (!tocEl) return;
+  const links = [...tocEl.querySelectorAll("a[data-toc]")];
+  const headings = links.map(l => document.getElementById(l.dataset.toc)).filter(Boolean);
+  let active = -1;
+  for (let i = headings.length - 1; i >= 0; i--) {
+    if (headings[i].getBoundingClientRect().top <= 120) { active = i; break; }
+  }
+  links.forEach((l, i) => l.classList.toggle("is-active", i === active));
+}
 
 function unique(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b, "zh-CN"));
@@ -79,6 +91,26 @@ function renderHome() {
   app.innerHTML = filtered.length
     ? `<div class="post-list">${filtered.map(renderPostCard).join("")}</div>`
     : `<div class="empty">没有找到匹配的文章。</div>`;
+  renderToc({ content: [] });
+}
+
+function renderToc(post) {
+  if (!tocEl) return;
+  const headings = post.content.filter(b => /^h[1-3]$/.test(b.type));
+  if (!headings.length) {
+    tocEl.innerHTML = "";
+    return;
+  }
+  tocEl.innerHTML = `
+    <div class="toc-title">目录</div>
+    <ul class="toc-list">
+      ${headings.map(b => {
+        const id = b.id || `h-${b.type}-${b.text.replace(/\s+/g, "-").slice(0, 40)}`;
+        const cls = b.type === "h1" ? "toc-h1" : b.type === "h2" ? "toc-h2" : "toc-h3";
+        return `<li><a href="#${id}" class="${cls}" data-toc="${id}">${b.text}</a></li>`;
+      }).join("")}
+    </ul>
+  `;
 }
 
 function renderArticle(id) {
@@ -86,6 +118,7 @@ function renderArticle(id) {
   if (!post) {
     setHeader("暂无文章", "在 posts 文件夹里创建 Markdown 后运行 npm run build:posts。");
     app.innerHTML = `<div class="empty">还没有生成文章数据。</div>`;
+    renderToc({ content: [] });
     return;
   }
   setHeader(post.title, `发表于 ${formatDate(post.date)}，分类于 ${post.category}`);
@@ -98,13 +131,17 @@ function renderArticle(id) {
       </div>
     </article>
   `;
+  renderToc(post);
+  updateTocActive();
 }
 
 function renderBlock(block) {
   if (block.type === "hr") return "<hr>";
   if (/^h[1-4]$/.test(block.type)) {
     const level = block.type[1];
-    return `<h${level}>${block.text}</h${level}>`;
+    const plain = block.text.replace(/<[^>]+>/g, "");
+    const id = block.id || `h-${plain.replace(/\s+/g, "-").replace(/[^\w\-]/g, "").slice(0, 50)}`;
+    return `<h${level} id="${id}">${block.text}</h${level}>`;
   }
   if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
   if (block.type === "code") return `<pre><code>${escapeHtml(block.text)}</code></pre>`;
@@ -237,6 +274,8 @@ document.querySelector(".theme-toggle").addEventListener("click", () => {
 });
 
 window.addEventListener("hashchange", applyHash);
+
+window.addEventListener("scroll", () => updateTocActive(), { passive: true });
 
 document.querySelector("#profileName").textContent = site.name;
 document.querySelector("#profileBio").textContent = site.bio;
