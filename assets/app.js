@@ -101,13 +101,14 @@ function renderArticle(id) {
 }
 
 function renderBlock(block) {
+  if (block.type === "hr") return "<hr>";
   if (/^h[1-4]$/.test(block.type)) {
     const level = block.type[1];
-    return `<h${level}>${escapeHtml(block.text)}</h${level}>`;
+    return `<h${level}>${block.text}</h${level}>`;
   }
-  if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
   if (block.type === "code") return `<pre><code>${escapeHtml(block.text)}</code></pre>`;
-  return `<p>${escapeHtml(block.text)}</p>`;
+  return `<p>${block.text}</p>`;
 }
 
 function renderAbout() {

@@ -54,8 +54,31 @@ function parseValue(value) {
   return trimmed.replace(/^["']|["']$/g, "");
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function parseInline(text) {
+  let s = escapeHtml(text);
+  // Bold: **text**
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // Italic: *text*
+  s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
+  // Inline code: `text`
+  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Remove any remaining unmatched **
+  s = s.replace(/\*\*/g, "");
+  return s;
+}
+
 function parseMarkdown(markdown) {
-  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+  // Normalize line endings: remove all \r to handle mixed line endings
+  const lines = markdown.replace(/\r/g, "").replace(/\r\n/g, "\n").split("\n");
   const blocks = [];
   let paragraph = [];
   let list = [];
@@ -64,13 +87,13 @@ function parseMarkdown(markdown) {
 
   function flushParagraph() {
     if (!paragraph.length) return;
-    blocks.push({ type: "p", text: paragraph.join(" ").trim() });
+    blocks.push({ type: "p", text: parseInline(paragraph.join(" ").trim()) });
     paragraph = [];
   }
 
   function flushList() {
     if (!list.length) return;
-    blocks.push({ type: "ul", items: list });
+    blocks.push({ type: "ul", items: list.map((item) => parseInline(item)) });
     list = [];
   }
 
@@ -98,16 +121,21 @@ function parseMarkdown(markdown) {
     }
 
     const heading = line.match(/^(#{1,4})\s+(.+)$/);
-    const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+    const bullet = line.match(/^\s*[-\*\+]\s+(.+)$/);
+    const hr = /^(-|=|_|\*){3,}\s*$/.test(line.trim());
 
-    if (!line.trim()) {
+    if (hr && !bullet) {
+      flushParagraph();
+      flushList();
+      blocks.push({ type: "hr" });
+    } else if (!line.trim()) {
       flushParagraph();
       flushList();
     } else if (heading) {
       flushParagraph();
       flushList();
       const level = heading[1].length;
-      blocks.push({ type: `h${level}`, text: heading[2].trim() });
+      blocks.push({ type: `h${level}`, text: parseInline(heading[2].trim()) });
     } else if (bullet) {
       flushParagraph();
       list.push(bullet[1].trim());
@@ -126,7 +154,8 @@ function parseMarkdown(markdown) {
 function excerptFrom(blocks) {
   const paragraph = blocks.find((block) => block.type === "p");
   if (!paragraph) return "";
-  return paragraph.text.length > 120 ? `${paragraph.text.slice(0, 120)}...` : paragraph.text;
+  const clean = paragraph.text.replace(/<[^>]+>/g, "");
+  return clean.length > 120 ? `${clean.slice(0, 120)}...` : clean;
 }
 
 const posts = walk(postsDir)
