@@ -172,6 +172,34 @@ function renderTaxonomy(type) {
   `;
 }
 
+function renderCategoryTree() {
+  const tree = {};
+  posts.forEach(p => {
+    const l1 = p.catL1 || "未分类";
+    const l2 = p.catL2 || "";
+    if (!tree[l1]) tree[l1] = {};
+    if (!tree[l1][l2]) tree[l1][l2] = 0;
+    tree[l1][l2]++;
+  });
+
+  setHeader("分类", "浏览所有分类");
+  app.innerHTML = `
+    <div class="category-tree">
+      ${Object.entries(tree).map(([l1, l2obj]) => `
+        <div class="cat-l1">
+          <h3 class="cat-name">${escapeHtml(l1)}</h3>
+          <div class="cat-children">
+            ${Object.entries(l2obj).map(([l2, count]) => {
+              const fullCat = l2 ? `${l1} / ${l2}` : l1;
+              return `<button class="chip" type="button" data-category="${escapeHtml(fullCat)}">${escapeHtml(l2 || l1)} (${count})</button>`;
+            }).join("")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderArchive() {
   setHeader("归档", "按照发布时间整理所有文章。");
   const sorted = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -194,7 +222,7 @@ function render() {
 
   if (state.view === "about") renderAbout();
   else if (state.view === "tags") renderTaxonomy("tags");
-  else if (state.view === "categories") renderTaxonomy("categories");
+  else if (state.view === "categories") renderCategoryTree();
   else if (state.view === "archive") renderArchive();
   else renderHome();
 }

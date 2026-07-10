@@ -270,6 +270,13 @@ a:hover { color: var(--accent); }
 .toc-h2 { padding-left: 16px !important; }
 .toc-h3 { padding-left: 32px !important; font-size: 12px !important; }
 
+.category-tree { display: grid; gap: 24px; }
+.cat-l1 { border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+.cat-l1:last-child { border-bottom: 0; }
+.cat-name { margin: 0 0 10px; font-size: 18px; color: var(--text); }
+.cat-children { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-children .chip { font-size: 13px; }
+
 .view-header {
   margin-bottom: 24px;
   border-bottom: 1px solid var(--line);

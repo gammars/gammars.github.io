@@ -5,6 +5,8 @@ window.BLOG_POSTS = [
     "date": "2026-05-22",
     "updated": "2026-05-22",
     "category": "建站",
+    "catL1": "",
+    "catL2": "",
     "tags": [
       "GitHub Pages",
       "前端",
@@ -47,6 +49,8 @@ window.BLOG_POSTS = [
     "date": "2026-05-22",
     "updated": "2026-05-22",
     "category": "大三下",
+    "catL1": "",
+    "catL2": "操作系统",
     "tags": [],
     "excerpt": "同学们好！欢迎来到《操作系统》期末冲刺提分班！我是你们的讲师。",
     "content": [
@@ -4778,6 +4782,8 @@ window.BLOG_POSTS = [
     "date": "2026-05-18",
     "updated": "2026-05-20",
     "category": "学习",
+    "catL1": "",
+    "catL2": "学习",
     "tags": [
       "笔记",
       "方法",
@@ -4816,6 +4822,8 @@ window.BLOG_POSTS = [
     "date": "2026-05-12",
     "updated": "2026-05-13",
     "category": "计算机网络",
+    "catL1": "",
+    "catL2": "计算机网络",
     "tags": [
       "TCP",
       "UDP",

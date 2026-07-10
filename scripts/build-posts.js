@@ -15,7 +15,6 @@ function walk(dir) {
 }
 
 function slugify(text) {
-  // Remove HTML tags, normalize whitespace, convert to kebab-case, strip non-word chars
   const plain = text.replace(/<[^>]+>/g, "").trim();
   return plain
     .toLowerCase()
@@ -30,40 +29,28 @@ function parseFrontMatter(raw) {
   if (!raw.startsWith("---")) return [{}, raw.trim()];
   const end = raw.indexOf("\n---", 3);
   if (end === -1) return [{}, raw.trim()];
-
   const frontMatter = raw.slice(3, end).trim();
   const body = raw.slice(end + 4).trim();
   const meta = {};
-
   frontMatter.split(/\r?\n/).forEach((line) => {
     const match = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
     if (!match) return;
     const [, key, value] = match;
     meta[key] = parseValue(value);
   });
-
   return [meta, body];
 }
 
 function parseValue(value) {
   const trimmed = value.trim();
   if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-    return trimmed
-      .slice(1, -1)
-      .split(",")
-      .map((item) => item.trim().replace(/^["']|["']$/g, ""))
-      .filter(Boolean);
+    return trimmed.slice(1, -1).split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
   }
   return trimmed.replace(/^["']|["']$/g, "");
 }
 
 function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 }
 
 function parseInline(text) {
@@ -83,93 +70,60 @@ function parseMarkdown(markdown) {
   let inCode = false;
   let headingCounter = 0;
 
-  function flushParagraph() {
-    if (!paragraph.length) return;
-    blocks.push({ type: "p", text: parseInline(paragraph.join(" ").trim()) });
-    paragraph = [];
-  }
-
-  function flushList() {
-    if (!list.length) return;
-    blocks.push({ type: "ul", items: list.map((item) => parseInline(item)) });
-    list = [];
-  }
-
-  function flushCode() {
-    blocks.push({ type: "code", text: code.join("\n") });
-    code = [];
-  }
+  const flushP = () => { if (paragraph.length) { blocks.push({ type: "p", text: parseInline(paragraph.join(" ").trim()) }); paragraph = []; } };
+  const flushL = () => { if (list.length) { blocks.push({ type: "ul", items: list.map(parseInline) }); list = []; } };
+  const flushC = () => { blocks.push({ type: "code", text: code.join("\n") }); code = []; };
 
   for (const line of lines) {
-    if (line.trim().startsWith("```")) {
-      if (inCode) {
-        flushCode();
-        inCode = false;
-      } else {
-        flushParagraph();
-        flushList();
-        inCode = true;
-      }
-      continue;
-    }
-
-    if (inCode) {
-      code.push(line);
-      continue;
-    }
-
+    if (line.trim().startsWith("```")) { if (inCode) { flushC(); inCode = false; } else { flushP(); flushL(); inCode = true; } continue; }
+    if (inCode) { code.push(line); continue; }
     const heading = line.match(/^(#{1,4})\s+(.+)$/);
     const bullet = line.match(/^\s*[-\*\+]\s+(.+)$/);
     const hr = /^(=|-|\*|_){3,}\s*$/.test(line.trim());
-
-    if (hr && !bullet) {
-      flushParagraph();
-      flushList();
-      blocks.push({ type: "hr" });
-    } else if (!line.trim()) {
-      flushParagraph();
-      flushList();
-    } else if (heading) {
-      flushParagraph();
-      flushList();
-      const level = heading[1].length;
-      const text = heading[2].trim();
-      const id = slugify(text) || `h${level}-${headingCounter}`;
-      headingCounter++;
-      blocks.push({ type: `h${level}`, text: parseInline(text), id });
-    } else if (bullet) {
-      flushParagraph();
-      list.push(bullet[1].trim());
-    } else {
-      flushList();
-      paragraph.push(line.trim());
-    }
+    if (hr && !bullet) { flushP(); flushL(); blocks.push({ type: "hr" }); }
+    else if (!line.trim()) { flushP(); flushL(); }
+    else if (heading) { flushP(); flushL(); const lvl = heading[1].length; const text = heading[2].trim(); const id = slugify(text) || `h${lvl}-${headingCounter}`; headingCounter++; blocks.push({ type: `h${lvl}`, text: parseInline(text), id }); }
+    else if (bullet) { flushP(); list.push(bullet[1].trim()); }
+    else { flushL(); paragraph.push(line.trim()); }
   }
-
-  flushParagraph();
-  flushList();
-  if (inCode) flushCode();
+  flushP(); flushL(); if (inCode) flushC();
   return blocks;
 }
 
 function excerptFrom(blocks) {
-  const paragraph = blocks.find((block) => block.type === "p");
-  if (!paragraph) return "";
-  const clean = paragraph.text.replace(/<[^>]+>/g, "");
+  const p = blocks.find((b) => b.type === "p");
+  if (!p) return "";
+  const clean = p.text.replace(/<[^>]+>/g, "");
   return clean.length > 120 ? `${clean.slice(0, 120)}...` : clean;
+}
+
+function deriveCategory(filePath) {
+  // Extract relative path from posts/ to the file, then get folder parts
+  const rel = path.relative(postsDir, filePath).replace(/\\/g, "/");
+  const parts = rel.split("/");
+  parts.pop(); // Remove filename, keep folders
+  while (parts.length < 2) parts.unshift(""); // Pad to ensure length 2
+  return {
+    l1: parts[0] || "",
+    l2: parts[1] || "",
+    category: parts.filter(Boolean).join(" / ") || "未分类"
+  };
 }
 
 const posts = walk(postsDir)
   .map((filePath) => {
     const raw = fs.readFileSync(filePath, "utf8");
     const [meta, body] = parseFrontMatter(raw);
+    const cat = deriveCategory(filePath);
     const content = parseMarkdown(body);
     return {
       id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),
       date: meta.date || "1970-01-01",
       updated: meta.updated || meta.date || "1970-01-01",
-      category: meta.category || "未分类",
+      category: meta.category || cat.category,
+      catL1: meta.catL1 || cat.l1,
+      catL2: meta.catL2 || cat.l2,
       tags: Array.isArray(meta.tags) ? meta.tags : [],
       excerpt: meta.excerpt || excerptFrom(content),
       content,
