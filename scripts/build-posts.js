@@ -14,13 +14,16 @@ function walk(dir) {
   });
 }
 
-function slugify(filePath) {
-  const relative = path.relative(postsDir, filePath).replace(/\\/g, "/");
-  return relative
-    .replace(/\.md$/i, "")
+function slugify(text) {
+  // Remove HTML tags, normalize whitespace, convert to kebab-case, strip non-word chars
+  const plain = text.replace(/<[^>]+>/g, "").trim();
+  return plain
     .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\u4e00-\u9fa5\-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60);
 }
 
 function parseFrontMatter(raw) {
@@ -65,25 +68,20 @@ function escapeHtml(value) {
 
 function parseInline(text) {
   let s = escapeHtml(text);
-  // Bold: **text**
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  // Italic: *text*
   s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
-  // Inline code: `text`
   s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
-  // Remove any remaining unmatched **
-  s = s.replace(/\*\*/g, "");
   return s;
 }
 
 function parseMarkdown(markdown) {
-  // Normalize line endings: remove all \r to handle mixed line endings
-  const lines = markdown.replace(/\r/g, "").replace(/\r\n/g, "\n").split("\n");
+  const lines = markdown.replace(/\r/g, "").split("\n");
   const blocks = [];
   let paragraph = [];
   let list = [];
   let code = [];
   let inCode = false;
+  let headingCounter = 0;
 
   function flushParagraph() {
     if (!paragraph.length) return;
@@ -122,7 +120,7 @@ function parseMarkdown(markdown) {
 
     const heading = line.match(/^(#{1,4})\s+(.+)$/);
     const bullet = line.match(/^\s*[-\*\+]\s+(.+)$/);
-    const hr = /^(-|=|_|\*){3,}\s*$/.test(line.trim());
+    const hr = /^(=|-|\*|_){3,}\s*$/.test(line.trim());
 
     if (hr && !bullet) {
       flushParagraph();
@@ -135,7 +133,10 @@ function parseMarkdown(markdown) {
       flushParagraph();
       flushList();
       const level = heading[1].length;
-      blocks.push({ type: `h${level}`, text: parseInline(heading[2].trim()) });
+      const text = heading[2].trim();
+      const id = slugify(text) || `h${level}-${headingCounter}`;
+      headingCounter++;
+      blocks.push({ type: `h${level}`, text: parseInline(text), id });
     } else if (bullet) {
       flushParagraph();
       list.push(bullet[1].trim());
@@ -164,7 +165,7 @@ const posts = walk(postsDir)
     const [meta, body] = parseFrontMatter(raw);
     const content = parseMarkdown(body);
     return {
-      id: meta.slug || slugify(filePath),
+      id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),
       date: meta.date || "1970-01-01",
       updated: meta.updated || meta.date || "1970-01-01",

@@ -243,16 +243,23 @@ a:hover {
 }
 
 .toc-panel {
-  position: sticky;
-  top: 88px;
-  align-self: start;
+  position: fixed;
+  top: 84px;
+  right:calc((100vw - 1100px) / 2 - 248px);
+  width: 220px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-  box-shadow: var(--shadow);
+  z-index: 5;
+}
+@media (max-width: 1280px) {
+  .toc-panel {
+    right: 16px;
+  }
+}
+@media (max-width: 880px) {
+  .toc-panel {
+    display: none;
+  }
 }
 
 .toc-title {
@@ -277,7 +284,7 @@ a:hover {
   padding: 4px 8px;
   font-size: 13px;
   color: var(--muted);
-  border-left: 2px solid transparent;
+  border-left: 2px solid var(--line);
   transition: all 0.15s;
 }
 
