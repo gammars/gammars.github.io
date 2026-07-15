@@ -1,9 +1,15 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const MarkdownIt = require("markdown-it");
 
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
 const outFile = path.join(root, "assets", "posts.js");
+const markdown = new MarkdownIt({
+  html: false,
+  linkify: true,
+  typographer: false,
+});
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -50,71 +56,49 @@ function parseValue(value) {
   return trimmed.replace(/^["']|["']$/g, "");
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-}
-
-function parseInline(text) {
-  const codeSpans = [];
-  let s = String(text).replace(/`([^`]+)`/g, (_, code) => {
-    const index = codeSpans.push(code) - 1;
-    return `\u0000CODE${index}\u0000`;
-  });
-  s = escapeHtml(s);
-  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
-  s = s.replace(/\u0000CODE(\d+)\u0000/g, (_, index) => `<code>${escapeHtml(codeSpans[Number(index)])}</code>`);
-  return s;
-}
-
-function parseMarkdown(markdown) {
-  const lines = markdown.replace(/\r/g, "").split("\n");
-  const blocks = [];
-  let paragraph = [];
-  let list = [];
-  let listType = null;
-  let code = [];
-  let inCode = false;
-  let headingCounter = 0;
-
-  const flushP = () => { if (paragraph.length) { blocks.push({ type: "p", text: parseInline(paragraph.join(" ").trim()) }); paragraph = []; } };
-  const flushL = () => {
-    if (list.length) blocks.push({ type: listType, items: list.map(parseInline) });
-    list = [];
-    listType = null;
-  };
-  const flushC = () => { blocks.push({ type: "code", text: code.join("\n") }); code = []; };
-
-  for (const line of lines) {
-    if (line.trim().startsWith("```")) { if (inCode) { flushC(); inCode = false; } else { flushP(); flushL(); inCode = true; } continue; }
-    if (inCode) { code.push(line); continue; }
-    const heading = line.match(/^(#{1,4})\s+(.+)$/);
-    const bullet = line.match(/^\s*[-\*\+]\s+(.+)$/);
-    const ordered = line.match(/^\s*\d+\.\s+(.+)$/);
-    const quote = line.match(/^\s*>\s?(.*)$/);
-    const hr = /^(=|-|\*|_){3,}\s*$/.test(line.trim());
-    if (hr && !bullet) { flushP(); flushL(); blocks.push({ type: "hr" }); }
-    else if (!line.trim()) { flushP(); flushL(); }
-    else if (heading) { flushP(); flushL(); const lvl = heading[1].length; const text = heading[2].trim(); const id = slugify(text) || `h${lvl}-${headingCounter}`; headingCounter++; blocks.push({ type: `h${lvl}`, text: parseInline(text), id }); }
-    else if (bullet || ordered) {
-      flushP();
-      const nextListType = ordered ? "ol" : "ul";
-      if (listType && listType !== nextListType) flushL();
-      listType = nextListType;
-      list.push((ordered || bullet)[1].trim());
-    }
-    else if (quote) { flushP(); flushL(); blocks.push({ type: "blockquote", text: parseInline(quote[1].trim()) }); }
-    else { flushL(); paragraph.push(line.trim()); }
+function inlineText(token) {
+  if (!token) return "";
+  if (Array.isArray(token.children)) {
+    return token.children.map((child) => {
+      if (child.type === "softbreak" || child.type === "hardbreak") return " ";
+      return child.content || inlineText(child);
+    }).join("");
   }
-  flushP(); flushL(); if (inCode) flushC();
-  return blocks;
+  return token.content || "";
 }
 
-function excerptFrom(blocks) {
-  const p = blocks.find((b) => b.type === "p");
-  if (!p) return "";
-  const clean = p.text.replace(/<[^>]+>/g, "");
-  return clean.length > 120 ? `${clean.slice(0, 120)}...` : clean;
+function renderMarkdown(source) {
+  const env = {};
+  const tokens = markdown.parse(source, env);
+  const headings = [];
+  const slugCounts = new Map();
+
+  tokens.forEach((token, index) => {
+    if (token.type !== "heading_open") return;
+    const inline = tokens[index + 1];
+    const text = inlineText(inline).trim();
+    const base = slugify(text) || `heading-${headings.length + 1}`;
+    const count = slugCounts.get(base) || 0;
+    slugCounts.set(base, count + 1);
+    const id = count ? `${base}-${count + 1}` : base;
+    token.attrSet("id", id);
+    headings.push({ id, level: Number(token.tag.slice(1)), text });
+  });
+
+  const paragraphs = [];
+  tokens.forEach((token, index) => {
+    if (token.type === "inline") {
+      const text = inlineText(token).trim();
+      if (tokens[index - 1]?.type === "paragraph_open" && text) paragraphs.push(text);
+    }
+  });
+
+  const excerpt = paragraphs[0] || "";
+  return {
+    html: markdown.renderer.render(tokens, markdown.options, env),
+    headings,
+    excerpt: excerpt.length > 120 ? `${excerpt.slice(0, 120)}...` : excerpt,
+  };
 }
 
 function deriveCategory(filePath) {
@@ -134,7 +118,7 @@ const posts = walk(postsDir)
     const raw = fs.readFileSync(filePath, "utf8");
     const [meta, body] = parseFrontMatter(raw);
     const cat = deriveCategory(filePath);
-    const content = parseMarkdown(body);
+    const rendered = renderMarkdown(body);
     const category = cat.category || meta.category || "未分类";
     return {
       id: meta.slug || slugify(meta.title || filePath),
@@ -145,13 +129,14 @@ const posts = walk(postsDir)
       catL1: cat.l1 || meta.catL1 || meta.category || "未分类",
       catL2: cat.category ? cat.l2 : (meta.catL2 || ""),
       tags: Array.isArray(meta.tags) ? meta.tags : [],
-      excerpt: meta.excerpt || excerptFrom(content),
-      content,
+      excerpt: meta.excerpt || rendered.excerpt,
+      html: rendered.html,
+      headings: rendered.headings,
       source: path.relative(root, filePath).replace(/\\/g, "/"),
     };
   })
   .sort((a, b) => new Date(b.date) - new Date(a.date));
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
-fs.writeFileSync(outFile, `window.BLOG_POSTS = ${JSON.stringify(posts, null, 2)};\n`, "utf8");
+fs.writeFileSync(outFile, `window.BLOG_POSTS = ${JSON.stringify(posts)};\n`, "utf8");
 console.log(`Generated ${posts.length} posts -> ${path.relative(root, outFile)}`);

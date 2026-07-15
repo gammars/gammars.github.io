@@ -1,5 +1,9 @@
 {
   "scripts": {
-    "build:posts": "node scripts/build-posts.js"
+    "build:posts": "node scripts/build-posts.js",
+    "check": "npm run build:posts && node scripts/check-blog.js"
+  },
+  "dependencies": {
+    "markdown-it": "^14.3.0"
   }
 }

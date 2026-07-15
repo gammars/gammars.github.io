@@ -1,20 +1,32 @@
 const site = {
-  name: "你的名字",
-  bio: "记录技术、课程、阅读与生活里的清醒瞬间。",
+  name: "godmars",
+  bio: "待补充",
+  title: "godmars' Blog",
+  github: "https://github.com/gammars",
+  email: "811096909@qq.com",
 };
 
-const posts = Array.isArray(window.BLOG_POSTS) ? window.BLOG_POSTS : [];
+const posts = Array.isArray(window.BLOG_POSTS)
+  ? window.BLOG_POSTS.map((post) => ({ ...post, searchText: plainTextFromHtml(post.html) }))
+  : [];
 
 const state = {
   view: "home",
   filter: null,
   query: "",
+  postId: null,
 };
 
 const app = document.querySelector("#app");
 const viewHeader = document.querySelector("#viewHeader");
 const searchInput = document.querySelector("#searchInput");
 const tocEl = document.querySelector("#toc");
+
+function plainTextFromHtml(html = "") {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  return template.content.textContent || "";
+}
 
 function unique(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b, "zh-CN"));
@@ -45,9 +57,21 @@ function setHeader(title, description) {
   viewHeader.innerHTML = `<h2>${escapeHtml(title)}</h2><p>${escapeHtml(description)}</p>`;
 }
 
+function setDocumentMeta(title, description) {
+  document.title = title;
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.content = description;
+}
+
+function postHash(postId, headingId = "") {
+  const heading = headingId ? `/${encodeURIComponent(headingId)}` : "";
+  return `#post/${encodeURIComponent(postId)}${heading}`;
+}
+
 function matchesPost(post) {
   const query = state.query.trim().toLowerCase();
-  const text = [post.title, post.category, post.excerpt, post.tags.join(" "), post.content.map((block) => block.text || (block.items || []).join(" ")).join(" ")].join(" ").toLowerCase();
+  const contentText = post.searchText || post.content?.map((block) => block.text || (block.items || []).join(" ")).join(" ") || "";
+  const text = [post.title, post.category, post.excerpt, post.tags.join(" "), contentText].join(" ").toLowerCase();
   if (query && !text.includes(query)) return false;
   if (!state.filter) return true;
   if (state.filter.type === "tag") return post.tags.includes(state.filter.value);
@@ -77,6 +101,7 @@ function renderHome() {
   const filtered = posts.filter(matchesPost);
   const label = state.filter ? `${state.filter.type === "tag" ? "标签" : "分类"}：${state.filter.value}` : "最新文章";
   setHeader(label, state.query ? `搜索 "${state.query}" 的结果` : "像参考站一样，把文章、分类、标签和归档放在一个清爽的个人空间里。");
+  setDocumentMeta(site.title, `${site.name} 的个人博客`);
   app.innerHTML = filtered.length
     ? `<div class="post-list">${filtered.map(renderPostCard).join("")}</div>`
     : `<div class="empty">没有找到匹配的文章。</div>`;
@@ -89,7 +114,7 @@ function renderToc(post) {
     tocEl.innerHTML = "";
     return;
   }
-  const headings = post.content.filter(b => /^h[1-3]$/.test(b.type));
+  const headings = post.headings || post.content.filter(b => /^h[1-3]$/.test(b.type));
   if (!headings.length) {
     tocEl.innerHTML = "";
     return;
@@ -98,26 +123,46 @@ function renderToc(post) {
     <div class="toc-title">目录</div>
     <ul class="toc-list">
       ${headings.map(b => {
-        const cls = b.type === "h1" ? "toc-h1" : b.type === "h2" ? "toc-h2" : "toc-h3";
-        return `<li><a href="#${b.id}" class="${cls}">${b.text}</a></li>`;
+        const level = b.level || Number(b.type?.slice(1)) || 1;
+        const cls = level === 1 ? "toc-h1" : level === 2 ? "toc-h2" : "toc-h3";
+        return `<li><a href="${postHash(post.id, b.id)}" data-post="${escapeHtml(post.id)}" data-heading="${escapeHtml(b.id)}" class="${cls}">${escapeHtml(b.text)}</a></li>`;
       }).join("")}
     </ul>
   `;
 }
 
 function renderArticle(id) {
-  const post = posts.find((item) => item.id === id) || posts[0];
+  const post = posts.find((item) => item.id === id);
   if (!post) {
-    setHeader("暂无文章", "在 posts 文件夹里创建 Markdown 后运行 npm run build:posts。");
-    app.innerHTML = `<div class="empty">还没有生成文章数据。</div>`;
+    setHeader("文章不存在", "这个地址没有对应的文章，可能已被移动或删除。");
+    setDocumentMeta(`文章不存在 | ${site.title}`, "没有找到对应的博客文章");
+    app.innerHTML = `<div class="empty"><button class="text-button" type="button" data-back>返回文章列表</button></div>`;
     renderToc(null);
-    return;
+    return false;
   }
+  state.postId = post.id;
   setHeader(post.title, `发表于 ${formatDate(post.date)}，分类于 ${post.category}`);
+  setDocumentMeta(`${post.title} | ${site.title}`, post.excerpt || `${post.title} - ${site.name}`);
+  const headings = post.headings || post.content.filter((block) => /^h[1-3]$/.test(block.type)).map((block) => ({
+    id: block.id,
+    level: Number(block.type.slice(1)),
+    text: block.text.replace(/<[^>]+>/g, ""),
+  }));
+  const mobileToc = headings.length ? `
+    <details class="mobile-toc">
+      <summary>文章目录（${headings.length}）</summary>
+      <ul class="toc-list">
+        ${headings.map((heading) => `
+          <li><a href="${postHash(post.id, heading.id)}" data-post="${escapeHtml(post.id)}" data-heading="${escapeHtml(heading.id)}">${escapeHtml(heading.text)}</a></li>
+        `).join("")}
+      </ul>
+    </details>
+  ` : "";
   app.innerHTML = `
     <article class="article-body">
       <div class="tag-row">${post.tags.map((tag) => `<button class="chip" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")}</div>
-      ${post.content.map(renderBlock).join("")}
+      ${mobileToc}
+      ${post.html || post.content.map(renderBlock).join("")}
       <div class="article-actions">
         <button class="text-button" type="button" data-back>返回文章列表</button>
       </div>
@@ -126,6 +171,7 @@ function renderArticle(id) {
   renderMath(app);
   renderToc(post);
   setupTocObserver();
+  return true;
 }
 
 function renderMath(element) {
@@ -154,10 +200,13 @@ function renderBlock(block) {
 }
 
 function renderAbout() {
-  setHeader("关于", "这里可以放你的个人介绍、研究方向、项目链接和联系方式。");
+  setHeader("关于", "godmars 的个人资料与博客说明。");
+  setDocumentMeta(`关于 | ${site.title}`, `${site.name} 的个人介绍`);
   app.innerHTML = `
     <article class="article-body">
-      <p>你好，这里是 ${site.name} 的博客。我会在这里记录课程笔记、技术实践、工具折腾、阅读摘要和阶段复盘。</p>
+      <p>你好，我是 ${site.name}。个人简介待补充。</p>
+      <p>GitHub：<a href="${site.github}" target="_blank" rel="noreferrer">${site.github}</a></p>
+      <p>邮箱：<a href="mailto:${site.email}">${site.email}</a></p>
       <p>你只需要在 posts 文件夹里新增 Markdown 文件，然后运行 npm run build:posts 生成文章数据。</p>
       <h3>站点特性</h3>
       <ul>
@@ -173,6 +222,7 @@ function renderTaxonomy(type) {
   const isTag = type === "tags";
   const map = countsBy(isTag ? "tags" : "category");
   setHeader(isTag ? "标签" : "分类", isTag ? "按标签聚合文章。" : "按分类浏览文章。");
+  setDocumentMeta(`${isTag ? "标签" : "分类"} | ${site.title}`, `浏览 ${site.name} 的博客${isTag ? "标签" : "分类"}`);
   app.innerHTML = `
     <div class="grid-list">
       ${[...map.entries()].map(([name, count]) => `
@@ -198,6 +248,7 @@ function renderCategoryTree() {
   });
 
   setHeader("分类", "浏览所有分类");
+  setDocumentMeta(`分类 | ${site.title}`, `浏览 ${site.name} 的博客分类`);
   app.innerHTML = `
     <div class="category-tree">
       ${Object.entries(tree).map(([l1, l2obj]) => `
@@ -217,12 +268,13 @@ function renderCategoryTree() {
 
 function renderArchive() {
   setHeader("归档", "按照发布时间整理所有文章。");
+  setDocumentMeta(`归档 | ${site.title}`, `浏览 ${site.name} 的博客归档`);
   const sorted = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
   app.innerHTML = `
     <div class="archive-list">
       ${sorted.map((post) => `
         <div class="archive-item">
-          <time>${formatDate(post.date)}</time>
+          <time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time>
           <button type="button" data-open="${post.id}">${escapeHtml(post.title)}</button>
         </div>
       `).join("")}
@@ -231,32 +283,72 @@ function renderArchive() {
 }
 
 function render() {
+  document.body.classList.toggle("is-article", state.view === "post");
   document.querySelectorAll(".nav a").forEach((link) => {
-    link.classList.toggle("is-active", link.dataset.view === state.view);
+    const active = link.dataset.view === state.view;
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
   });
 
+  if (state.view === "post") return renderArticle(state.postId);
   if (state.view === "about") renderAbout();
   else if (state.view === "tags") renderTaxonomy("tags");
   else if (state.view === "categories") renderCategoryTree();
   else if (state.view === "archive") renderArchive();
   else renderHome();
+  return true;
 }
 
 function updateHash() {
   const filter = state.filter ? `/${state.filter.type}/${encodeURIComponent(state.filter.value)}` : "";
-  location.hash = state.view === "home" ? `#home${filter}` : `#${state.view}`;
+  navigate(state.view === "home" ? `#home${filter}` : `#${state.view}`);
+}
+
+function navigate(hash, { replace = false } = {}) {
+  history[replace ? "replaceState" : "pushState"](null, "", hash);
+  applyHash();
+}
+
+function safeDecode(value) {
+  try {
+    return decodeURIComponent(value || "");
+  } catch {
+    return "";
+  }
+}
+
+function scrollToRouteTarget(headingId) {
+  requestAnimationFrame(() => {
+    const target = headingId ? document.getElementById(headingId) : document.querySelector(".content-panel");
+    target?.scrollIntoView({ block: "start" });
+  });
 }
 
 function applyHash() {
-  const hash = location.hash.replace(/^#/, "");
-  // Ignore anchor links (heading slugs)
-  if (!hash.startsWith("post") && !hash.startsWith("home") && !hash.startsWith("about") && !hash.startsWith("tags") && !hash.startsWith("categories") && !hash.startsWith("archive")) return;
+  let hash = location.hash.replace(/^#/, "");
+  if (!hash) {
+    history.replaceState(null, "", "#home");
+    hash = "home";
+  }
   const parts = hash.split("/");
-  state.view = parts[0] || "home";
+  const route = parts[0];
+  const supported = new Set(["home", "post", "about", "tags", "categories", "archive"]);
+  state.view = supported.has(route) ? route : "home";
   state.filter = null;
-  if (parts[1] && parts[2]) {
+  state.postId = null;
+
+  if (state.view === "post") {
+    state.postId = safeDecode(parts[1]);
+    const headingId = safeDecode(parts[2]);
+    const rendered = render();
+    if (rendered) scrollToRouteTarget(headingId);
+    return;
+  }
+
+  if (state.view === "home" && parts[1] && parts[2]) {
     state.view = "home";
-    state.filter = { type: parts[1], value: decodeURIComponent(parts[2]) };
+    state.filter = { type: parts[1], value: safeDecode(parts[2]) };
   }
   render();
 }
@@ -267,7 +359,7 @@ function setupTocObserver() {
   if (tocObserver) tocObserver.disconnect();
   if (!tocEl) return;
   
-  const headings = document.querySelectorAll(".article-body h1, .article-body h2, .article-body h3");
+  const headings = document.querySelectorAll(".article-body h1, .article-body h2, .article-body h3, .article-body h4");
   if (!headings.length) return;
 
   const links = [...tocEl.querySelectorAll("a")];
@@ -276,7 +368,7 @@ function setupTocObserver() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const id = entry.target.id;
-        links.forEach(l => l.classList.toggle("is-active", l.getAttribute("href") === `#${id}`));
+        links.forEach(l => l.classList.toggle("is-active", l.dataset.heading === id));
       }
     });
   }, { rootMargin: "-80px 0px -70% 0px", threshold: 0 });
@@ -288,28 +380,38 @@ document.addEventListener("click", (event) => {
   const target = event.target.closest("button, a");
   if (!target) return;
 
+  if (target.dataset.heading) {
+    event.preventDefault();
+    history.pushState(null, "", postHash(target.dataset.post, target.dataset.heading));
+    document.getElementById(target.dataset.heading)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
   if (target.dataset.view) {
+    event.preventDefault();
     state.view = target.dataset.view;
     state.filter = null;
     updateHash();
+    return;
   }
 
   if (target.dataset.open) {
-    renderArticle(target.dataset.open);
-    history.replaceState(null, "", `#post/${target.dataset.open}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate(postHash(target.dataset.open));
+    return;
   }
 
   if (target.dataset.tag) {
     state.view = "home";
     state.filter = { type: "tag", value: target.dataset.tag };
     updateHash();
+    return;
   }
 
   if (target.dataset.category) {
     state.view = "home";
     state.filter = { type: "category", value: target.dataset.category };
     updateHash();
+    return;
   }
 
   if (target.dataset.back !== undefined) {
@@ -323,6 +425,7 @@ searchInput.addEventListener("input", (event) => {
   state.query = event.target.value;
   state.view = "home";
   state.filter = null;
+  history.replaceState(null, "", "#home");
   render();
 });
 
@@ -330,9 +433,10 @@ document.querySelector(".theme-toggle").addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "dark" ? "" : "dark";
   document.documentElement.dataset.theme = next;
   localStorage.setItem("theme", next);
+  document.querySelector(".theme-toggle").setAttribute("aria-pressed", String(next === "dark"));
 });
 
-window.addEventListener("hashchange", applyHash);
+window.addEventListener("popstate", applyHash);
 
 document.querySelector("#profileName").textContent = site.name;
 document.querySelector("#profileBio").textContent = site.bio;
@@ -341,9 +445,6 @@ document.querySelector("#categoryCount").textContent = unique(posts.map((post) =
 document.querySelector("#tagCount").textContent = unique(posts.flatMap((post) => post.tags)).length;
 document.querySelector("#year").textContent = new Date().getFullYear();
 document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+document.querySelector(".theme-toggle").setAttribute("aria-pressed", String(document.documentElement.dataset.theme === "dark"));
 
-if (location.hash.startsWith("#post/")) {
-  renderArticle(location.hash.replace("#post/", ""));
-} else {
-  applyHash();
-}
+applyHash();

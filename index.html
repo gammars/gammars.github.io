@@ -3,14 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="个人技术博客与学习笔记">
-    <title>My Blogs</title>
+    <meta name="description" content="godmars 的个人博客">
+    <meta name="theme-color" content="#256d85">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="godmars' Blog">
+    <meta property="og:description" content="godmars 的个人博客">
+    <meta property="og:url" content="https://gammars.github.io/">
+    <link rel="canonical" href="https://gammars.github.io/">
+    <link rel="icon" href="assets/avatar.png">
+    <title>godmars' Blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css" integrity="sha384-vlBdW0r3AcZO/HboRPznQNowvexd3fY8qHOWkBi5q7KGgqJ+F48+DceybYmrVbmB" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/styles.css">
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="返回首页">My Blogs</a>
+      <a class="brand" href="#home" data-view="home" aria-label="返回首页">godmars' Blog</a>
       <nav class="nav" aria-label="主导航">
         <a href="#home" data-view="home">首页</a>
         <a href="#about" data-view="about">关于</a>
@@ -27,9 +34,9 @@
       <aside class="profile-panel" aria-label="个人信息">
         <div class="profile-card">
           <img class="profile-cover" src="assets/profile-card.png" alt="博客封面图">
-          <div class="avatar" aria-hidden="true">博</div>
-          <h1 id="profileName">你的名字</h1>
-          <p id="profileBio">记录技术、课程、阅读与生活里的清醒瞬间。</p>
+          <img class="avatar" src="assets/avatar.png" alt="godmars 的头像">
+          <h1 id="profileName">godmars</h1>
+          <p id="profileBio">待补充</p>
           <dl class="stats" aria-label="站点概览">
             <div>
               <dt id="postCount">0</dt>
@@ -45,8 +52,8 @@
             </div>
           </dl>
           <div class="links">
-            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="mailto:you@example.com">Email</a>
+            <a href="https://github.com/gammars" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="mailto:811096909@qq.com">Email</a>
           </div>
         </div>
 
@@ -71,15 +78,17 @@
         <div id="viewHeader" class="view-header"></div>
         <div id="app"></div>
       </section>
+      <aside class="toc-panel" aria-label="文章目录">
+        <nav id="toc" class="toc-nav"></nav>
+      </aside>
     </main>
-    <aside class="toc-panel" aria-label="文章目录">
-      <nav id="toc" class="toc-nav"></nav>
-    </aside>
 
     <footer class="footer">
-      <span>© <span id="year"></span> My Blogs</span>
+      <span>© <span id="year"></span> godmars</span>
       <span>Built for GitHub Pages</span>
     </footer>
+
+    <noscript>此博客需要启用 JavaScript 才能浏览文章。</noscript>
 
     <script src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.js" integrity="sha384-AtrdNsnxl/75rvBneBVH7DtOvCxSVahR2zWqle1coBKd8DEmLoviqNeJSx64gNAs" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script>
