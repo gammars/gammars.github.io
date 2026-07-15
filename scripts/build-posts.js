@@ -26,6 +26,7 @@ function slugify(text) {
 }
 
 function parseFrontMatter(raw) {
+  raw = raw.replace(/^\uFEFF/, "");
   if (!raw.startsWith("---")) return [{}, raw.trim()];
   const end = raw.indexOf("\n---", 3);
   if (end === -1) return [{}, raw.trim()];
@@ -54,10 +55,15 @@ function escapeHtml(value) {
 }
 
 function parseInline(text) {
-  let s = escapeHtml(text);
+  const codeSpans = [];
+  let s = String(text).replace(/`([^`]+)`/g, (_, code) => {
+    const index = codeSpans.push(code) - 1;
+    return `\u0000CODE${index}\u0000`;
+  });
+  s = escapeHtml(s);
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
-  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  s = s.replace(/\u0000CODE(\d+)\u0000/g, (_, index) => `<code>${escapeHtml(codeSpans[Number(index)])}</code>`);
   return s;
 }
 
@@ -66,12 +72,17 @@ function parseMarkdown(markdown) {
   const blocks = [];
   let paragraph = [];
   let list = [];
+  let listType = null;
   let code = [];
   let inCode = false;
   let headingCounter = 0;
 
   const flushP = () => { if (paragraph.length) { blocks.push({ type: "p", text: parseInline(paragraph.join(" ").trim()) }); paragraph = []; } };
-  const flushL = () => { if (list.length) { blocks.push({ type: "ul", items: list.map(parseInline) }); list = []; } };
+  const flushL = () => {
+    if (list.length) blocks.push({ type: listType, items: list.map(parseInline) });
+    list = [];
+    listType = null;
+  };
   const flushC = () => { blocks.push({ type: "code", text: code.join("\n") }); code = []; };
 
   for (const line of lines) {
@@ -79,11 +90,20 @@ function parseMarkdown(markdown) {
     if (inCode) { code.push(line); continue; }
     const heading = line.match(/^(#{1,4})\s+(.+)$/);
     const bullet = line.match(/^\s*[-\*\+]\s+(.+)$/);
+    const ordered = line.match(/^\s*\d+\.\s+(.+)$/);
+    const quote = line.match(/^\s*>\s?(.*)$/);
     const hr = /^(=|-|\*|_){3,}\s*$/.test(line.trim());
     if (hr && !bullet) { flushP(); flushL(); blocks.push({ type: "hr" }); }
     else if (!line.trim()) { flushP(); flushL(); }
     else if (heading) { flushP(); flushL(); const lvl = heading[1].length; const text = heading[2].trim(); const id = slugify(text) || `h${lvl}-${headingCounter}`; headingCounter++; blocks.push({ type: `h${lvl}`, text: parseInline(text), id }); }
-    else if (bullet) { flushP(); list.push(bullet[1].trim()); }
+    else if (bullet || ordered) {
+      flushP();
+      const nextListType = ordered ? "ol" : "ul";
+      if (listType && listType !== nextListType) flushL();
+      listType = nextListType;
+      list.push((ordered || bullet)[1].trim());
+    }
+    else if (quote) { flushP(); flushL(); blocks.push({ type: "blockquote", text: parseInline(quote[1].trim()) }); }
     else { flushL(); paragraph.push(line.trim()); }
   }
   flushP(); flushL(); if (inCode) flushC();

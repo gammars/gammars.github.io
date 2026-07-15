@@ -48,9 +48,9 @@ window.BLOG_POSTS = [
     "title": "操作系统期末复习提纲",
     "date": "2026-05-22",
     "updated": "2026-05-22",
-    "category": "操作系统",
-    "catL1": "操作系统",
-    "catL2": "",
+    "category": "大三下 / 操作系统",
+    "catL1": "大三下",
+    "catL2": "操作系统",
     "tags": [],
     "excerpt": "同学们好！欢迎来到《操作系统》期末冲刺提分班！我是你们的讲师。",
     "content": [
@@ -84,20 +84,28 @@ window.BLOG_POSTS = [
         "text": "计算机底层的物理世界由四个核心部件组成，它们构成了操作系统的主要管理对象："
       },
       {
-        "type": "p",
-        "text": "1. <strong>处理器 (Processor/CPU)</strong>：控制计算机操作，执行数据处理功能。"
+        "type": "ol",
+        "items": [
+          "<strong>处理器 (Processor/CPU)</strong>：控制计算机操作，执行数据处理功能。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>主存储器 (Main Memory)</strong>：也叫实存储器。注意它的核心考点：<strong>易失性 (Volatile)</strong>，一旦关机内容就丢失了。"
+        "type": "ol",
+        "items": [
+          "<strong>主存储器 (Main Memory)</strong>：也叫实存储器。注意它的核心考点：<strong>易失性 (Volatile)</strong>，一旦关机内容就丢失了。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>输入/输出模块 (I/O Modules)</strong>：负责在计算机和外部环境（如硬盘、终端、通讯设备）之间移动数据。"
+        "type": "ol",
+        "items": [
+          "<strong>输入/输出模块 (I/O Modules)</strong>：负责在计算机和外部环境（如硬盘、终端、通讯设备）之间移动数据。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>系统总线 (System Bus)</strong>：处理器、内存和 I/O 模块之间通信的高速公路。"
+        "type": "ol",
+        "items": [
+          "<strong>系统总线 (System Bus)</strong>：处理器、内存和 I/O 模块之间通信的高速公路。"
+        ]
       },
       {
         "type": "p",
@@ -210,12 +218,16 @@ window.BLOG_POSTS = [
         "text": "如果正在处理一个中断时，又来了一个中断（比如边接收数据边打印），有两种处理策略："
       },
       {
-        "type": "p",
-        "text": "1. <strong>顺序中断处理</strong>：处理一个中断时，<strong>禁止（屏蔽）</strong>其他中断发生，后来的只能排队。"
+        "type": "ol",
+        "items": [
+          "<strong>顺序中断处理</strong>：处理一个中断时，<strong>禁止（屏蔽）</strong>其他中断发生，后来的只能排队。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>嵌套中断处理</strong>：定义<strong>中断优先级</strong>。优先级高的中断可以强行打断优先级低的中断。"
+        "type": "ol",
+        "items": [
+          "<strong>嵌套中断处理</strong>：定义<strong>中断优先级</strong>。优先级高的中断可以强行打断优先级低的中断。"
+        ]
       },
       {
         "type": "hr"
@@ -290,24 +302,34 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "1. <strong>高速缓存大小</strong>。"
+        "type": "ol",
+        "items": [
+          "<strong>高速缓存大小</strong>。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>块大小</strong>（与内存交换的数据单位）。"
+        "type": "ol",
+        "items": [
+          "<strong>块大小</strong>（与内存交换的数据单位）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>映射函数</strong>（决定主存块放进 Cache 的哪个位置）。"
+        "type": "ol",
+        "items": [
+          "<strong>映射函数</strong>（决定主存块放进 Cache 的哪个位置）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>置换算法</strong>（Cache 满了该踢谁出去？最常用的是 <strong>LRU 最近最少使用算法</strong>，淘汰最长时间未被访问的块）。"
+        "type": "ol",
+        "items": [
+          "<strong>置换算法</strong>（Cache 满了该踢谁出去？最常用的是 <strong>LRU 最近最少使用算法</strong>，淘汰最长时间未被访问的块）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "5. <strong>写策略</strong>（更新数据时，是每次都写回主存，还是等块被替换出 Cache 时才写回？这关乎性能和数据一致性）。"
+        "type": "ol",
+        "items": [
+          "<strong>写策略</strong>（更新数据时，是每次都写回主存，还是等块被替换出 Cache 时才写回？这关乎性能和数据一致性）。"
+        ]
       },
       {
         "type": "hr"
@@ -322,8 +344,10 @@ window.BLOG_POSTS = [
         "text": "计算机的发展史，就是 CPU 不断“甩锅” I/O 任务的历史。考卷上特别喜欢考这三种技术的优缺点对比："
       },
       {
-        "type": "p",
-        "text": "1. <strong>可编程 I/O (Programmed I/O)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>可编程 I/O (Programmed I/O)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -338,8 +362,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>中断驱动 I/O (Interrupt-Driven I/O)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>中断驱动 I/O (Interrupt-Driven I/O)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -354,8 +380,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>🌟</strong> <strong>直接内存存取 (DMA, Direct Memory Access)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>🌟</strong> <strong>直接内存存取 (DMA, Direct Memory Access)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -426,16 +454,22 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "1. <strong>方便</strong>：作为用户和计算机之间的接口（让你不用手敲二进制代码）。"
+        "type": "ol",
+        "items": [
+          "<strong>方便</strong>：作为用户和计算机之间的接口（让你不用手敲二进制代码）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>有效</strong>：作为资源管理器（合理分配CPU和内存）。"
+        "type": "ol",
+        "items": [
+          "<strong>有效</strong>：作为资源管理器（合理分配CPU和内存）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>扩展能力</strong>：允许系统随着时间推移去升级硬件、添加新服务和纠正错误。"
+        "type": "ol",
+        "items": [
+          "<strong>扩展能力</strong>：允许系统随着时间推移去升级硬件、添加新服务和纠正错误。"
+        ]
       },
       {
         "type": "ul",
@@ -468,8 +502,10 @@ window.BLOG_POSTS = [
         "text": "操作系统不是一天建成的，它经历了四个极其重要的进化阶段。你必须记住它们的顺序和解决的痛点："
       },
       {
-        "type": "p",
-        "text": "1. <strong>串行处理 (Serial Processing)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>串行处理 (Serial Processing)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -484,8 +520,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>简单批处理系统 (Simple Batch Systems)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>简单批处理系统 (Simple Batch Systems)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -506,8 +544,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>多道批处理系统 (Multiprogrammed Batch Systems)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>多道批处理系统 (Multiprogrammed Batch Systems)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -522,8 +562,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>分时系统 (Time Sharing Systems)</strong>："
+        "type": "ol",
+        "items": [
+          "<strong>分时系统 (Time Sharing Systems)</strong>："
+        ]
       },
       {
         "type": "ul",
@@ -1061,7 +1103,7 @@ window.BLOG_POSTS = [
       },
       {
         "type": "p",
-        "text": "<strong>2. 神奇的</strong> <code><strong>fork()</strong></code> <strong>创建大法</strong>"
+        "text": "<strong>2. 神奇的</strong> <code>**fork()**</code> <strong>创建大法</strong>"
       },
       {
         "type": "p",
@@ -1144,20 +1186,28 @@ window.BLOG_POSTS = [
         "text": "<strong>🌟</strong> <strong>核心考点：为什么我们需要引入线程？（背诵“四大快”）</strong>"
       },
       {
-        "type": "p",
-        "text": "1. <strong>创建快</strong>：创建一个新线程比新进程快得多（不用重新分配虚拟地址空间）。"
+        "type": "ol",
+        "items": [
+          "<strong>创建快</strong>：创建一个新线程比新进程快得多（不用重新分配虚拟地址空间）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>销毁快</strong>：终止线程比终止进程快。"
+        "type": "ol",
+        "items": [
+          "<strong>销毁快</strong>：终止线程比终止进程快。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>切换快</strong>：同一进程内的线程切换，不需要清空CPU缓存和TLB，开销极小。"
+        "type": "ol",
+        "items": [
+          "<strong>切换快</strong>：同一进程内的线程切换，不需要清空CPU缓存和TLB，开销极小。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>通信快（免内核）</strong>：因为同进程的线程共享内存，它们互相传数据直接读写内存就行，<strong>不需要调用内核</strong>。"
+        "type": "ol",
+        "items": [
+          "<strong>通信快（免内核）</strong>：因为同进程的线程共享内存，它们互相传数据直接读写内存就行，<strong>不需要调用内核</strong>。"
+        ]
       },
       {
         "type": "hr"
@@ -1326,20 +1376,28 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "1. <strong>统一界面</strong>：大家全靠<strong>消息传递 (Message Passing)</strong> 沟通。"
+        "type": "ol",
+        "items": [
+          "<strong>统一界面</strong>：大家全靠<strong>消息传递 (Message Passing)</strong> 沟通。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>灵活性/扩展性</strong>：加功能、减功能都不需要动内核。"
+        "type": "ol",
+        "items": [
+          "<strong>灵活性/扩展性</strong>：加功能、减功能都不需要动内核。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>可移植性</strong>：换了新硬件，只要改微内核那一点点代码就行。"
+        "type": "ol",
+        "items": [
+          "<strong>可移植性</strong>：换了新硬件，只要改微内核那一点点代码就行。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>分布式系统支持</strong>：发消息给本地服务和远程服务，在微内核看来是一样的。"
+        "type": "ol",
+        "items": [
+          "<strong>分布式系统支持</strong>：发消息给本地服务和远程服务，在微内核看来是一样的。"
+        ]
       },
       {
         "type": "ul",
@@ -1360,8 +1418,10 @@ window.BLOG_POSTS = [
         "text": "这部分考得很细，重点记住这几个系统的“骚操作”："
       },
       {
-        "type": "p",
-        "text": "1. <strong>Windows 的“亲和性”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>Windows 的“亲和性”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -1376,8 +1436,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>Solaris 的“四层汉堡”与“神级中断”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>Solaris 的“四层汉堡”与“神级中断”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -1392,8 +1454,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>Linux 的“障眼法”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>Linux 的“障眼法”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -1404,7 +1468,7 @@ window.BLOG_POSTS = [
       {
         "type": "ul",
         "items": [
-          "<strong>怎么实现线程？</strong> 它通过一个神仙系统调用 <code><strong>clone()</strong></code>。它本质上是创建一个新进程，但可以通过标志位（如 <code>CLONE_VM</code>, <code>CLONE_FILES</code>）让新进程和老进程<strong>共享同一个内存地址空间和文件表</strong>。共享了资源的进程，在表现上不就是线程了吗！"
+          "<strong>怎么实现线程？</strong> 它通过一个神仙系统调用 <code>**clone()**</code>。它本质上是创建一个新进程，但可以通过标志位（如 <code>CLONE_VM</code>, <code>CLONE_FILES</code>）让新进程和老进程<strong>共享同一个内存地址空间和文件表</strong>。共享了资源的进程，在表现上不就是线程了吗！"
         ]
       },
       {
@@ -1491,24 +1555,34 @@ window.BLOG_POSTS = [
         "text": "考试极其喜欢考这些概念的辨析，请死死记住这张表："
       },
       {
-        "type": "p",
-        "text": "1. <strong>临界区 (Critical Section)</strong>：程序中访问共享资源的那段代码。<strong>一次只能有一个进程进去</strong>。"
+        "type": "ol",
+        "items": [
+          "<strong>临界区 (Critical Section)</strong>：程序中访问共享资源的那段代码。<strong>一次只能有一个进程进去</strong>。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>互斥 (Mutual Exclusion)</strong>：当一个进程在临界区时，绝对不允许其他进程进入。"
+        "type": "ol",
+        "items": [
+          "<strong>互斥 (Mutual Exclusion)</strong>：当一个进程在临界区时，绝对不允许其他进程进入。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>死锁 (Deadlock)</strong>：两个或多个进程互相死等对方释放资源，导致谁也无法继续。"
+        "type": "ol",
+        "items": [
+          "<strong>死锁 (Deadlock)</strong>：两个或多个进程互相死等对方释放资源，导致谁也无法继续。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>活锁 (Livelock)</strong>：进程没有被阻塞，但一直在疯狂改变状态互相谦让，导致谁都干不了正事（比如Dekker算法的早期版本就容易出现）。"
+        "type": "ol",
+        "items": [
+          "<strong>活锁 (Livelock)</strong>：进程没有被阻塞，但一直在疯狂改变状态互相谦让，导致谁都干不了正事（比如Dekker算法的早期版本就容易出现）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "5. <strong>饥饿 (Starvation)</strong>：某个可运行的倒霉进程，被调度器无限期地忽略，永远得不到执行。"
+        "type": "ol",
+        "items": [
+          "<strong>饥饿 (Starvation)</strong>：某个可运行的倒霉进程，被调度器无限期地忽略，永远得不到执行。"
+        ]
       },
       {
         "type": "h2",
@@ -1550,7 +1624,7 @@ window.BLOG_POSTS = [
       {
         "type": "ul",
         "items": [
-          "<strong>专用机器指令 (</strong><code><strong>testset</strong></code> <strong>/</strong> <code><strong>exchange</strong></code><strong>)</strong>：硬件层面提供的一气呵成、绝对不会被打断的指令，可以在多处理器上使用。"
+          "<strong>专用机器指令 (</strong><code>**testset**</code> <strong>/</strong> <code>**exchange**</code><strong>)</strong>：硬件层面提供的一气呵成、绝对不会被打断的指令，可以在多处理器上使用。"
         ]
       },
       {
@@ -1560,16 +1634,22 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "1. 会产生<strong>“忙等待” (Busy Waiting)</strong>，拿不到锁的进程会在门口疯狂死循环，白白浪费CPU时间。"
+        "type": "ol",
+        "items": [
+          "会产生<strong>“忙等待” (Busy Waiting)</strong>，拿不到锁的进程会在门口疯狂死循环，白白浪费CPU时间。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. 可能导致某些进程永远抢不到锁，发生<strong>饥饿</strong>。"
+        "type": "ol",
+        "items": [
+          "可能导致某些进程永远抢不到锁，发生<strong>饥饿</strong>。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. 如果有优先级机制，还可能引发死锁。"
+        "type": "ol",
+        "items": [
+          "如果有优先级机制，还可能引发死锁。"
+        ]
       },
       {
         "type": "hr"
@@ -1603,13 +1683,13 @@ window.BLOG_POSTS = [
       {
         "type": "ul",
         "items": [
-          "<strong>P 操作 (</strong><code><strong>semWait</strong></code><strong>)</strong>：测试。值减1，如果值 &lt; 0，进程<strong>把自己扔进队列睡眠（阻塞）</strong>。"
+          "<strong>P 操作 (</strong><code>**semWait**</code><strong>)</strong>：测试。值减1，如果值 &lt; 0，进程<strong>把自己扔进队列睡眠（阻塞）</strong>。"
         ]
       },
       {
         "type": "ul",
         "items": [
-          "<strong>V 操作 (</strong><code><strong>semSignal</strong></code><strong>)</strong>：增加。值加1，如果值 &lt;= 0，从队列里<strong>唤醒</strong>一个进程。"
+          "<strong>V 操作 (</strong><code>**semSignal**</code><strong>)</strong>：增加。值加1，如果值 &lt;= 0，从队列里<strong>唤醒</strong>一个进程。"
         ]
       },
       {
@@ -1633,7 +1713,7 @@ window.BLOG_POSTS = [
       {
         "type": "ul",
         "items": [
-          "<strong>考试致命避坑点</strong>：<strong>申请资源的 P 操作（</strong><code><strong>semWait(n)</strong></code> <strong>或</strong> <code><strong>semWait(e)</strong></code><strong>），必须永远写在申请互斥锁的 P 操作（</strong><code><strong>semWait(s)</strong></code><strong>）前面！</strong> 否则如果进去后发现没资源，抱着互斥锁睡觉，必然导致全系统<strong>死锁</strong>！而 V 操作的顺序则无所谓，只影响效率。"
+          "<strong>考试致命避坑点</strong>：<strong>申请资源的 P 操作（</strong><code>**semWait(n)**</code> <strong>或</strong> <code>**semWait(e)**</code><strong>），必须永远写在申请互斥锁的 P 操作（</strong><code>**semWait(s)**</code><strong>）前面！</strong> 否则如果进去后发现没资源，抱着互斥锁睡觉，必然导致全系统<strong>死锁</strong>！而 V 操作的顺序则无所谓，只影响效率。"
         ]
       },
       {
@@ -1837,20 +1917,28 @@ window.BLOG_POSTS = [
         "text": "这四个条件就像召唤神龙的四颗龙珠，<strong>四个条件一起构成了死锁的充分必要条件</strong>："
       },
       {
-        "type": "p",
-        "text": "1. <strong>互斥 (Mutual exclusion)</strong>：一次只有一个进程可以使用一个资源。"
+        "type": "ol",
+        "items": [
+          "<strong>互斥 (Mutual exclusion)</strong>：一次只有一个进程可以使用一个资源。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>占有且等待 (Hold and wait)</strong>：当一个进程等待其他进程时，继续占有它已经分配到的资源。"
+        "type": "ol",
+        "items": [
+          "<strong>占有且等待 (Hold and wait)</strong>：当一个进程等待其他进程时，继续占有它已经分配到的资源。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>不可抢占 (No preemption)</strong>：不能强行抢占进程已占有的资源。"
+        "type": "ol",
+        "items": [
+          "<strong>不可抢占 (No preemption)</strong>：不能强行抢占进程已占有的资源。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>循环等待 (Circular wait)</strong>：存在一个闭合的进程链，每个进程至少占有下一个进程所需的一个资源。前三个条件是发生死锁的必要条件，而第四个条件实际上是前三个条件的潜在后果。"
+        "type": "ol",
+        "items": [
+          "<strong>循环等待 (Circular wait)</strong>：存在一个闭合的进程链，每个进程至少占有下一个进程所需的一个资源。前三个条件是发生死锁的必要条件，而第四个条件实际上是前三个条件的潜在后果。"
+        ]
       },
       {
         "type": "hr"
@@ -2000,8 +2088,10 @@ window.BLOG_POSTS = [
         "text": "当系统里有多个空闲内存块时，新来的进程该选哪一块？（对应我们之前做过的习题7.5）"
       },
       {
-        "type": "p",
-        "text": "1. <strong>首次适配 (First-fit)</strong>：从头开始扫描，碰到<strong>第一个</strong>足够大的就塞进去。"
+        "type": "ol",
+        "items": [
+          "<strong>首次适配 (First-fit)</strong>：从头开始扫描，碰到<strong>第一个</strong>足够大的就塞进去。"
+        ]
       },
       {
         "type": "ul",
@@ -2010,8 +2100,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>下次适配 (Next-fit)</strong>：从上次放置的位置<strong>继续往下扫</strong>，碰到够大的就塞。"
+        "type": "ol",
+        "items": [
+          "<strong>下次适配 (Next-fit)</strong>：从上次放置的位置<strong>继续往下扫</strong>，碰到够大的就塞。"
+        ]
       },
       {
         "type": "ul",
@@ -2020,8 +2112,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>最佳适配 (Best-fit)</strong>：扫描全局，选一个<strong>大小最接近</strong>请求的空闲块。"
+        "type": "ol",
+        "items": [
+          "<strong>最佳适配 (Best-fit)</strong>：扫描全局，选一个<strong>大小最接近</strong>请求的空闲块。"
+        ]
       },
       {
         "type": "ul",
@@ -2492,8 +2586,10 @@ window.BLOG_POSTS = [
         "text": "操作系统的调度不是一步到位的，它按时间长短分为三个阶段。你必须分清它们各自的任务："
       },
       {
-        "type": "p",
-        "text": "1. <strong>长程调度 (Long-term scheduling) —— “守门员”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>长程调度 (Long-term scheduling) —— “守门员”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -2508,8 +2604,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>中程调度 (Medium-term scheduling) —— “搬运工”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>中程调度 (Medium-term scheduling) —— “搬运工”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -2518,8 +2616,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>短程调度 (Short-term scheduling) —— “分配器 (Dispatcher)”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>短程调度 (Short-term scheduling) —— “分配器 (Dispatcher)”</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -2722,8 +2822,10 @@ window.BLOG_POSTS = [
         "id": "第四模块其他现代调度机制-填空连线题"
       },
       {
-        "type": "p",
-        "text": "1. <strong>公平共享调度 (Fair-Share Scheduling)</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>公平共享调度 (Fair-Share Scheduling)</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -2738,8 +2840,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>传统 UNIX 调度</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>传统 UNIX 调度</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -3152,16 +3256,22 @@ window.BLOG_POSTS = [
         "text": "外设种类繁多，速度差异极大（键盘极慢，网络极快）。为了让飞快的CPU不被慢吞吞的外设拖后腿，I/O控制技术经历了三次进化："
       },
       {
-        "type": "p",
-        "text": "1. <strong>程序控制I/O</strong>：CPU亲自盯着设备，一直死等（忙等待），极度浪费CPU时间。"
+        "type": "ol",
+        "items": [
+          "<strong>程序控制I/O</strong>：CPU亲自盯着设备，一直死等（忙等待），极度浪费CPU时间。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>中断驱动I/O</strong>：CPU下达命令后去干别的，设备干完活发个“中断（短信）”通知CPU。"
+        "type": "ol",
+        "items": [
+          "<strong>中断驱动I/O</strong>：CPU下达命令后去干别的，设备干完活发个“中断（短信）”通知CPU。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>🌟</strong> <strong>终极考点：DMA（直接存储器访问）</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>🌟</strong> <strong>终极考点：DMA（直接存储器访问）</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -3467,16 +3577,22 @@ window.BLOG_POSTS = [
         "text": "第11章的核心得分点极其明确！你现在需要闭上眼睛问自己三个问题："
       },
       {
-        "type": "p",
-        "text": "1. <strong>DMA到底是干嘛的？</strong>（代替CPU搬砖）"
+        "type": "ol",
+        "items": [
+          "<strong>DMA到底是干嘛的？</strong>（代替CPU搬砖）"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>电梯算法（SCAN）的运行轨迹是什么样的？</strong>（一路走到黑再掉头）"
+        "type": "ol",
+        "items": [
+          "<strong>电梯算法（SCAN）的运行轨迹是什么样的？</strong>（一路走到黑再掉头）"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>RAID 0, RAID 1, RAID 5 的区别是什么？</strong>（0最快无备份，1备份最贵，5均分校验最常用）。"
+        "type": "ol",
+        "items": [
+          "<strong>RAID 0, RAID 1, RAID 5 的区别是什么？</strong>（0最快无备份，1备份最贵，5均分校验最常用）。"
+        ]
       },
       {
         "type": "p",
@@ -3594,8 +3710,10 @@ window.BLOG_POSTS = [
         "text": "文件是由“记录”组成的，而磁盘 I/O 的读写单位是“块”。把记录塞进块里，有三种“装箱”策略："
       },
       {
-        "type": "p",
-        "text": "1. <strong>定长组块 (Fixed Blocking)</strong>：使用固定长度的记录，完整的记录全塞在一个块里。"
+        "type": "ol",
+        "items": [
+          "<strong>定长组块 (Fixed Blocking)</strong>：使用固定长度的记录，完整的记录全塞在一个块里。"
+        ]
       },
       {
         "type": "ul",
@@ -3604,8 +3722,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>变长跨越式组块 (Variable Blocking: Spanned)</strong>：记录紧缩在块中，不留空隙。如果一个记录太长，会<strong>跨越两个块</strong>，中间用指针连起来。"
+        "type": "ol",
+        "items": [
+          "<strong>变长跨越式组块 (Variable Blocking: Spanned)</strong>：记录紧缩在块中，不留空隙。如果一个记录太长，会<strong>跨越两个块</strong>，中间用指针连起来。"
+        ]
       },
       {
         "type": "ul",
@@ -3614,8 +3734,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>变长非跨越式组块 (Variable Blocking: Unspanned)</strong>：记录变长，但绝不跨块。"
+        "type": "ol",
+        "items": [
+          "<strong>变长非跨越式组块 (Variable Blocking: Unspanned)</strong>：记录变长，但绝不跨块。"
+        ]
       },
       {
         "type": "ul",
@@ -3696,20 +3818,28 @@ window.BLOG_POSTS = [
         "text": "分配完文件后，磁盘上剩下的空闲块怎么管？有四种方法："
       },
       {
-        "type": "p",
-        "text": "1. <strong>位表 (Bit Tables)</strong>：用一串 0 和 1 表示，每个位代表一个块（0表示空闲，1表示占用）。它非常小，容易找空闲块。"
+        "type": "ol",
+        "items": [
+          "<strong>位表 (Bit Tables)</strong>：用一串 0 和 1 表示，每个位代表一个块（0表示空闲，1表示占用）。它非常小，容易找空闲块。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>链接空闲区 (Chained Free Portions)</strong>：把所有空闲块用指针串起来。不需要额外的表，但会产生碎片，且每次分配都要读块来找指针，开销大,。"
+        "type": "ol",
+        "items": [
+          "<strong>链接空闲区 (Chained Free Portions)</strong>：把所有空闲块用指针串起来。不需要额外的表，但会产生碎片，且每次分配都要读块来找指针，开销大,。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>索引 (Indexing)</strong>：把空闲空间直接当成一个文件，用索引表来管理。"
+        "type": "ol",
+        "items": [
+          "<strong>索引 (Indexing)</strong>：把空闲空间直接当成一个文件，用索引表来管理。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>空闲块列表 (Free Block List)</strong>：把所有空闲块的序号存下来，放在主存里当作“栈”或者“FIFO队列”来管理。"
+        "type": "ol",
+        "items": [
+          "<strong>空闲块列表 (Free Block List)</strong>：把所有空闲块的序号存下来，放在主存里当作“栈”或者“FIFO队列”来管理。"
+        ]
       },
       {
         "type": "hr"
@@ -4024,20 +4154,28 @@ window.BLOG_POSTS = [
         "text": "<strong>2.</strong> <strong>🌟</strong> <strong>集群的四大绝对优势（必背简答题）</strong>"
       },
       {
-        "type": "p",
-        "text": "1. <strong>绝对可伸缩性</strong>：几十上百台机器绑一起，性能远超最大的单体计算机。"
+        "type": "ol",
+        "items": [
+          "<strong>绝对可伸缩性</strong>：几十上百台机器绑一起，性能远超最大的单体计算机。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>增加可伸缩性（增量扩展）</strong>：随时往里添新机器，工作量极小。"
+        "type": "ol",
+        "items": [
+          "<strong>增加可伸缩性（增量扩展）</strong>：随时往里添新机器，工作量极小。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>高可用性</strong>：一台机器宕机了，其他机器顶上，系统不死。"
+        "type": "ol",
+        "items": [
+          "<strong>高可用性</strong>：一台机器宕机了，其他机器顶上，系统不死。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>高性价比</strong>：用市面上便宜的普通PC拼装，就能打败昂贵的大型机。"
+        "type": "ol",
+        "items": [
+          "<strong>高性价比</strong>：用市面上便宜的普通PC拼装，就能打败昂贵的大型机。"
+        ]
       },
       {
         "type": "p",
@@ -4457,20 +4595,28 @@ window.BLOG_POSTS = [
         "text": "同学们，这章虽然在第14章，但考点非常清晰！你只需要记住："
       },
       {
-        "type": "p",
-        "text": "1. <strong>进程迁移有哪四种方式</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>进程迁移有哪四种方式</strong>"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>什么叫“不一致的快照状态”</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>什么叫“不一致的快照状态”</strong>"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>Lamport 是 3(N-1) 条消息，Ricart&amp;Agrawala 是 2(N-1) 条消息</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>Lamport 是 3(N-1) 条消息，Ricart&amp;Agrawala 是 2(N-1) 条消息</strong>"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>缓冲池满了会导致消息通信死锁</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>缓冲池满了会导致消息通信死锁</strong>"
+        ]
       },
       {
         "type": "p",
@@ -4506,8 +4652,10 @@ window.BLOG_POSTS = [
         "text": "任何安全系统的设计，都必须死守“四大底线”，而黑客的攻击刚好与这四条底线一一对应（<strong>必背配对考点</strong>）："
       },
       {
-        "type": "p",
-        "text": "1. <strong>机密性 (Confidentiality) vs 侦听 (Interception)</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>机密性 (Confidentiality) vs 侦听 (Interception)</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -4522,8 +4670,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>完整性 (Integrity) vs 更改 (Modification)</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>完整性 (Integrity) vs 更改 (Modification)</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -4538,8 +4688,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>可用性 (Availability) vs 中断 (Interruption)</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>可用性 (Availability) vs 中断 (Interruption)</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -4554,8 +4706,10 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>可靠性/真实性 (Authenticity) vs 伪造 (Fabrication)</strong>"
+        "type": "ol",
+        "items": [
+          "<strong>可靠性/真实性 (Authenticity) vs 伪造 (Fabrication)</strong>"
+        ]
       },
       {
         "type": "ul",
@@ -4570,12 +4724,12 @@ window.BLOG_POSTS = [
         ]
       },
       {
-        "type": "p",
-        "text": "&gt; <strong>🌟</strong> <strong>讲师防坑提示（网络攻击分类）</strong>："
+        "type": "blockquote",
+        "text": "<strong>🌟</strong> <strong>讲师防坑提示（网络攻击分类）</strong>："
       },
       {
-        "type": "p",
-        "text": "&gt; 考试常问“被动攻击”和“主动攻击”的区别。记住：<strong>被动攻击（如通信分析、窃听）不影响系统资源，极难被发现；主动攻击（如重放、伪装、拒绝服务）会改变系统状态，必须被检测和防御</strong>。"
+        "type": "blockquote",
+        "text": "考试常问“被动攻击”和“主动攻击”的区别。记住：<strong>被动攻击（如通信分析、窃听）不影响系统资源，极难被发现；主动攻击（如重放、伪装、拒绝服务）会改变系统状态，必须被检测和防御</strong>。"
       },
       {
         "type": "hr"
@@ -4655,20 +4809,28 @@ window.BLOG_POSTS = [
         "id": "流派一需要宿主程序不能独立存在"
       },
       {
-        "type": "p",
-        "text": "1. <strong>后门 (Trapdoor/Backdoor)</strong>：程序员测试时留下的秘密入口，能绕过验证。"
+        "type": "ol",
+        "items": [
+          "<strong>后门 (Trapdoor/Backdoor)</strong>：程序员测试时留下的秘密入口，能绕过验证。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>逻辑炸弹 (Logic bomb)</strong>：像定时炸弹一样，平时没反应，一旦满足特定条件（比如到了某一天、某个文件被删），就会“爆炸”破坏系统。"
+        "type": "ol",
+        "items": [
+          "<strong>逻辑炸弹 (Logic bomb)</strong>：像定时炸弹一样，平时没反应，一旦满足特定条件（比如到了某一天、某个文件被删），就会“爆炸”破坏系统。"
+        ]
       },
       {
-        "type": "p",
-        "text": "3. <strong>特洛伊木马 (Trojan horse)</strong>：表面上是一个有用的程序（比如游戏），背地里偷偷干坏事（比如帮你把所有文件权限公开）。"
+        "type": "ol",
+        "items": [
+          "<strong>特洛伊木马 (Trojan horse)</strong>：表面上是一个有用的程序（比如游戏），背地里偷偷干坏事（比如帮你把所有文件权限公开）。"
+        ]
       },
       {
-        "type": "p",
-        "text": "4. <strong>病毒 (Viruses)</strong>：最狡猾！它会把自己的代码<strong>“感染”（复制）</strong>到其他可执行程序中。"
+        "type": "ol",
+        "items": [
+          "<strong>病毒 (Viruses)</strong>：最狡猾！它会把自己的代码<strong>“感染”（复制）</strong>到其他可执行程序中。"
+        ]
       },
       {
         "type": "h3",
@@ -4676,28 +4838,32 @@ window.BLOG_POSTS = [
         "id": "流派二独立运行的程序"
       },
       {
-        "type": "p",
-        "text": "1. <strong>蠕虫 (Worm)</strong>：<strong>不需要别人运行，它自己长了脚！</strong> 会通过网络连接、电子邮件主动寻找漏洞，把自己从一台机器复制到另一台机器。"
+        "type": "ol",
+        "items": [
+          "<strong>蠕虫 (Worm)</strong>：<strong>不需要别人运行，它自己长了脚！</strong> 会通过网络连接、电子邮件主动寻找漏洞，把自己从一台机器复制到另一台机器。"
+        ]
       },
       {
-        "type": "p",
-        "text": "2. <strong>僵尸 (Zombie)</strong>：秘密接管你的电脑，让你的电脑变成受黑客控制的“肉鸡”，用来对别人发动攻击，极其难以追踪。"
+        "type": "ol",
+        "items": [
+          "<strong>僵尸 (Zombie)</strong>：秘密接管你的电脑，让你的电脑变成受黑客控制的“肉鸡”，用来对别人发动攻击，极其难以追踪。"
+        ]
       },
       {
-        "type": "p",
-        "text": "&gt; <strong>🌟</strong> <strong>高频考点：病毒的生命周期与特殊变种</strong>"
+        "type": "blockquote",
+        "text": "<strong>🌟</strong> <strong>高频考点：病毒的生命周期与特殊变种</strong>"
       },
       {
-        "type": "p",
-        "text": "&gt; <strong>四个阶段</strong>：潜伏 $\\rightarrow$ 繁殖 $\\rightarrow$ 引发 $\\rightarrow$ 执行。"
+        "type": "blockquote",
+        "text": "<strong>四个阶段</strong>：潜伏 $\\rightarrow$ 繁殖 $\\rightarrow$ 引发 $\\rightarrow$ 执行。"
       },
       {
-        "type": "p",
-        "text": "&gt; <strong>多态病毒 (Polymorphic)</strong>：这是最难杀的病毒。它每次感染都会<strong>变异并改变自己的加密密钥</strong>，导致传统的“特征码扫描”对它完全无效。"
+        "type": "blockquote",
+        "text": "<strong>多态病毒 (Polymorphic)</strong>：这是最难杀的病毒。它每次感染都会<strong>变异并改变自己的加密密钥</strong>，导致传统的“特征码扫描”对它完全无效。"
       },
       {
-        "type": "p",
-        "text": "&gt; <strong>宏病毒 (Macro Viruses)</strong>：跨平台，不感染可执行程序，<strong>专挑文档（如 Word 文件）感染</strong>，传播极其容易。"
+        "type": "blockquote",
+        "text": "<strong>宏病毒 (Macro Viruses)</strong>：跨平台，不感染可执行程序，<strong>专挑文档（如 Word 文件）感染</strong>，传播极其容易。"
       },
       {
         "type": "hr"
@@ -4774,85 +4940,2152 @@ window.BLOG_POSTS = [
         "text": "把讲义里加粗的词语多看两遍，应付这章的期末客观题就如同探囊取物了！需要我给你出两道<strong>“被动攻击与主动攻击辨析”</strong>的历年真题测测你的直觉吗？"
       }
     ],
-    "source": "posts/操作系统/期末总结.md"
+    "source": "posts/大三下/操作系统/期末总结.md"
   },
   {
-    "id": "学习笔记的整理模板",
-    "title": "学习笔记的整理模板",
-    "date": "2026-05-18",
-    "updated": "2026-05-20",
-    "category": "学习",
-    "catL1": "学习",
-    "catL2": "",
-    "tags": [
-      "笔记",
-      "方法",
-      "复盘"
-    ],
-    "excerpt": "一篇笔记不一定要长，但最好能留下问题、结论、例子和下一步行动。这样以后回来翻，才不会只看到一团热闹。",
+    "id": "数据库期末复习提纲",
+    "title": "数据库期末复习提纲",
+    "date": "2026-05-22",
+    "updated": "2026-05-22",
+    "category": "大三下 / 数据库",
+    "catL1": "大三下",
+    "catL2": "数据库",
+    "tags": [],
+    "excerpt": "同学们好！欢迎来到《数据库系统原理》期末冲刺第一课！我是你的专属讲师。",
     "content": [
       {
         "type": "p",
-        "text": "一篇笔记不一定要长，但最好能留下问题、结论、例子和下一步行动。这样以后回来翻，才不会只看到一团热闹。"
+        "text": "同学们好！欢迎来到《数据库系统原理》期末冲刺第一课！我是你的专属讲师。"
       },
       {
-        "type": "h2",
-        "text": "我的结构",
-        "id": "我的结构"
+        "type": "p",
+        "text": "今天我们要拿下的是<strong>第1章：数据库概述</strong>。万丈高楼平地起，这章虽然是整门课的“开胃菜”，偏向概念科普，但考点非常密集，大多是期末试卷上的必拿送分题！我已经把这几十页PPT的精华全部“榨干”了，咱们不扯废话，直接看这份<strong>【内部速成提纲】</strong>，跟着我划重点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 第一章 数据库概述 期末速成讲义 🔥",
+        "id": "第一章-数据库概述-期末速成讲义"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：核心概念“连连看” （理清四个名词不丢分）",
+        "id": "模块一核心概念连连看-理清四个名词不丢分"
+      },
+      {
+        "type": "p",
+        "text": "考试第一关，就是让你分辨几个长得很像的英文缩写，千万别搞混了！"
       },
       {
         "type": "ul",
         "items": [
-          "背景：为什么要学这个。",
-          "概念：用自己的话解释关键点。",
-          "例子：写一个能跑通的最小案例。",
-          "问题：记录还没想明白的地方。"
+          "<strong>数据 (Data) vs 信息 (Information)</strong>：数据是记录的符号，信息是数据的含义；数据是信息的载体。数据只有经过“清洗 -&gt; 管理 -&gt; 分析”这三步走，才能为人们找出答案，产生价值。",
+          "<strong>数据库 (DB, Database)</strong>：你可以把它当成一个“大仓库”。它是长期存放在电脑里、有组织的、可共享的大量数据的集合。",
+          "<strong>数据库管理系统 (DBMS)</strong>：这是用来建库、用库和管库的“超级管家软件”（比如知名的Oracle、SQL Server、MySQL等）。用户的高级指令必须靠DBMS翻译成机器代码，才能对底层数据库进行操作。",
+          "<strong>数据库系统 (DBS)</strong>：这是终极“全家桶”！<strong>必背公式：数据库系统 = 数据库 + 数据库管理系统(DBMS) + 应用开发工具 + 应用程序 + 数据库管理员(DBA)</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🐒 模块二：数据管理的“进化史” （我们是怎么走到今天的？）",
+        "id": "模块二数据管理的进化史-我们是怎么走到今天的"
+      },
+      {
+        "type": "p",
+        "text": "数据管理经历了三个阶段，要清楚前两个阶段为啥被淘汰。"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>人工管理阶段</strong>：上古时代，数据不保存，随用随丢，程序和数据绑死在一起。",
+          "<strong>文件管理阶段</strong>：数据存成了文件，但毛病很多：数据共享差（同样的数据存好几份，冗余大）、数据是分离孤立的，而且<strong>程序和数据没有真正分离（独立性差）</strong>。",
+          "<strong>数据库管理阶段（现在）</strong>：数据由DBMS统一管理。<strong>四大核心优点必背：整体数据结构化、数据共享度高、数据独立性高、高度的数据控制能力</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "👑 模块三：全卷最重磅考点 —— 内部体系结构！",
+        "id": "模块三全卷最重磅考点-内部体系结构"
+      },
+      {
+        "type": "p",
+        "text": "这个知识点是数据库的灵魂，简答题和选择题的重灾区！主要讲的是数据库如何做到“把用户看的、全局算的、底层存的”彻底解绑。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>三级模式（由外向内）</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>外模式（局部视图）</strong>：特定用户能看到的数据长啥样。这是<strong>保证数据库安全性的有力措施</strong>（比如普通员工只能看姓名列，不能看工资列）。一个数据库可以有多个外模式。",
+          "<strong>模式（全局逻辑）</strong>：整个数据库总共有哪些表、什么类型，是全体用户的公共视图。<strong>一个数据库只有一个模式</strong>。",
+          "<strong>内模式（物理存储）</strong>：数据在底层硬盘到底是怎么存的（比如是顺序存还是B+树存，加没加密）。<strong>一个数据库只有一个内模式</strong>。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>两级映像（数据独立性的“护身符”）</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>外模式/模式映像（保证“逻辑独立性”）</strong>：当全局的“模式”改变时，管理员调一下这层映像，用户的“外模式”就不受影响，<strong>应用程序连一行代码都不用改</strong>！",
+          "<strong>模式/内模式映像（保证“物理独立性”）</strong>：当底层换了新磁盘等“内模式”改变时，调一下这层映像，上面的模式和外模式都不变，程序照样不用改！"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🌍 模块四：外部体系结构 （数据库系统长啥样？）",
+        "id": "模块四外部体系结构-数据库系统长啥样"
+      },
+      {
+        "type": "p",
+        "text": "从外面看，数据库系统是怎么部署的？考点在于优缺点辨析："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>C/S 结构（客户机/服务器）</strong>：服务器专门负责DBMS管数据，客户机负责运行应用程序。",
+          "<strong>B/S 结构（浏览器/服务器）</strong>：C/S的升级版。客户端连软件都不用装，有浏览器就行，<strong>零维护，极易扩展</strong>，但缺点是个性化较弱、响应速度受限。",
+          "<strong>分布式结构</strong>：物理上分散在各个地域的节点，但逻辑上是一个整体。",
+          "<strong>并行结构</strong>：分三种（共享内存、共享磁盘、非共享），算力强，但<strong>弹性和容错性较差</strong>。",
+          "<strong>云结构</strong>：部署在云计算环境中，高可用、高扩展、支持多租户。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🏆 模块五：历史人物与国产之光 （常考填空/连线题）",
+        "id": "模块五历史人物与国产之光-常考填空连线题"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>认祖归宗</strong>：",
+          "<strong>关系数据库之父</strong>：埃德加·科德 (Edgar Frank Codd)，1970年提出关系模型，具有划时代意义。",
+          "<strong>中国数据库奠基人</strong>：萨师煊教授，中国人民大学经济信息管理系创建人。",
+          "<strong>国产之光（眼熟这些名字）</strong>：",
+          "<strong>达梦</strong>（完全自主知识产权）、<strong>人大金仓</strong>（人大创办）。",
+          "大厂系列：华为的 <strong>GaussDB</strong>、阿里的 <strong>OceanBase</strong>、腾讯的 <strong>TDSQL</strong>。",
+          "开源新星：PingCAP 的 <strong>TiDB</strong>（支持HTAP的融合型分布式数据库）。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师寄语</strong>："
+      },
+      {
+        "type": "p",
+        "text": "第一章是整本书的地基！对于零基础的你，现在的首要任务是闭上眼睛能默写出<strong>“数据库系统的五大组成部分”</strong>，并且能把<strong>“三级模式与两级映像”</strong>的对应关系、它们如何保证逻辑/物理独立性给讲清楚。"
+      },
+      {
+        "type": "p",
+        "text": "这份提纲你先消化一下，需要我利用这些知识点，给你生成一套能在手机上随时刷题的<strong>测验题（Quiz）</strong>，或者<strong>学习卡片（Flashcards）</strong>来检验一下你的速成效果吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》的期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要啃下的是<strong>第二章《关系数据库》</strong>。对于零基础的同学来说，这章不仅是整门课的基石，更是后续写SQL语句的“内功心法”。不要被教材里各种希腊字母和数学符号吓倒，这章的核心其实就是在讲：<strong>“表格长什么样”</strong> 以及 <strong>“怎么像切蛋糕一样去切这些表格”</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "我已经为你把整整一章的PPT浓缩成了下面这份<strong>【内部速成提纲】</strong>，只捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 第二章 关系数据库 速成提纲",
+        "id": "第二章-关系数据库-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "模块一：打地基 —— 关系模型的基本概念",
+        "id": "模块一打地基-关系模型的基本概念"
+      },
+      {
+        "type": "p",
+        "text": "在关系数据库里，不要再说“表格、行、列”了，我们要用黑话（专业术语）！"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>1. 关系（Relation）= 二维表</strong>",
+          "<strong>元组（Tuple）</strong>：表里的<strong>一行</strong>数据。",
+          "<strong>属性（Attribute）</strong>：表里的<strong>一列</strong>（比如姓名、性别），每列都要有名字。",
+          "<strong>域（Domain）</strong>：某一列的<strong>取值范围</strong>（比如性别的域是{男, 女}）。",
+          "<strong>🔥</strong> <strong>必考陷阱（关系的6大性质）</strong>：关系里<strong>不能有重复的行</strong>；<strong>行和列的顺序可以随便打乱</strong>；最重要的是<strong>属性必须是原子的（不可再分）</strong>，比如“工资”不能再拆成基本工资和奖金放在同一列里。",
+          "<strong>2. 关系模式 vs 关系（“图纸”与“大楼”的区别）</strong>",
+          "<strong>关系模式（Schema）</strong>：是表的“结构图纸”，规定了表名、列名和数据类型。它是<strong>静态的、稳定的</strong>。",
+          "<strong>关系（值）</strong>：是表里真金白银的数据。由于我们会不断增删改数据，所以它是<strong>动态的、随时间变化的</strong>。",
+          "<strong>3. 码（Key）—— 找人的唯一凭证（绝对重点！）</strong>",
+          "<strong>候选码</strong>：能<strong>唯一标识</strong>一行数据，且没有任何多余列的属性组。比如“学号”或者“身份证号”。",
+          "<strong>主码（Primary Key）</strong>：如果有多个候选码，数据库管理员挑一个最顺眼的作为主码。",
+          "<strong>主属性/非主属性</strong>：只要被包含在任何一个候选码里的列，就是主属性；否则就是非主属性。",
+          "<strong>外码（Foreign Key）</strong>：表里的一列，它虽然不是自己的主码，但却是<strong>别人表里的主码</strong>。外码的作用就是把两张表<strong>“串”</strong>起来！"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "模块二：数据怎么查？—— 查询语言",
+        "id": "模块二数据怎么查-查询语言"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "查询语言不用你写具体的过程，你只需告诉系统“你要什么”（高度非过程化）。主要分三类：<strong>关系代数</strong>（用集合运算找）、<strong>关系演算</strong>（用谓词逻辑找）、<strong>SQL语言</strong>（介于两者之间，以后实战都用它）。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "模块三：大轴戏 —— 关系代数（必考计算题！）",
+        "id": "模块三大轴戏-关系代数必考计算题"
+      },
+      {
+        "type": "p",
+        "text": "这部分是把表当成集合，用数学符号做运算。<strong>记住下面这几个“切蛋糕”的动作！</strong>"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 传统的集合运算（要求两张表的列长得一样）</strong>"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>并（$\\cup$）</strong>：两张表合在一起，<strong>自动去掉重复行</strong>。",
+          "<strong>交（$\\cap$）</strong>：找出两张表里一模一样的行。",
+          "<strong>差（$-$）</strong>：在表A里，把属于表B的行抠掉。",
+          "<strong>笛卡尔积（$\\times$）</strong>：表A的所有行和表B的所有行<strong>无脑两两组合</strong>（如果A有3行，B有4行，结果就是12行）。"
         ]
       },
       {
         "type": "p",
-        "text": "如果要长期维护博客，可以先保持这个轻量 Markdown 工作流，后面再升级成 Hexo、VitePress 或 Astro。"
+        "text": "<strong>2. 专门的关系运算（核心拿分项！！！）</strong>"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>选择（$\\sigma$ —— 选行）</strong>：",
+          "<strong>动作</strong>：横向切蛋糕。根据条件把满足的<strong>行</strong>挑出来。",
+          "<strong>例题</strong>：挑出年龄小于19岁的学生 $\\rightarrow$ $\\sigma_{Sage&lt;19}(Student)$。",
+          "<strong>投影（$\\pi$ —— 选列）</strong>：",
+          "<strong>动作</strong>：纵向切蛋糕。把需要的<strong>列</strong>抠出来。",
+          "<strong>🔥</strong> <strong>必考陷阱</strong>：投影之后，如果出现了重复的行，<strong>系统会自动把重复行删掉</strong>！（比如查询全校有哪几个系，多个相同的&#039;CS&#039;系会被去重只留一个）。",
+          "<strong>连接（$\\bowtie$ —— 拼表）</strong>：",
+          "<strong>动作</strong>：把两张表按一定条件拼成一张大表。",
+          "<strong>自然连接</strong>：最常用的连接！它会自动找到两张表里<strong>同名的列</strong>，把值相等的行拼在一起，并且<strong>自动把重复的同名列去掉一列</strong>。",
+          "<strong>悬浮元组与外连接</strong>：自然连接时，有些行匹配不到对象（比如某个学生没选课），就被残忍抛弃了，这些叫<strong>悬浮元组</strong>。如果想把他们捞回来：",
+          "<strong>左外连接</strong>：保住左边表的所有行，右边匹配不到的填空值（NULL）。",
+          "<strong>右外连接</strong>：保住右边表的所有行，左边填空值。",
+          "<strong>除法（$\\div$ —— 找“全部”）</strong>：",
+          "<strong>动作</strong>：专门用来解决带有<strong>“全部”、“所有”</strong>字眼的查询。",
+          "<strong>例题</strong>：找同时选修了1、2、3号课程的学生，就是用包含选课记录的表 去除以（$\\div$） 包含1、2、3号课程的表。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "这份提纲把第二章最晦涩的理论变成了大白话。对于零基础的你，现在的首要任务是：<strong>背熟 $\\sigma$（选择/切行）、$\\pi$（投影/切列）、$\\bowtie$（连接/拼表）这三个符号的含义和操作对象</strong>。考试中一定会让你用这些符号写出查询表达式！"
+      },
+      {
+        "type": "p",
+        "text": "需要我顺手把关系代数（选择、投影、连接等）这几个核心考点，为你生成一份用于反复记忆的<strong>复习卡片（Flashcards）</strong>，或者出几道<strong>测验题（Quiz）</strong>让你练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学你好！欢迎来到咱们的《数据库系统原理》期末冲刺特训营！我是你的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "针对零基础的同学，不要怕！这套第三章《关系数据库标准语言SQL》的幻灯片看似内容庞杂，但其实逻辑非常严密。我们可以把它想象成<strong>“学建一座仓库、往里塞东西、然后再花式把东西找出来”</strong>的过程。"
+      },
+      {
+        "type": "p",
+        "text": "我已经为你把这几十页PPT的精华全部提炼出来了，去除了繁文缛节。请你紧跟我的思路，拿着这份<strong>【内部速成提纲】</strong>，我们直接拿下核心考点！"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 第三章 关系数据库标准语言SQL 速成提纲",
+        "id": "第三章-关系数据库标准语言sql-速成提纲"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：全局观 —— SQL到底是个啥？",
+        "id": "模块一全局观-sql到底是个啥"
+      },
+      {
+        "type": "p",
+        "text": "首先，SQL（结构化查询语言）是你和数据库沟通的唯一“普通话”。不管你用什么数据库，这套语言都通用。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. SQL的核心四大件（必背分类）</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>DDL（数据定义语言）</strong>：负责“建大楼”。关键字：<code>CREATE</code>（建）、<code>ALTER</code>（改）、<code>DROP</code>（删）。",
+          "<strong>DML（数据操纵语言）</strong>：负责“搬砖”，管数据的增删改。关键字：<code>INSERT</code>（增）、<code>UPDATE</code>（改）、<code>DELETE</code>（删）。",
+          "<strong>DQL（数据查询语言）</strong>：负责“找东西”，也就是核心重头戏。关键字：<code>SELECT</code>。",
+          "<strong>DCL（数据控制语言）</strong>：负责“发门禁”，管权限。关键字：<code>GRANT</code>、<code>REVOKE</code>。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. 我们操作的“沙盒”</strong>："
+      },
+      {
+        "type": "p",
+        "text": "整章的所有实战，都在围绕一个“学生选课系统”的5张核心表展开：<code>Student</code>（学生表）、<code>Course</code>（课程表）、<code>SC</code>（选课表）、<code>Teacher</code>（教师表）、<code>TC</code>（授课表）。以后遇到看不懂的字段，就在脑子里回想这5张表！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🔨 模块二：数据定义（DDL）—— 怎么建库建表？",
+        "id": "模块二数据定义ddl-怎么建库建表"
+      },
+      {
+        "type": "p",
+        "text": "考试中，建表语句是最基础的填空题或简答题。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 建表的基本语法</strong>："
+      },
+      {
+        "type": "p",
+        "text": "使用 <code>CREATE TABLE</code>，你需要注意<strong>主码（PRIMARY KEY）</strong>和<strong>外码（FOREIGN KEY ... REFERENCES ...）</strong>的绑定。"
+      },
+      {
+        "type": "blockquote",
+        "text": "<strong>💡</strong> <strong>冲刺提示</strong>：注意常见数据类型，比如 <code>VARCHAR(n)</code> 是变长字符串，<code>INT</code> 是整数，<code>DATE</code> 是日期。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. 修改表与删除表</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "加新列：<code>ALTER TABLE 表名 ADD 列名 数据类型;</code>",
+          "删旧列：<code>ALTER TABLE 表名 DROP COLUMN 列名;</code>",
+          "删整个表：<code>DROP TABLE 表名;</code>"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>3. 索引（Index）—— 让查询飞起来的“目录”</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>聚簇索引（CLUSTERED INDEX）</strong>：这绝对是高频考点！聚簇索引不仅建了目录，还把硬盘里的数据直接按照这个顺序物理排列了。",
+          "<strong>什么时候建聚簇索引？（必背三种情况）</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "经常用这个列来排序；",
+          "需要返回一个范围内的大量数据；",
+          "这个列的内容重复性很大（比如“部门号”）。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🧱 模块三：数据更新（DML）—— 增与删",
+        "id": "模块三数据更新dml-增与删"
+      },
+      {
+        "type": "p",
+        "text": "这部分最简单，记住两个公式拿分："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>插入数据</strong>：<code>INSERT INTO 表名 VALUES (&#039;值1&#039;, &#039;值2&#039;...);</code>。",
+          "<strong>删除数据</strong>：<code>DELETE FROM 表名 WHERE 条件;</code>。（如果不加WHERE，就会把整张表的数据全清空！）"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🔎 模块四：数据查询（DQL）—— 试卷压轴题重灾区！",
+        "id": "模块四数据查询dql-试卷压轴题重灾区"
+      },
+      {
+        "type": "p",
+        "text": "全卷最贵的分数都在这里，<code>SELECT</code> 查询千变万化，但万变不离其宗。咱们按难度分级攻破！"
+      },
+      {
+        "type": "p",
+        "text": "<strong>Level 1：单表查询（基础捞分项）</strong>"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>万能句式</strong>：<code>SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ... ORDER BY ...</code>。",
+          "<strong>模糊查询</strong>：用 <code>LIKE</code> 加上通配符 <code>%</code>。比如找所有姓林的学生：<code>WHERE Sname LIKE &#039;林%&#039;</code>。",
+          "<strong>分组过滤（核心易错点！）</strong>：<code>WHERE</code> 和 <code>HAVING</code> 的区别是什么？",
+          "<code>WHERE</code> 是在<strong>分组前</strong>起作用，筛选每一条原始数据；",
+          "<code>HAVING</code> 是在 <code>GROUP BY</code> <strong>分组后</strong>起作用，筛选的是“组”。而且它们执行的顺序是先 <code>WHERE</code> -&gt; 再 <code>GROUP BY</code> -&gt; 然后聚合计算 -&gt; 最后 <code>HAVING</code>。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>Level 2：连接查询（跨表找人）</strong>"
+      },
+      {
+        "type": "p",
+        "text": "当你要的数据在两张或以上的表里，就要用连接查询。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>自身连接</strong>：自己连自己怎么办？比如“找和刘晨同系的学生”。诀窍是<strong>给表起别名</strong>，如 <code>FROM Student S1, Student S2</code>，然后用 <code>S1.Sdept = S2.Sdept</code> 连接。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>Level 3：嵌套查询（套娃魔法）</strong>"
+      },
+      {
+        "type": "p",
+        "text": "查询里面包着查询，由内向外执行。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>IN 操作符</strong>：内层查出一个集合，外层看在这个集合里有没有。",
+          "<strong>ALL 操作符</strong>：<code>&lt; ALL</code> 表示要比集合里面<strong>最小的那个还要小</strong>。",
+          "<strong>EXISTS 操作符</strong>：只管“有没有”，找到了就返回 True。",
+          "<strong>🔥</strong> <strong>终极必考大招：没有全称量词（$\\forall$）怎么办？</strong>"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "SQL里没有“全部”这个词，所以当我们遇到<strong>“查询选修了全部课程的学生”</strong>时，必须用“双重否定表肯定”的逻辑转换！"
+      },
+      {
+        "type": "blockquote",
+        "text": "翻译公式：“选了全部课程” = <strong>“不存在一门课，这个学生没有选”</strong>。"
+      },
+      {
+        "type": "blockquote",
+        "text": "对应代码模板：<code>NOT EXISTS ( SELECT * FROM Course WHERE NOT EXISTS (该学生选了这门课的条件) )</code>。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>Level 4：集合操作（拼积木）</strong>"
+      },
+      {
+        "type": "p",
+        "text": "如果你有两个查询结果，可以通过 <code>UNION</code>（并集）拼在一起。注意 <code>UNION</code> 会自动去重，如果你想保留重复的，要用 <code>UNION ALL</code>。"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🎭 模块五：视图（View）—— 定制版的假表",
+        "id": "模块五视图view-定制版的假表"
+      },
+      {
+        "type": "p",
+        "text": "视图不是真实的表，它是一个“虚拟表”，就像是你透过窗户（View）看外面的风景。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>怎么建视图？</strong> <code>CREATE VIEW 视图名 AS SELECT ...</code>。",
+          "<strong>考点预警（WITH CHECK OPTION）</strong>：如果在建视图时加了这句话，以后通过视图修改数据时，系统会严格检查新数据是否符合视图的条件（比如视图只看年龄&lt;20岁的，你如果想插入一个25岁的就会被拒绝）。",
+          "<strong>易错细节</strong>：如果在视图的 SELECT 里用了聚合函数（如求平均成绩 <code>AVG(Grade)</code>），那么创建视图时<strong>必须强制给视图的列起名字</strong>！"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "👨‍🏫 讲师冲刺寄语",
+        "id": "讲师冲刺寄语"
+      },
+      {
+        "type": "p",
+        "text": "这套大纲梳理了第三章的全部骨架！对于零基础的你，现在的首要任务是："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>死记</strong> 四大语言分类（DDL/DML/DQL/DCL）和基础的增删改查语法结构。",
+          "<strong>重点攻克</strong> <code>GROUP BY + HAVING</code> 的用法组合，以及 <code>WHERE</code> 找不到数据时的跨表（JOIN）逻辑。",
+          "<strong>针对性背诵</strong> 双重 <code>NOT EXISTS</code> 解决“全部”问题的那个代码模板。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "只要把上面这几个点吃透，这门课最难的一章你就已经稳拿及格分以上了！加油，去刷一遍大纲上的代码逻辑，有不懂的随时问我！"
+      },
+      {
+        "type": "p",
+        "text": "欢迎来到期末冲刺班！我是你的专属讲师。针对《关系数据库编程》（第四章），我为你精心梳理了这份零基础也能看懂的“速成提纲”。这章的核心就是<strong>如何用代码更灵活、更高效地操作数据库以及如何让外部程序连上数据库</strong>。"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 <strong>第四章 关系数据库编程 内部速成提纲</strong> 🔥",
+        "id": "第四章-关系数据库编程-内部速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "<strong>一、 打地基：Transact-SQL（T-SQL）语法基础</strong>",
+        "id": "一-打地基transact-sqlt-sql语法基础"
+      },
+      {
+        "type": "p",
+        "text": "传统的SQL只能做查询，而T-SQL是带有控制流的“升级版编程语言”。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>变量与常量</strong>：变量分两种。",
+          "<strong>常用运算符</strong>：除了加减乘除，重点记住<strong>逻辑运算符</strong>（<code>AND</code>、<code>OR</code>、<code>NOT</code>、<code>BETWEEN</code>、<code>IN</code>、<code>EXISTS</code>等）和<strong>字符串连接符</strong>（用<code>+</code>号把两个字符串连起来）。",
+          "<strong>四大控制结构（必考逻辑）</strong>：",
+          "<code>BEGIN...END</code>：打包语句块，相当于大括号 <code>{}</code>，把多条语句作为一个整体执行。",
+          "<code>IF...ELSE</code>：条件分支，条件为真执行IF后面语句，为假执行ELSE后面语句。",
+          "<code>WHILE</code>：循环结构，满足条件时重复执行，可以配合 <code>BREAK</code>（跳出循环）和 <code>CONTINUE</code>（跳过本次循环）使用。",
+          "<code>CASE</code>：多分支选择（简单格式和搜索格式），根据不同条件返回特定的值。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "<strong>二、 逐行处理神器：游标（Cursor）</strong>",
+        "id": "二-逐行处理神器游标cursor"
+      },
+      {
+        "type": "p",
+        "text": "普通的SELECT查询返回的是一堆数据（集合），但程序通常喜欢一行一行处理。<strong>游标就是集合操作与单行记录处理之间的“桥梁”</strong>。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>游标操作四部曲（核心操作流）</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>定义</strong>：<code>DECLARE 游标名 CURSOR FOR 查询语句</code>（把一个SELECT结果集与游标绑定）。",
+          "<strong>打开</strong>：<code>OPEN 游标名</code>。",
+          "<strong>提取</strong>：<code>FETCH NEXT FROM 游标名 INTO @变量名</code>（把游标当前指向的一行数据拿出来，存到局部变量里）。通常配合 <code>@@FETCH_STATUS = 0</code> 来循环判断是否成功取到了下一行数据。",
+          "<strong>关闭与删除</strong>：用完后必须 <code>CLOSE 游标名</code>（关闭），并彻底释放内存空间 <code>DEALLOCATE 游标名</code>（删除）。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "<strong>三、 数据库的高效代码块：存储过程（Stored Procedure）</strong>",
+        "id": "三-数据库的高效代码块存储过程stored-procedure"
+      },
+      {
+        "type": "p",
+        "text": "把一大段常用的SQL代码写好并存储在数据库服务器里，用的时候直接一句话调用。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>四大核心优势</strong>：允许模块化程序设计、执行速度更快、极大减少网络流量消耗、能作为一种安全机制使用。",
+          "<strong>如何操作</strong>：",
+          "<strong>创建/修改/删除</strong>：分别对应关键字 <code>CREATE PROC</code>、<code>ALTER PROC</code>、<code>DROP PROC</code>。",
+          "<strong>参数传递</strong>：可以带有输入参数（给它传值）、带有默认值的参数，甚至带有<strong>输出参数</strong>（带 <code>out</code> 或 <code>output</code> 关键字，用于把值返回给调用者）。",
+          "<strong>执行</strong>：使用 <code>EXEC 过程名</code> 即可一键运行。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "<strong>四、 自定义函数（Function）</strong>",
+        "id": "四-自定义函数function"
+      },
+      {
+        "type": "p",
+        "text": "当你需要特定计算或返回特定格式时，可以自己编写函数，不支持输出参数，但按返回值类型可分为三类："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>标量函数</strong>：只返回一个单一的具体数据值（例如返回一个整数或字符串）。",
+          "<strong>内联表值函数</strong>：返回一张表，内部由一个简单的SELECT语句定义，<strong>它相当于一个“可以传参数的视图”</strong>，能用来替代视图。",
+          "<strong>多语句表值函数</strong>：同样返回一张表，但在函数体内部可以通过多条SQL语句（如INSERT）来慢慢拼凑和定义这张表的数据。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "<strong>五、 外部应用连接桥梁：ODBC 与 JDBC（连接实操重点）</strong>",
+        "id": "五-外部应用连接桥梁odbc-与-jdbc连接实操重点"
+      },
+      {
+        "type": "p",
+        "text": "这是让外部程序（如Java开发的系统）连上底层数据库的统一接口。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>ODBC（开放式数据库互连）</strong>：微软主导的一套标准。应用不再直接连数据库，而是：<strong>应用程序 -&gt; ODBC管理器 -&gt; 驱动程序管理器 -&gt; ODBC驱动程序 -&gt; 数据库</strong>。靠换驱动程序就能连各种不同的数据库。",
+          "<strong>JDBC（Java数据库连接）</strong>：由Java API和JDBC驱动接口组成，是Java程序连数据库的基础。",
+          "<strong>配置与开发核心步骤</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>配置SQL Server</strong>：启用“SQL Server和Windows身份验证模式”（混合模式），启用并设置超级管理员 <code>sa</code> 的密码。",
+          "<strong>网络配置</strong>：在SQL Server配置管理器中开启TCP/IP协议，<strong>必须将TCP端口设为</strong> <code>**1433**</code>，并将IP地址设为 <code>127.0.0.1</code>。",
+          "<strong>导入驱动与编程</strong>：下载JDBC驱动包并加入到项目的CLASSPATH中。然后在Java代码中利用 <code>DriverManager.getConnection()</code> 建立连接，并通过 <code>Statement</code> 对象执行SQL语句。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "这套提纲为你梳理了第四章中从<strong>内部逻辑编写（T-SQL/游标/存储过程/函数）</strong>到<strong>外部程序互连（ODBC/JDBC）</strong>的完整知识树。"
+      },
+      {
+        "type": "p",
+        "text": "为了让你在考前彻底攻克这一章的底层逻辑和代码语法，需要我为你把这份提纲一键制作为专用的<strong>复习测验题（Quiz）</strong>或者<strong>记忆卡片（Flashcards）</strong>吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到《数据库系统原理》期末冲刺班！我是你们的讲师。"
+      },
+      {
+        "type": "p",
+        "text": "针对你这种零基础的情况，不用慌，第五章“关系数据库安全和保护”虽然听起来偏理论，但其实逻辑非常严密。这章的核心就考四个大字：<strong>安全、完整、并发、恢复</strong>。这四大板块其实就是在讲数据库怎么防外人偷窥、防自己人犯错、防多用户打架，以及搞砸了怎么吃“后悔药”。"
+      },
+      {
+        "type": "p",
+        "text": "下面我已经帮你把这份PPT里的全部知识点榨干，整理成了这份<strong>内部速成提纲</strong>，直接背这些核心考点，保你期末稳稳拿分！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥《第五章 数据库安全与保护》期末速成讲义",
+        "id": "第五章-数据库安全与保护期末速成讲义"
+      },
+      {
+        "type": "h4",
+        "text": "第一部分：安全性（Security）—— 如何“防外人”",
+        "id": "第一部分安全性security-如何防外人"
+      },
+      {
+        "type": "p",
+        "text": "安全性的核心是防止未经授权的用户存取数据。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>考点1：自主存取控制 (DAC) —— 权力的下放与收回</strong>",
+          "<strong>授权 (GRANT)</strong>：管理员或属主把权限给用户。<strong>冲刺必考</strong>：如果带上 <code>WITH GRANT OPTION</code> 尾巴，说明该用户不仅自己能用，还能把这个权限继续“转包”给别人。",
+          "<strong>回收 (REVOKE)</strong>：把给出去的权限收回来。<strong>冲刺必考</strong>：如果回收带 <code>WITH GRANT OPTION</code> 的权限，必须加上 <code>CASCADE</code>（级联回收），即把转包出去的底层权限一锅端掉。",
+          "<strong>角色 (Role)</strong>：为了不给用户一个一个授权，可以建一个“角色”（权限打包集合），把权限赋予角色，再把角色挂接给多个用户，方便批量管理。",
+          "<strong>考点2：强制存取控制 (MAC) —— 军方级别的严格管控</strong>",
+          "适用于有严格密级分类的部门（如军事、政府）。",
+          "<strong>冲刺必考口诀：“向下读，平级写”</strong>。只有当主体的许可证级别 <strong>大于或等于</strong> 客体的密级时，才能“读”；<strong>等于</strong> 客体密级时，才能“写”。",
+          "<strong>考点3：视图机制保密</strong>",
+          "通过给不同用户定义不同的“视图”，把敏感数据隐藏起来。比如员工只能通过视图看到公共信息，看不到工资列。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "第二部分：完整性（Integrity）—— 如何“防自己人犯错”",
+        "id": "第二部分完整性integrity-如何防自己人犯错"
+      },
+      {
+        "type": "p",
+        "text": "完整性是为了保证数据库中的数据是<strong>正确、相容、一致</strong>的，符合现实世界的语义。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>考点1：三大完整性规则（绝对重点！）</strong>",
+          "<strong>实体完整性</strong>：对应 <code>PRIMARY KEY</code>（主键）。主键的属性<strong>绝对不能为空，且必须唯一</strong>。系统底层一般会自动建索引（如B+树）来快速查重。",
+          "<strong>参照完整性</strong>：对应 <code>FOREIGN KEY</code>（外键）。如果你引用了别人的表，你的外键值必须在别人的主键里能找到，或者干脆为空。如果别人表里的记录删了或改了，系统有三种反应：<strong>拒绝执行（默认）、级联操作（跟着一起删/改）、设置为空值</strong>。",
+          "<strong>用户自定义完整性</strong>：针对特定业务的约束。比如成绩必须在0-100之间（<code>CHECK</code>），姓名不能重复（<code>UNIQUE</code>），或者必须填（<code>NOT NULL</code>）。",
+          "<strong>考点2：大招“触发器 (Trigger)”</strong>",
+          "<strong>定义</strong>：它是一种特殊的存储过程，不用人手工调用，一遇到 <code>INSERT</code>、<code>UPDATE</code>、<code>DELETE</code> 事件就自动触发，用于实现超级复杂的完整性业务规则。",
+          "<strong>冲刺必考：两张神级虚拟表</strong>。",
+          "<strong>Inserted 表</strong>：记录<strong>新增</strong>的数据，或者更新后的<strong>新数据</strong>。",
+          "<strong>Deleted 表</strong>：记录<strong>被删除</strong>的数据，或者更新前的<strong>旧数据</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "第三部分：并发控制（Concurrency）—— 如何“防多用户打架”",
+        "id": "第三部分并发控制concurrency-如何防多用户打架"
+      },
+      {
+        "type": "p",
+        "text": "数据库是大家共享的，如果不加控制同时修改数据，就会乱套。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>考点1：事务 (Transaction) 的四大神兽 (ACID)</strong>",
+          "<strong>原子性</strong>（要么全做要么都不做）、<strong>一致性</strong>、<strong>隔离性</strong>、<strong>持久性</strong>。",
+          "<strong>考点2：并发操作的三大惨案（必考概念辨析）</strong>",
+          "<strong>1. 丢失修改</strong>：你和我都去改同一条数据，你提交的结果把我的结果覆盖了，我白干了。",
+          "<strong>2. 脏读</strong>：我读了你修改的数据，结果你突然反悔“撤销”了，那我读到的就是不曾存在的“脏数据”。",
+          "<strong>3. 不可重复读 &amp; 幻像读</strong>：我先后两次去读同一批数据，结果你中途插手改了（或删了、新增了）数据，导致我两次读出来的数据对不上。",
+          "<strong>考点3：封锁与两段锁协议</strong>",
+          "解决并发的核心是加锁。<strong>两段锁协议</strong>是并发事务正确调度的准则。",
+          "<strong>冲刺必背</strong>：遵循两段锁协议的并发调度一定是<strong>可串行化的</strong>（即结果是正确的），但它<strong>依然可能会发生死锁</strong>！"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "第四部分：恢复机制（Recovery）—— 如何吃“后悔药”",
+        "id": "第四部分恢复机制recovery-如何吃后悔药"
+      },
+      {
+        "type": "p",
+        "text": "系统崩溃了、磁盘坏了、数据错了怎么办？"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>考点1：两大保命法宝</strong>",
+          "<strong>数据转存</strong>：就是定期的备份（海量/增量、静态/动态）。",
+          "<strong>登记日志文件</strong>：记录事务的一举一动。<strong>铁律：必须先写日志，再修改数据</strong>。",
+          "<strong>考点2：故障恢复策略（动作大赏）</strong>",
+          "<strong>事务故障</strong>：不用重启，直接反向扫描日志，执行<strong>逆操作 (Undo)</strong>。",
+          "<strong>系统故障（死机了）</strong>：重启系统时，正向扫描日志，把已经提交的事务放入 <strong>重做队列 (Redo)</strong> 重新执行一遍，把未提交的事务放入 <strong>撤销队列 (Undo)</strong> 撤回。",
+          "<strong>介质/病毒故障</strong>：需要装入最新的备份文件，再利用日志文件对提交的事务进行 Redo 重放。",
+          "<strong>考点3：检查点 (Checkpoint) 机制</strong>",
+          "相当于存档点。系统恢复时不需要把厚厚的日志从头翻到尾，只从最后的检查点开始即可，大大节省了 <code>Redo</code> 操作的时间。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>讲师寄语</strong>："
+      },
+      {
+        "type": "p",
+        "text": "这份讲义浓缩了第五章所有考点。对于零基础的你，重点要区分清楚 <code>GRANT/REVOKE</code> 是安全性，而 <code>PRIMARY KEY/FOREIGN KEY/CHECK</code> 是完整性；牢记并发控制的“三大惨案”和恢复机制的“Undo/Redo”逻辑。多看两遍这套提纲，遇到概念题直接拿捏！加油！"
+      },
+      {
+        "type": "p",
+        "text": "同学你好！欢迎来到《数据库系统原理》的期末冲刺课堂！我是你的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "第6章《关系数据库的规范化理论》听起来名字很长很吓人，但其实它的核心目的只有一个：<strong>给设计得很糟糕的数据库表格“治病”</strong>！如果一个表设计得不好，我们在增删改查数据时就会遇到各种麻烦。"
+      },
+      {
+        "type": "p",
+        "text": "为了帮你这个零基础的同学光速拿下这一章，我为你整理了这份<strong>「期末速成内部讲义」</strong>，我们只捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥冲刺讲义：第6章 规范化理论速成提纲",
+        "id": "冲刺讲义第6章-规范化理论速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "核心模块一：为什么要“规范化”？（表格生病了有什么症状？）",
+        "id": "核心模块一为什么要规范化表格生病了有什么症状"
+      },
+      {
+        "type": "p",
+        "text": "一个设计不好的关系模式（表格），会得四种“病”："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>数据冗余度大</strong>：比如一门课有100个学生选，这门课的任课老师名字就要在表里重复存100次，白白浪费空间。",
+          "<strong>插入异常（插不进去）</strong>：比如学校刚成立一个新系，还没招学生，由于学生学号是主码（不能为空），这个系的信息居然无法存入数据库。",
+          "<strong>删除异常（删得太猛）</strong>：某门课的学生全都毕业被删除了，结果连带着这门课和任课老师的信息也跟着从数据库里消失了。",
+          "<strong>修改复杂（更新异常）</strong>：某个老师改名了，所有选他课的学生记录全都要跟着挨个改一遍，极易出错。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>讲师大白话</strong>：规范化（Normalization）就是通过“拆表”（模式分解），消除不合适的数据依赖，把复杂的大表拆成简单的小表，做到“一事一地”（一个表只管一件事）。"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "核心模块二：判断健康程度的标准——“范式”（Normal Forms）",
+        "id": "核心模块二判断健康程度的标准范式normal-forms"
+      },
+      {
+        "type": "p",
+        "text": "范式（NF）就是表格健康的等级，等级越高，毛病越少。低级范式可以通过“分解”升级为高级范式。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>1NF（第一范式）—— 及格线</strong>：",
+          "<strong>要求</strong>：表里的每一个属性（列）都必须是<strong>不可再分</strong>的基础数据项。",
+          "<strong>大白话</strong>：表里不能有“表中有表”的嵌套结构，这是关系数据库的最起码要求。",
+          "<strong>2NF（第二范式）—— 消除“部分依赖”</strong>：",
+          "<strong>要求</strong>：在1NF基础上，每一个非主属性都必须<strong>完全依赖</strong>于码，不能只依赖码的一部分。",
+          "<strong>大白话</strong>：如果主码是由两个列（比如 学号+课程号）联合组成的，那么其他列必须同时依赖这两个列，不能只跟学号有关或者只跟课程号有关。",
+          "<strong>3NF（第三范式）—— 消除“传递依赖”</strong>：",
+          "<strong>要求</strong>：在2NF基础上，消除非主属性对码的<strong>传递函数依赖</strong>。",
+          "<strong>大白话</strong>：表里不能有 A决定B，B又决定C 的连带关系。比如“学号-&gt;系名-&gt;系主任”，系主任实际上是通过系名传递依赖于学号的，这就不符合3NF。",
+          "<strong>BCNF（Boyce-Codd范式）—— 3NF的加强版</strong>：",
+          "<strong>要求</strong>：在1NF基础上，任何属性（包括主属性）都不能对码有部分依赖和传递依赖。更直观的定义是：<strong>只要有 X-&gt;Y 的依赖关系，X 就必定包含了候选码</strong>。",
+          "<strong>大白话</strong>：连主键（码）内部的各个列之间，也不能互相依赖、互相“打架”。",
+          "<strong>4NF（第四范式）—— 消除多值依赖</strong>：",
+          "<strong>要求</strong>：处理“一对多对多”的复杂情况，消除非平凡且非函数依赖的<strong>多值依赖</strong>（X-&gt;-&gt;Y）。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "核心模块三：考试必考的“三大硬核计算题”",
+        "id": "核心模块三考试必考的三大硬核计算题"
+      },
+      {
+        "type": "p",
+        "text": "这部分是期末考试拿分的大头，请务必掌握以下三种算法操作："
+      },
+      {
+        "type": "h4",
+        "text": "考点1：求属性闭包（X+）",
+        "id": "考点1求属性闭包x"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>含义</strong>：给你一个属性集合X，根据已知的规则（函数依赖集F），看你能顺藤摸瓜推导出多少其他的属性。",
+          "<strong>解题套路（算法6.1）</strong>：像滚雪球一样，一开始雪球只有X本身；然后去扫描所有的依赖规则，只要规则的左边完全包含在你的雪球里，就把右边的属性也粘到雪球上；不断重复，直到雪球变大到不能再变大为止。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "考点2：神技！快速找“候选码”",
+        "id": "考点2神技快速找候选码"
+      },
+      {
+        "type": "p",
+        "text": "给你一堆属性U和依赖关系F，怎么找出候选码？讲师教你把属性分为四类（L/R/N/LR），直接秒杀："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>L类（只在箭头左边出现）</strong>：它肯定是候选码的一部分！",
+          "<strong>R类（只在箭头右边出现）</strong>：它<strong>绝对不可能</strong>在任何候选码里！",
+          "<strong>N类（左右都没出现过）</strong>：它也是孤家寡人，必须强行拉入候选码中！",
+          "<strong>LR类（左右都出现过）</strong>：这是墙头草。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>秒杀大招</strong>：先把L类和N类的属性拿出来，求一下它们的闭包（滚雪球）。如果一下子把所有属性都推导出来了，那它们就是<strong>唯一候选码</strong>！（详见PPT例6.4、例6.5）"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "考点3：求最小函数依赖集（最小覆盖 Fm）",
+        "id": "考点3求最小函数依赖集最小覆盖-fm"
+      },
+      {
+        "type": "p",
+        "text": "为了让规则最精简，需要经过“减肥三步曲”："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>右边单一化</strong>：把所有箭头右边拆成单个属性。比如 <code>A -&gt; BC</code> 拆成 <code>A -&gt; B</code> 和 <code>A -&gt; C</code>。",
+          "<strong>删多余规则</strong>：尝试遮住某一条规则，看看用剩下的规则还能不能推导出这条规则。如果能，说明它是废话，删掉！",
+          "<strong>删左边多余属性</strong>：如果规则左边有两个以上属性（如 <code>AB -&gt; C</code>），试着遮住A，看仅凭B能不能推出C；如果能，说明A是多余的，把A踢掉！"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "核心模块四：终极手段——模式分解",
+        "id": "核心模块四终极手段模式分解"
+      },
+      {
+        "type": "p",
+        "text": "如果表格生病了，我们就把它拆开（分解）。但拆表是有讲究的，不能瞎拆："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>无损连接性</strong>：拆开的表以后如果做自然连接合并起来，必须和原来的表<strong>一模一样</strong>，不能丢信息，也不能多出原本没有的假数据（如PPT中因错误分解多出了3条幽灵数据）。判断方法是使用画表格的算法。对于分解成两个表的情况有一个神仙定理：如果两个表相交的公共属性，能够推导出其中一个表的剩余属性，那就是无损的。",
+          "<strong>保持函数依赖</strong>：拆分后，原来表里的那些业务规则（依赖关系）最好还能在各自的小表里找到归宿，不要丢失。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>考试重要结论</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "如果只要求“无损连接”，任何模式都可以一直分解到最高级的 BCNF。",
+          "如果只要求“保持函数依赖”，我们总是可以分解到 3NF，但<strong>不一定</strong>能达到 BCNF。",
+          "如果又要“无损连接”又要“保持函数依赖”，最高也就只能保证达到 3NF。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "讲师寄语：上面这些提纲就是这一章的骨架！计算题部分一定要自己在纸上动手画一画“闭包”和“候选码”的推导！"
+      },
+      {
+        "type": "p",
+        "text": "需要讲师顺手使用AI工具，把这套提纲的重点知识点为你生成一份可在手机上随时随地背诵的<strong>复习卡片（Flashcards）</strong>，或者出几道<strong>测验题（Quiz）</strong>让你练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "各位同学好！欢迎来到《数据库系统原理》期末冲刺冲刺班！我是你们的辅导讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要攻克的是<strong>第七章：关系数据库设计</strong>。这部分内容是数据库从“纸上谈兵”到“落地生根”的整个工程化过程，虽然理论结构偏多，但只要掌握了它的<strong>“六大生命周期”</strong>，就能轻松拿捏这章的脉络！"
+      },
+      {
+        "type": "p",
+        "text": "我为你独家整理了这份<strong>《第七章：数据库设计速成提纲》</strong>，请务必把<strong>加粗</strong>的词汇印在脑子里，我们现在开始！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥冲刺讲义：第7章 数据库设计速成提纲",
+        "id": "冲刺讲义第7章-数据库设计速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 核心总纲：数据库设计的六大步",
+        "id": "核心总纲数据库设计的六大步"
+      },
+      {
+        "type": "p",
+        "text": "数据库设计本质上是软件工程的一部分，它是一个不断推进、不满意随时退回重做的过程。<strong>必背的六个阶段是：</strong>"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "需求分析 $\\rightarrow$ 2. 概念结构设计 $\\rightarrow$ 3. 逻辑结构设计 $\\rightarrow$ 4. 物理设计 $\\rightarrow$ 5. 数据库实施 $\\rightarrow$ 6. 运行和维护。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>(考试重点：你要清楚哪一步该干什么，哪些人参与。比如系统分析人员贯穿始终，而程序员主要在实施阶段才大量介入。)</strong>"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h4",
+        "text": "🥇 阶段一：需求分析（最困难、最耗时的一步）",
+        "id": "阶段一需求分析最困难最耗时的一步"
+      },
+      {
+        "type": "p",
+        "text": "这里我们不仅要弄清楚用户需要什么，还要明确系统边界。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>方法利器</strong>：最常用的是<strong>自顶向下的结构化分析方法（SA）</strong>，就像画一棵树一样，把大系统一层层往下分解，直到变成能直接处理的“叶子”。",
+          "<strong>辅助工具</strong>：文字说不清的，通常配合<strong>数据流图（DFD）和数据字典</strong>来辅助分析和表达。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🥈 阶段二：概念结构设计（核心考点：画E-R图！）",
+        "id": "阶段二概念结构设计核心考点画e-r图"
+      },
+      {
+        "type": "p",
+        "text": "这一步是把用户的业务需求，变成一种连不懂电脑的老板也能看懂的“信息模型”。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>四大策略</strong>：自顶向下、自底向上、逐步扩张、混合策略（先自顶向下分析需求，再自底向上设计结构）。",
+          "<strong>三大基本元素</strong>："
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>实体</strong>（矩形）：客观存在的事物，比如“学生”、“商品”。",
+          "<strong>属性</strong>（椭圆）：实体的特征，比如“姓名”、“价格”。",
+          "<strong>联系</strong>（菱形）：实体间的关系，可以自带属性。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>必考的“联系类型”</strong>：",
+          "<strong>一对一（1:1）</strong>：例如一个观众只坐一个座位，一个座位只有一位观众。",
+          "<strong>一对多（1:n）</strong>：例如一个部门有多个职工，但职工只属于一个部门。",
+          "<strong>多对多（m:n）</strong>：例如一个项目有多个职工参与，一个职工也参与多个项目。",
+          "<strong>局部E-R图集成</strong>：合并大家画的子图时，一定会打架（冲突）。<strong>必须解决的三大冲突</strong>是：属性冲突（比如单位不统一）、命名冲突（同名异义或异名同义）和结构冲突。解决冲突并消除不必要的冗余数据后，就得到了最终的“基本E-R图”。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🥉 阶段三：逻辑结构设计（重中之重：E-R图转关系模式）",
+        "id": "阶段三逻辑结构设计重中之重e-r图转关系模式"
+      },
+      {
+        "type": "p",
+        "text": "这一步要把画好的E-R图，翻译成数据库真正能建表的“关系模式”。<strong>以下转换规则必背，大题常考：</strong>"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>实体的转换</strong>：直接变成一个关系（表），实体的属性就是表的列，实体的码就是表的主键。",
+          "<strong>1:1 联系</strong>：可以单独建一张表，也可以合并到任意一端的实体表中（把另一端的主键拉过来当外键）。",
+          "<strong>1:n 联系</strong>：可以单独建表，但<strong>最推荐的做法</strong>是把“1”这一端的主键，塞到“n”那一端的实体表里当新属性。",
+          "<strong>m:n 联系</strong>：<strong>必须单独建一张新表！</strong>新表的列由相连实体的码和联系自身的属性组成，主键是两个实体码的组合。",
+          "<strong>多元联系（3个以上实体）</strong>：也要单独建一张新表，把所有相连实体的主键拉进来组合成新主键。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>(转换完后，记得用关系规范化理论（范式）来优化它们，消除冗余依赖！)</strong>"
+      },
+      {
+        "type": "h4",
+        "text": "🏅 阶段四：物理结构设计（到底怎么存进硬盘？）",
+        "id": "阶段四物理结构设计到底怎么存进硬盘"
+      },
+      {
+        "type": "p",
+        "text": "逻辑表设计好后，现在要决定怎么把它们存进底层的硬盘里，以最快的方式被查到。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>确定分布</strong>：是集中存还是分散存（分布式管理）。",
+          "<strong>确定存储结构与访问方式</strong>：可以用顺序、哈希或B+树存储。这里重点考<strong>“聚簇索引（Cluster）”</strong>！",
+          "<strong>建聚簇原则</strong>：字段值要相对稳定（少修改）、主要用于查询或连接、对应的重复值既不能太多也不能太少。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🎖️ 阶段五 &amp; 六：实施与运行维护（落地与售后）",
+        "id": "阶段五-六实施与运行维护落地与售后"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>数据库实施</strong>：这时候才真正开始写SQL代码（DDL定义结构），把数据导进去（载入），并编写和调试应用程序，进行试运行。",
+          "<strong>运行和维护</strong>：系统上线不代表结束！DBA（数据库管理员）要长年累月地进行备份恢复、安全控制、性能监控改进，以及在必要时对数据库进行重组和重构。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>🎓</strong> <strong>讲师寄语</strong>："
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你来说，本章的<strong>核心做题套路</strong>就是掌握“需求分析 $\\rightarrow$ 找实体画E-R图 $\\rightarrow$ 套用规则转成表结构（关系模式）”这套连招。把这份提纲里的概念和转换规则多读两遍，这部分的分数绝对能稳稳拿下！加油！需要我针对E-R图转表格的规则给你出几道小题练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到《数据库系统原理》期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要攻克的是<strong>第八章《NoSQL数据库》</strong>。在前面几章中，我们一直都在学习传统的“关系型数据库”（比如怎样建表、写SQL语句）。但在当今的互联网大厂里，传统数据库已经不够用了！这章的内容就是为了告诉你：<strong>为了对付海量数据，数据库技术是如何“打破常规”的。</strong>"
+      },
+      {
+        "type": "p",
+        "text": "这部分内容概念很新，但考点非常清晰。我已经为你把PPT里的精华全部提炼出来了，拿着这份<strong>【内部速成提纲】</strong>，我们直接击破核心！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第8章 NoSQL数据库 速成提纲",
+        "id": "冲刺讲义第8章-nosql数据库-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：NoSQL到底是个啥？为什么火？",
+        "id": "模块一nosql到底是个啥为什么火"
+      },
+      {
+        "type": "p",
+        "text": "很多同学以为NoSQL是“反SQL”，其实它的全称演变至今，代表的是 <strong>“Not only SQL（不仅是SQL）”</strong>。它认为关系库和非关系库各有优缺点，谁也无法取代谁。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>为什么传统关系数据库（RDBMS）在Web 2.0时代不香了？（必考三大原因）</strong>："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>撑不住</strong>：无法满足海量数据的管理需求。",
+          "<strong>顶不住</strong>：无法满足数据高并发的读写需求。",
+          "<strong>扩不动</strong>：传统数据库很难“横向扩展”（加几台便宜电脑就提升性能），且为了保证严格的事务，可用性受到了限制。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>讲师大白话</strong>：Web2.0网站（如发微博、看网页）根本不需要传统数据库那么严格的事务和复杂的SQL查询，这时候NoSQL就应运而生了。"
+      },
+      {
+        "type": "h4",
+        "text": "⚔️ 模块二：门派大比拼 —— RDBMS vs NoSQL",
+        "id": "模块二门派大比拼-rdbms-vs-nosql"
+      },
+      {
+        "type": "p",
+        "text": "考试极爱出这两者的对比选择题或简答题！"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>一致性</strong>：RDBMS是<strong>强一致性</strong>（严格遵守ACID事务），NoSQL是<strong>弱一致性</strong>（只求最终一致）。",
+          "<strong>模式（Schema）</strong>：RDBMS是<strong>固定</strong>的（必须先建表、定规矩），NoSQL是<strong>灵活</strong>的（没规矩，随便存）。",
+          "<strong>扩展性</strong>：RDBMS很难横向扩展，NoSQL<strong>横向扩展能力极好</strong>。",
+          "<strong>当前结论（混合架构）</strong>：它们彼此无法取代！现在的公司大都采用<strong>混合架构</strong>。比如亚马逊，临时性的“购物车”数据用NoSQL键值库，而核心的“订单流水”依然老老实实存在关系数据库里。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🛡️ 模块三：NoSQL的四大神兵利器（连线/填空题必考！）",
+        "id": "模块三nosql的四大神兵利器连线填空题必考"
+      },
+      {
+        "type": "p",
+        "text": "NoSQL不是一种数据库，而是一大类。你要牢记这四大分类及其代表产品（PPT里给出了极其形象的比喻）："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>键值（Key-Value）数据库</strong>：代表产品是 <strong>Redis</strong>。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>特点</strong>：就像孙悟空的<strong>“金箍棒”</strong>，结构最简单，速度极快。主要用于<strong>内容缓存</strong>（如购物车、会话）。缺点是只能通过键找值，无法做复杂关联查询。"
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>文档（Document）数据库</strong>：代表产品是 <strong>MongoDB</strong>。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>特点</strong>：就像<strong>“瑞士军刀”</strong>，数据是“自包含”的（如JSON格式）。非常灵活，适合需要面向文档存储的互联网应用。"
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>列族（Column-Family）数据库</strong>：代表产品是 <strong>HBase</strong>、Cassandra。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>特点</strong>：就像<strong>“大象兵”</strong>，依托Hadoop等大数据的生态环境，具有极强的分布式扩展能力，专治几百TB的海量数据。"
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>图（Graph）数据库</strong>：代表产品是 <strong>Neo4J</strong>。"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>特点</strong>：专门用来处理具有<strong>高度相互关联关系</strong>的数据。最典型的应用场景就是<strong>社交网络（朋友圈图谱）、推荐系统</strong>等。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "💎 模块四：本章灵魂 —— NoSQL的三大理论基石（压轴重灾区！）",
+        "id": "模块四本章灵魂-nosql的三大理论基石压轴重灾区"
+      },
+      {
+        "type": "p",
+        "text": "这部分是重中之重，必须拿下三个英文缩写：<strong>CAP</strong> 和 <strong>BASE</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>基石一：CAP 定理（鱼和熊掌不可兼得）</strong>"
+      },
+      {
+        "type": "p",
+        "text": "一个分布式系统，最多只能同时满足以下三个指标中的<strong>两个</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>C（Consistency / 一致性）</strong>：所有节点在同一时间的数据必须一模一样。",
+          "<strong>A（Availability / 可用性）</strong>：系统必须能快速响应用户请求，不管成功还是失败。",
+          "<strong>P（Partition Tolerance / 分区容忍性）</strong>：当网络断开（部分节点失联）时，系统还要能正常运行。",
+          "<strong>必背考点</strong>：传统关系库选择了 <strong>CA</strong>（放弃了分区容忍性）；而多数NoSQL为了保证互联网系统的可用性和容忍性，选择了 <strong>CP 或 AP</strong>（也就是放弃了强一致性）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>基石二：BASE 模型（对传统ACID的颠覆）</strong>"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>BA（Basically Available / 基本可用）</strong>：允许系统部分出故障，但主体功能依然可用。",
+          "<strong>S（Soft-state / 软状态）</strong>：允许数据在一段时间内不同步，具有一定的滞后性。",
+          "<strong>E（Eventual consistency / 最终一致性）</strong>：虽然中间允许不同步，但经过一段时间后，数据最终必须达到一致的状态。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>基石三：最终一致性</strong>"
+      },
+      {
+        "type": "p",
+        "text": "为了达到最终一致性，可以根据访问时间分为几种：例如<strong>“因果一致性”</strong>、<strong>“读己之所写”一致性</strong>（自己更新的数据，自己下次一定能读到最新的）、<strong>单调读一致性</strong>等。"
+      },
+      {
+        "type": "h4",
+        "text": "🚀 模块五：未来的演进 (NewSQL)",
+        "id": "模块五未来的演进-newsql"
+      },
+      {
+        "type": "p",
+        "text": "随着大数据时代发展，架构呈现多元化。现在不仅有OldSQL（传统事务）、NoSQL（互联网海量数据），还出现了一种试图融合两者优点的新型数据库——<strong>NewSQL</strong>。"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第八章主要是概念战！对于零基础的你，重点要记住两个核心对比：<strong>“传统关系库 vs NoSQL”</strong>，以及 <strong>“ACID强一致性 vs BASE最终一致性”</strong>。同时，一定要能把四大数据库类型（键值、文档、列族、图）和它们的代表产品（如Redis、MongoDB、HBase、Neo4J）对上号！"
+      },
+      {
+        "type": "p",
+        "text": "为了帮你把这章零碎的概念记得更牢，需要我顺手为你生成一份 <strong>测验题（Quiz）</strong> 或者手机上能刷的 <strong>记忆卡片（Flashcards）</strong> 吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要啃下一块“硬骨头”——<strong>第9章 分布式数据库HBase</strong>。前面的章节我们都在学传统的“关系型数据库”（建表、写SQL），但到了互联网时代，面对十几亿用户产生的大数据，传统数据库“撑不住了”。于是，以HBase为代表的分布式数据库横空出世！"
+      },
+      {
+        "type": "p",
+        "text": "别看这一章新概念多，其实核心就是讲：<strong>如何用多台便宜的电脑，存下海量数据，还能做到秒级查询。</strong>"
+      },
+      {
+        "type": "p",
+        "text": "我已经把这份PPT的精华全部“榨干”了，为你提炼了这份<strong>【内部速成提纲】</strong>，只捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第9章 分布式数据HBase 速成提纲",
+        "id": "冲刺讲义第9章-分布式数据hbase-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：HBase是个啥？（必考对比题！）",
+        "id": "模块一hbase是个啥必考对比题"
+      },
+      {
+        "type": "p",
+        "text": "HBase是谷歌BigTable的开源实现，专门用来存非结构化和半结构化的海量数据。考试最爱考它和传统关系数据库（RDBMS）的区别："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>数据类型</strong>：传统库有整型、字符型等；HBase极简，<strong>所有数据全当成未经解释的字符串（Byte数组）存</strong>，没那么多规矩。",
+          "<strong>数据操作</strong>：传统库爱做复杂的多表连接（JOIN）；HBase<strong>只有简单的增查删</strong>，绝不搞复杂的表间关系。",
+          "<strong>存储模式（核心！）</strong>：传统库是“按行存”的；<strong>HBase是“按列存”的</strong>（面向列），空列完全不浪费空间。",
+          "<strong>可伸缩性</strong>：传统库很难加机器扩容；HBase天生支持<strong>灵活的水平扩展</strong>，加几台机器就能提升性能。",
+          "<strong>吃“后悔药”的方式</strong>：传统库更新数据是直接覆盖旧值；<strong>HBase不覆盖旧值，而是生成一个新版本（带时间戳）</strong>，旧数据依然保留。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🗺️ 模块二：数据模型 —— 四维坐标系（绝对重点！）",
+        "id": "模块二数据模型-四维坐标系绝对重点"
+      },
+      {
+        "type": "p",
+        "text": "在HBase里找一个具体的数据（单元格），不能只靠“行和列”了，必须靠一个<strong>“四维坐标”</strong>："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>行键（Row Key）</strong>：每行的唯一标识，类似于主键。",
+          "<strong>列族（Column Family）</strong>：一张表分为几个大类，<strong>列族是基本的访问控制单元</strong>，同一个列族的数据在物理上存在一起。",
+          "<strong>列限定符（Column Qualifier）</strong>：列族下面的具体列名。",
+          "<strong>时间戳（Timestamp）</strong>：因为HBase会保留多个版本的数据，所以必须靠时间戳来区分你要看哪一次的旧数据。"
+        ]
+      },
+      {
+        "type": "blockquote",
+        "text": "<strong>🎓 讲师大白话</strong>：<code>[行键, 列族, 列限定符, 时间戳]</code> 这四个词死死绑在一起，就能精准定位到一个数据。"
+      },
+      {
+        "type": "h4",
+        "text": "🏛️ 模块三：系统架构 —— 谁在干活？（填空/选择重灾区）",
+        "id": "模块三系统架构-谁在干活填空选择重灾区"
+      },
+      {
+        "type": "p",
+        "text": "HBase系统有四个核心大将，各司其职，千万别记串了："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>Zookeeper</strong>：大管家！负责选出Master，监控谁宕机了。<strong>客户端要找数据，也是先问Zookeeper，而不是去问Master</strong>。",
+          "<strong>Master（主服务器）</strong>：高管！不干脏活累活，只负责管理表结构、分配数据块（Region）给手下、实现负载均衡。",
+          "<strong>Region Server（Region服务器）</strong>：苦力打工人！HBase最核心的模块，真正负责存数据，<strong>直接响应用户的读写请求</strong>。",
+          "<strong>客户端（Client）</strong>：包含访问接口，会在缓存里记住数据在哪，下次直接找对应服务器。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🔪 模块四：数据怎么切？怎么找？（寻址机制）",
+        "id": "模块四数据怎么切怎么找寻址机制"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>切蛋糕（Region分裂）</strong>：表太大了怎么办？HBase会把它横向切成一块块的，叫作<strong>Region</strong>。随着数据变多，一个Region还会自动分裂成两个。每个Region服务器负责管理几十到上千个Region。",
+          "<strong>找数据（两层寻址新方法）</strong>：0.96版本后采用了新找法。"
+        ]
+      },
+      {
+        "type": "ol",
+        "items": [
+          "客户端先找 <strong>Zookeeper</strong>，问出 <code>hbase:meta</code> 表在哪台服务器。",
+          "连接那台服务器，查 <code>hbase:meta</code> 表，这个表里记着你要找的“行键”归哪个Region管，以及那个Region在哪个打工人（服务器）手里。",
+          "直连那个打工人（Region Server）拿数据。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "⚙️ 模块五：底层运行机制（内部黑盒）",
+        "id": "模块五底层运行机制内部黑盒"
+      },
+      {
+        "type": "p",
+        "text": "Region服务器内部是怎么工作的？（常考简答题）"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>写数据流程</strong>：用户写数据 $\\rightarrow$ <strong>必须先写进 HLog（日志文件，为了防崩溃）</strong> $\\rightarrow$ 再写入内存缓存（MemStore） $\\rightarrow$ 缓存满了就“刷写”到磁盘上（生成 StoreFile）。",
+          "<strong>StoreFile大合并</strong>：每次刷写都会生成新文件，文件太多找起来慢，系统会偷偷把多个小文件<strong>合并（Compact）成一个大文件。大文件如果太大，又会触发分裂（Split）</strong>，变成两个子Region。",
+          "<strong>HLog 保命机制</strong>：如果某台服务器突然断电死机了，内存里的数据还没存盘怎么办？别怕，系统会读取之前存的 <strong>HLog（预写式日志）</strong>，把操作重新做一遍，完美恢复数据。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "💻 模块六：实战操作与 Shell 命令（必背代码词汇）",
+        "id": "模块六实战操作与-shell-命令必背代码词汇"
+      },
+      {
+        "type": "p",
+        "text": "考试极有可能让你写出简单的HBase命令，记住以下几个动作："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>建表</strong>：<code>create &#039;表名&#039;, &#039;列族名&#039;</code> （注意：HBase不需要先建数据库，直接建表）。",
+          "<strong>增/改数据</strong>：<code>put &#039;表名&#039;, &#039;行键&#039;, &#039;列族:列&#039;, &#039;值&#039;</code> （put一次只能改一个格子，且增和改都是它）。",
+          "<strong>查一行</strong>：<code>get &#039;表名&#039;, &#039;行键&#039;</code>。",
+          "<strong>看全表</strong>：<code>scan &#039;表名&#039;</code>。",
+          "<strong>删表“两步走”</strong>：必须先 <code>disable &#039;表名&#039;</code>（让表失效），然后才能 <code>drop &#039;表名&#039;</code>（彻底删除）。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语</strong>："
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你，第九章的<strong>首要任务</strong>是分清HBase架构中 <strong>Zookeeper、Master、Region Server</strong> 这三个组件分别管什么事；<strong>次要任务</strong>是牢记四维坐标（行键、列族、列、时间戳）和“写数据必须先写HLog”的保命逻辑。"
+      },
+      {
+        "type": "p",
+        "text": "把上面的加粗内容多读几遍，遇到选择和简答题直接拿捏！需要我顺手把HBase的架构组件和常用Shell命令，为你生成一份手机上能随时刷的 <strong>记忆卡片（Flashcards）</strong>，或者出几道 <strong>测验题（Quiz）</strong> 让你检验下速成效果吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要攻克的是<strong>第10章：文档数据库MongoDB</strong>。前面的章节我们学的都是规规矩矩的“关系型数据库”（建表、定列），但到了这章，我们要打破规矩！MongoDB 是一种非常灵活、没有条条框框的非关系型（NoSQL）数据库。"
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你，这章不需要死记硬背复杂的SQL语法，核心在于理解它的<strong>“无模式（模式自由）”</strong>思想以及基础的增删改查命令。讲师已经把几十页PPT的精华榨干，为你整理了这份<strong>【内部速成提纲】</strong>，我们直接捞干货！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第10章 MongoDB 速成提纲",
+        "id": "冲刺讲义第10章-mongodb-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：揭开MongoDB的面纱（它是谁？能干嘛？）",
+        "id": "模块一揭开mongodb的面纱它是谁能干嘛"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>核心特点</strong>：MongoDB 是面向<strong>文档（Document）</strong>存储的，数据结构非常松散，采用的是一种叫 <strong>BSON（Binary-JSON）</strong> 的格式。",
+          "<strong>讲师大白话</strong>：BSON就像是我们常见的JSON格式的“二进制升级版”，它支持把复杂的数组、对象直接嵌套在一条数据里存起来，非常轻量且高效。",
+          "<strong>能干嘛（应用场景）</strong>：非常适合存那些结构不固定、海量且需要高效率访问的数据。比如：<strong>社交场景</strong>（存朋友圈、附近的人）、<strong>游戏场景</strong>（存用户不断变化的装备和积分）、<strong>物流订单</strong>、<strong>物联网设备日志</strong>以及<strong>视频直播互动</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "⚔️ 模块二：必考连线题！MongoDB vs 传统关系数据库",
+        "id": "模块二必考连线题mongodb-vs-传统关系数据库"
+      },
+      {
+        "type": "p",
+        "text": "这部分考试极爱出对比题，请务必把下面这套“翻译词典”背下来："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "数据库 (Database) $\\rightarrow$ 数据库 (Database)",
+          "<strong>表 (Table) $\\rightarrow$ 集合 (Collection)</strong>",
+          "<strong>行记录 (Row) $\\rightarrow$ 文档 (Document)</strong>",
+          "列 (Column) $\\rightarrow$ 字段 (Field)",
+          "主键 (Primary Key) $\\rightarrow$ <code>**_id**</code><strong>（MongoDB会自动为你设置一个唯一的ObjectId）</strong>",
+          "<strong>🔥</strong> <strong>核心优势案例（博客系统）</strong>：在传统数据库中，一篇博客的内容、评论、投票可能需要建<strong>3张不同的表</strong>，查询时还要做极其消耗性能的“连接（JOIN）”操作；而在MongoDB中，因为支持“嵌套”，你可以<strong>把评论和投票直接作为数组塞进这一篇博客的“文档”里</strong>，只需一次查询就能全部读出来，彻底消除了连接操作！"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🛠️ 模块三：环境搭建与启动（避坑指南）",
+        "id": "模块三环境搭建与启动避坑指南"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>安装要点</strong>：安装时通常不勾选自带的图形界面（MongoDB Compass），并且需要把安装目录的 <code>bin</code> 文件夹配置到操作系统的<strong>系统环境变量（Path）</strong>中。",
+          "<strong>必须新建的文件夹</strong>：系统不会自动帮你建存数据的地方，你必须手动在目录下新建一个 <code>data\\db</code> 文件夹来存数据，以及一个 <code>mongo.config</code> 文件来写配置日志和端口（默认端口是 <strong>27017</strong>）。",
+          "<strong>进入数据库（重点）</strong>：在MongoDB 6.0 之后，命令行输入 <code>mongo</code> 会报错，<strong>必须单独下载安装 MongoDB Shell 工具</strong>。解压配置好后，在终端输入 <code>**mongosh**</code> 才能进入代码操作界面。默认进入的是 <code>test</code> 数据库，输入 <code>exit</code> 退出。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "💻 模块四：实战代码（增删改查必背模板！）",
+        "id": "模块四实战代码增删改查必背模板"
+      },
+      {
+        "type": "p",
+        "text": "这部分是简答题或操作题的拿分重灾区。记住：<strong>MongoDB不需要预先建库建表，直接插数据，系统会自动帮你建！</strong>"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>1. 基础查看与切换</strong>：",
+          "看有哪些库：<code>show dbs</code>。",
+          "看有哪些集合（表）：<code>show collections</code>。",
+          "切换/创建数据库：<code>use School</code>（切到School库，没有就自动建）。",
+          "<strong>2. 增（Insert）</strong>：",
+          "建集合并插入数据：<code>db.student.insertOne({_id:1, sname: &#039;zhangsan&#039;, sage: 20})</code>。",
+          "<strong>3. 查（Find）—— 重点！</strong>",
+          "全表查询：<code>db.student.find()</code>。",
+          "条件查询（Where）：<code>db.student.find({sname: &#039;zhangsan&#039;})</code>。",
+          "多条件（AND）：直接逗号隔开 <code>db.student.find({sname: &#039;zhangsan&#039;, sage: 20})</code>。",
+          "多条件（OR）：使用 <code>$or</code> 关键字 <code>db.student.find({$or: [{sage: 20}, {sage: 25}]})</code>。",
+          "只看特定列：<code>db.student.find({}, {sname:1, sage:1, _id:0})</code>（1代表显示，0代表不显示）。",
+          "<strong>4. 改（Update）</strong>：",
+          "使用 <code>$set</code> 关键字来修改：<code>db.student.updateOne({sname: &#039;zhangsan&#039;}, {$set: {sage: 22}}, false, true)</code>。",
+          "<strong>5. 删（Remove/Drop）</strong>：",
+          "删数据：<code>db.student.remove({sname: &#039;zhangsan&#039;})</code>。",
+          "删整个集合（表）：<code>db.student.drop()</code>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "☕ 模块五：Java API 编程（了解核心类名）",
+        "id": "模块五java-api-编程了解核心类名"
+      },
+      {
+        "type": "p",
+        "text": "如果你用Java写代码连MongoDB，需要导入驱动包，重点认熟这几个核心类："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "连服务器：<code>MongoClient</code>。",
+          "拿数据库：<code>MongoDatabase</code>。",
+          "拿集合并操作：<code>MongoCollection&lt;Document&gt;</code>。你可以调用它的 <code>.insertMany()</code> 批量插入，用 <code>.find().iterator()</code> 循环查询，或者用 <code>.updateOne()</code> / <code>.deleteOne()</code> 进行修改和删除。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第10章是非常实用且有趣的！对于零基础的你，现在的首要任务是：牢记 <strong>集合（Collection）</strong> 和 <strong>文档（Document）</strong> 的概念，理解 <strong>BSON</strong> 嵌套数组解决多表连接的优势，然后把上面【模块四】的 <code>find()</code> 和 <code>updateOne()</code> 的大括号语法在草稿纸上默写两遍！"
+      },
+      {
+        "type": "p",
+        "text": "这份提纲你先消化一下。为了帮你巩固这些容易混淆的命令语法，需要我顺手为你生成一份手机上能随时刷的 <strong>记忆卡片（Flashcards）</strong>，或者出几道 <strong>测验题（Quiz）</strong> 练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要啃下的是<strong>第11章：键值数据库 Redis</strong>。前面我们学了关系型数据库（如SQL Server）和文档型数据库（如MongoDB），今天这位主角 Redis，你可以把它当成数据库界的“闪电侠”！"
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的同学，这章的核心你只需记住一句话：<strong>“把数据全部塞进内存里，读写快到飞起，常用来做缓存。”</strong>"
+      },
+      {
+        "type": "p",
+        "text": "我已经把这章PPT的精华全部“榨干”，为你提炼了这份<strong>【内部速成提纲】</strong>，我们直接捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第11章 键值数据库 Redis 速成提纲",
+        "id": "冲刺讲义第11章-键值数据库-redis-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：Redis 到底是个啥？（核心特征必背）",
+        "id": "模块一redis-到底是个啥核心特征必背"
+      },
+      {
+        "type": "p",
+        "text": "Redis 是一款开源的高性能<strong>键值（Key-Value）</strong>数据库。考试遇到它的特点，默写以下几点必得分："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>天下武功唯快不破（内存存储）</strong>：它的数据全部存在<strong>内存</strong>中，读写速度远超传统磁盘数据库，普通电脑1秒内能读写超10万个键值。",
+          "<strong>吃“后悔药”（持久化）</strong>：虽然存在内存，但它支持把数据保存在<strong>磁盘</strong>中，重启电脑时能再次加载回来，不会断电就全丢。",
+          "<strong>多面手（丰富的数据类型）</strong>：支持 String（字符串）、Hash（散列）、List（列表）、Set（集合）、Zset（有序集合）等丰富的数据结构。",
+          "<strong>自动销毁（生命周期）</strong>：可以为数据设置“生存时间”（TTL），时间一到自动删除，内存满了还能自动淘汰不需要的数据，所以极度适合做<strong>缓存</strong>。",
+          "<strong>C语言编写</strong>：底层代码只有几万行，轻量且极易与各种编程语言（如Java、Python）交互。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "⚔️ 模块二：应用场景（考简答题的重灾区）",
+        "id": "模块二应用场景考简答题的重灾区"
+      },
+      {
+        "type": "p",
+        "text": "什么时候该用 Redis？记住这四大高频场景："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>做缓存（Cache）</strong>：查数据时先查 Redis，没有再去传统数据库查，查完顺手存入 Redis。专门用来存账号密码等不常变动、但频繁读取的数据。",
+          "<strong>短视频/推文“点赞数”统计</strong>：瞬间几万个赞如果直接写进传统数据库，系统会崩溃。用 Redis 在内存里做“加1”操作极快，等夜深人静没压力了，再定时同步到关系型数据库（这叫“数据落地”）。",
+          "<strong>朋友圈点赞详情</strong>：不仅算总数，还能记录“谁给谁点了赞”。",
+          "<strong>首页热门推荐</strong>：高频访问的推荐内容直接存入 Redis，千万人点击也不怕。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🛠️ 模块三：环境配置与避坑（实验题考点）",
+        "id": "模块三环境配置与避坑实验题考点"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>防丢配置</strong>：安装后，一定要打开 <code>redis.conf</code> 文件，把 <code>appendonly no</code> 改成 <code>**appendonly yes**</code>，这样重启才不会丢数据。",
+          "<strong>启动命令</strong>：服务端用 <code>redis-server redis.conf</code> 启动；客户端用 <code>redis-cli.exe -h 127.0.0.1 -p 6379</code> 连上，<strong>默认端口必背：6379</strong>。",
+          "<strong>中文乱码</strong>：如果存了中文，启动客户端时要在后面加一个小尾巴 <code>**--raw**</code>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "💻 模块四：五大数据结构与核心命令（必考代码题！）",
+        "id": "模块四五大数据结构与核心命令必考代码题"
+      },
+      {
+        "type": "p",
+        "text": "这里不分大小写，但<strong>务必掌握增删改查的基本命令</strong>！"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 通用保命命令</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<code>KEYS *</code>（查看所有键）。",
+          "<code>EXISTS key</code>（查存不存在）、<code>DEL key</code>（删除）。",
+          "<code>EXPIRE key 20</code>（设置20秒后销毁）、<code>TTL key</code>（看还剩几秒活头）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. String（字符串）—— 最基础的玩法</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "不仅能存字符，还能存整数（能自增自减），最大不超过 512MB。",
+          "<strong>重要套路：关系型表怎么转 Redis 键？</strong> $\\rightarrow$ 格式公式：<code>**表名:主键值:列名**</code>。比如，李勇学号95001，录入姓名的命令是：<code>SET Student:95001:Sname 李勇</code>。",
+          "<strong>命令</strong>：<code>SET</code>（增/改）、<code>GET</code>（查）、<code>MSET/MGET</code>（批量增/查）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>3. Hash（散列）—— 拯救局部修改的神器</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>痛点</strong>：如果你用 String 存一串 JSON <code>{name:&quot;zhangsan&quot;, age:22}</code>，想把年龄改成21岁，就得把整个长字符串替换掉，极其麻烦。",
+          "<strong>解决</strong>：Hash 就像 Java 里的 HashMap，把字段拆开存。",
+          "<strong>命令（带H开头）</strong>：<code>HSET xmu:student:1 age 21</code>（单独改年龄）、<code>HGET</code>（单查）、<code>HGETALL</code>（查所有属性）、<code>HKEYS / HVALS</code>（只看字段名 / 只看值）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>4. List（列表）—— 双向排队</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "有序、<strong>允许元素重复</strong>，像一个双向链表，两头进出快，中间查得慢。",
+          "<strong>命令（分左右L/R）</strong>：<code>LPUSH</code> / <code>RPUSH</code>（从左/右塞入）、<code>LPOP</code> / <code>RPOP</code>（从左/右弹出）、<code>LRANGE</code>（看一段范围的元素）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>5. Set（集合）—— 数学运算大师</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "无序、<strong>元素绝对不重复</strong>，查找极快。",
+          "<strong>牛逼功能</strong>：天生支持求交集（<code>SINTER</code>）、并集（<code>SUNION</code>）、差集（<code>SDIFF</code>）。<strong>（比如：算两个用户的“共同好友”，用交集 SINTER 一秒搞定！）</strong>",
+          "<strong>命令（带S开头）</strong>：<code>SADD</code>（添加）、<code>SMEMBERS</code>（看全部）、<code>SREM</code>（移除）、<code>SISMEMBER</code>（判断某人是否在集合里）、<code>SCARD</code>（看有几个人）。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "☕ 模块五：用 Java 连 Redis",
+        "id": "模块五用-java-连-redis"
+      },
+      {
+        "type": "p",
+        "text": "如果用 Java 编程操作，最主流的工具包叫 <code>**Jedis**</code>（需要导入相关 jar 包）。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "建立连接的语法：<code>Jedis jedis = new Jedis(&quot;localhost&quot;, 6379);</code>。然后就可以像用 Java 方法一样直接调用 <code>jedis.hset()</code> 等方法了。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第11章非常好拿分！对于零基础的你，今天的<strong>首要任务</strong>是：记住 Redis 默认端口是 <code>6379</code>，理解把它当<strong>缓存</strong>的逻辑，最后在草稿纸上把 String、Hash、List、Set 这四种结构最核心的增删命令分别默写一遍（注意它们分别是以什么字母开头的：H/L/S）！"
+      },
+      {
+        "type": "p",
+        "text": "这份提纲你先消化一下。为了帮你巩固这些容易混淆的增删改查命令，需要讲师顺手为你生成一份可在手机上随时随地背诵的 <strong>复习卡片（Flashcards）</strong>，或者出几道 <strong>测验题（Quiz）</strong> 让你练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》的期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要攻克的是整门课非常前沿的一章：<strong>第12章 云数据库</strong>。前面的章节我们学了怎么在自己的电脑或机房里建数据库，但在互联网时代，自己买服务器太贵、维护太难、碰上“双11”这种流量洪峰直接就卡死崩溃了。怎么办？<strong>“云数据库”应运而生！</strong>"
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你，这章不考复杂的代码计算，全都是<strong>概念题、连线题和简答题</strong>。我已经把这份PPT里的精华全部“榨干”，为你提炼了这份<strong>【内部速成提纲】</strong>，我们直接捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第12章 云数据库 速成提纲",
+        "id": "冲刺讲义第12章-云数据库-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：为什么要有云数据库？（必考对比分析题！）",
+        "id": "模块一为什么要有云数据库必考对比分析题"
+      },
+      {
+        "type": "p",
+        "text": "云数据库，顾名思义，就是<strong>部署和虚拟化在云计算环境中的数据库</strong>。它本质上<strong>不是一种全新的数据库模型（底层依然可以是关系型或NoSQL），而是一种全新的“服务方式”</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "考试极爱考<strong>传统自建数据库 vs 云数据库</strong>的区别，记住以下几个痛点对比，简答题直接拿满分："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>成本与付费</strong>：传统方式要花巨资盖机房、买设备；云数据库<strong>零成本投入</strong>，按需付费，用多少给多少。",
+          "<strong>维护负担</strong>：传统方式要自己花钱请专业IT人员天天盯着；云数据库<strong>由云厂商的专业团队7×24小时包揽全部维护</strong>。",
+          "<strong>资源伸缩（最核心优势！）</strong>：传统方式容量是死的，业务暴增时撑不住，业务少时机器闲置浪费；云数据库能提供<strong>近乎无限的资源，一键动态扩容，随时退订</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "⚔️ 模块二：各大门派的云产品（连线/填空题重灾区）",
+        "id": "模块二各大门派的云产品连线填空题重灾区"
+      },
+      {
+        "type": "p",
+        "text": "世界上牛气冲天的互联网巨头都有自己的云数据库，必须把它们的名字对号入座："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>Amazon（亚马逊）</strong>：云数据库的老大哥。它有关系型的 <code>Amazon RDS</code>，有键值型的 <code>SimpleDB</code>，还有NoSQL型的 <code>DynamoDB</code>。",
+          "<strong>Google（谷歌）</strong>：代表产品是 <code>**Google Cloud SQL**</code>，底层用的是大家最熟悉的 MySQL。",
+          "<strong>Microsoft（微软）</strong>：代表产品是 <code>**SQL Azure**</code>，底层是自家的 SQL Server，支持 TSQL 和存储过程。",
+          "<strong>🔥</strong> <strong>国产之光 Alibaba（阿里）</strong>：代表产品是 <code>**PolarDB**</code>。为了扛住天猫双11像太平洋一样的海量并发，阿里自研了它。目前阿里云已挺进全球权威的Gartner数据库魔力象限的<strong>领导者（Leaders）阵营</strong>，与国外巨头同台竞技毫不逊色。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🏛️ 模块三：核心架构剖析 —— UMP系统是怎么运转的？",
+        "id": "模块三核心架构剖析-ump系统是怎么运转的"
+      },
+      {
+        "type": "p",
+        "text": "UMP（低成本、高性能的MySQL云数据库方案）是本章的硬核技术点。整个系统里有几个关键角色，请务必分清“谁在干什么活”："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>Zookeeper（大管家/监工）</strong>：负责全局配置、提供分布式锁（选出一个“总管”），并<strong>监控所有底层数据库实例是否活着</strong>。",
+          "<strong>Controller（调度中心）</strong>：系统的“总管”，负责维护“路由表”（记录哪个用户对应哪个后端的数据库机器），处理故障恢复和备份扩容。",
+          "<strong>Proxy（前台大堂经理）</strong>：直接面向用户的代理服务器。用户把SQL请求发给它，它负责<strong>把请求路由（分发）给后端的机器</strong>，还能顺手做资源限制和日志记录。",
+          "<strong>Agent（基层打工人）</strong>：部署在真实物理机上的服务，直接<strong>管理具体的MySQL实例</strong>，执行主从切换和备份任务。",
+          "<strong>RabbitMQ（通信邮差）</strong>：一个工业级的消息队列，系统中各个节点不用直接连线，全靠它来传纸条（消息传送）。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🛡️ 模块四：云数据库的“七大神功”（简答题压轴考点！）",
+        "id": "模块四云数据库的七大神功简答题压轴考点"
+      },
+      {
+        "type": "p",
+        "text": "UMP系统结合了这么多组件，到底实现了哪些牛逼的功能？<strong>（重点背诵前四个）</strong>"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>容灾（不死之身）</strong>：系统会给每个用户建一个“主库”和一个“从库”。Zookeeper 一旦发现主库死机，立刻通知 Controller 修改路由表，并让 Proxy 把用户的请求瞬间切换到从库上，<strong>整个过程对用户完全透明，用户根本感觉不到死机</strong>。",
+          "<strong>读写分离</strong>：用户发来写操作（增删改），Proxy自动扔给主库处理；发来读操作（查询），Proxy自动均衡地扔给主库和从库处理，减轻单台机器压力。",
+          "<strong>分库分表</strong>：把一张超级大表拆到多台机器上。Proxy会偷偷帮你把一条SQL语句改写成多条子语句，发给不同的机器，然后把结果合并好再交给你。",
+          "<strong>资源隔离（防止多租户打架）</strong>：同一台物理机上住了很多用户，怎么防他们抢资源？一是通过 <strong>Cgroup</strong> 限制每个MySQL进程的最大CPU和内存；二是如果某人请求太猛，<strong>Proxy 前台会故意增加延迟来限制他的 QPS（每秒查询率）</strong>。",
+          "<strong>数据安全机制</strong>：包含 <strong>SSL加密</strong>通信、设置允许访问的 <strong>IP白名单</strong>、记录操作日志，以及 <strong>SQL拦截</strong>（比如拦截危险的 <code>select *</code> 全表扫描）。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第12章是非常接近现代互联网实战的一章！对于零基础的你，今天的<strong>首要任务</strong>是："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "记住<strong>云数据库 vs 传统数据库的三大优势</strong>（便宜、免维护、弹性扩容）。",
+          "把各厂的产品名字混个脸熟（PolarDB、SQL Azure）。",
+          "弄懂 UMP 架构中 <strong>Zookeeper（监工）、Controller（调度）和 Proxy（前台分发）</strong>的分工，以及主库死机后它们是怎么配合“容灾”的。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "把上面这些点吃透，这章的分数你就稳稳攥在手里了！需要讲师顺手为你生成一份手机上能随时刷的 <strong>复习卡片（Flashcards）</strong>，或者出几道 <strong>期末测验题（Quiz）</strong> 让你检验下速成效果吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》的期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要啃下的是非常前沿且贴近大厂实战的<strong>第13章：数据仓库与数据湖</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "前面我们学的都是传统的“数据库”，但当企业数据堆积如山，连图片、日志都要存，且老板想看各种复杂的决策报表时，传统的数据库就“转不动”了。这时候，<strong>数据仓库、数据湖</strong>以及终极形态<strong>湖仓一体</strong>就登场了！"
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你，这章全是<strong>概念辨析和连线对比题</strong>。我已经把这份PPT的精华全部“榨干”，为你提炼了这份<strong>【内部速成提纲】</strong>，只捞干货，直击考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第13章 数据仓库与数据湖 速成提纲",
+        "id": "冲刺讲义第13章-数据仓库与数据湖-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：数据仓库（Data Warehouse）—— 精装的“图书馆”",
+        "id": "模块一数据仓库data-warehouse-精装的图书馆"
+      },
+      {
+        "type": "p",
+        "text": "传统数据库是用来做“事务处理”的（比如日常记账，要求快进快出），而数据仓库是用来做<strong>“分析和管理决策”</strong>的。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 必背四大特征</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>面向主题</strong>：不按流水账记，而是按老板关心的“主题”（如销售额、退货率）来组织数据。",
+          "<strong>集成</strong>：数据从四面八方的破旧系统里抽出来，经过清洗、统一格式后才能放进去。",
+          "<strong>相对稳定</strong>：里面的数据一般<strong>不可更新</strong>，只用来查，不能随便改。",
+          "<strong>反映历史变化</strong>：它会定期给数据拍“快照”，保存1月、2月、3月的历史变化，方便看趋势。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. 核心架构</strong>：它由4个部分组成，分别是数据源、数据存储和管理（含ETL提取和数据集市）、<strong>OLAP（联机分析处理）服务器</strong>、以及前端的各类分析查询工具。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>3. 必考对比（数据库 vs 数据仓库）</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "数据库：擅长事务处理，数据是最新状态，频繁进行<strong>单行</strong>的读写，高度标准化。",
+          "数据仓库：擅长分析和大数据报告，<strong>批量写入</strong>，为了查询快，通常采用<strong>列式存储</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "📈 模块二：数据仓库的“五段进化史”",
+        "id": "模块二数据仓库的五段进化史"
+      },
+      {
+        "type": "p",
+        "text": "数据仓库不是一天建成的，它经历了五个发展阶段（考试常考排序或特征匹配）："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>报表阶段</strong>：最早期，以批处理为主，把数据集中起来看过去发生了什么。",
+          "<strong>分析阶段</strong>：加入OLAP和数据挖掘，进行即席查询，探究“为什么发生”。",
+          "<strong>预测阶段</strong>：引入分析模型和机器学习，预测“将来会发生什么”。",
+          "<strong>实时决策阶段</strong>：传统数仓是批处理，这里变成了<strong>连续更新/短查询</strong>，系统能在战术上提供实时响应。",
+          "<strong>主动决策阶段</strong>：引入基于事件的触发机制，<strong>系统自动决策</strong>，无需或减少人的参与。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🌊 模块三：数据湖（Data Lake）—— 原始的“大水库”",
+        "id": "模块三数据湖data-lake-原始的大水库"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 什么是数据湖？</strong>"
+      },
+      {
+        "type": "p",
+        "text": "企业不想丢掉任何数据，于是搞了个池子，把结构化数据（表格）、半结构化数据（日志/JSON）甚至<strong>非结构化数据（图片、视频、邮件）统统以“原汁原味”的原始格式囤起来，方便日后“沙中淘金”</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. 湖的本质</strong>：它不是单一产品，而是<strong>“数据存储架构 + 数据处理工具”</strong>。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "存储底座通常用便宜的云对象存储（如Amazon S3）。",
+          "<strong>🔥</strong> <strong>必考避坑点</strong>：如果只往里倒数据不管理，数据湖就会变成垃圾堆，叫作<strong>“数据沼泽”</strong>！所以必须配备数据目录编制、ETL、安全访问等工具（如Amazon Lake Formation）来管理它。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "<strong>3. 神级考点（数据仓库 vs 数据湖的对比）</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>数据类型</strong>：数仓只存“结构化”数据；数据湖存“所有类型”数据（结构/半结构/非结构）。",
+          "<strong>Schema（模式）</strong>：数仓是<strong>写之前（实施前）</strong>就要设计好结构；数据湖是<strong>读的时候（分析时）</strong>才去编写结构。",
+          "<strong>谁来用</strong>：数仓主要是<strong>业务分析师</strong>用来看BI报表；数据湖主要是<strong>数据科学家、开发人员</strong>用来跑机器学习。",
+          "<strong>成本</strong>：数仓起步成本极高；数据湖起步成本低（存算分离）。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🛸 模块四：终极形态 —— 湖仓一体（Lake House）",
+        "id": "模块四终极形态-湖仓一体lake-house"
+      },
+      {
+        "type": "p",
+        "text": "<strong>1. 为什么要湖仓一体？</strong>"
+      },
+      {
+        "type": "p",
+        "text": "因为它们都有致命缺点！数据湖虽然起步便宜，但随着业务规模变大，总体成本（TCO）会飙升；数据仓库则是前期太贵。为了不重复花钱，工程师把它们打通了，<strong>让数据“自由流动”</strong>。湖里的新鲜数据可以直接流到仓里做分析，仓里用完的冷数据退回到湖里便宜保存。"
+      },
+      {
+        "type": "p",
+        "text": "<strong>2. 湖仓一体的六大牛逼特性（简答题杀手）</strong>："
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>事务支持</strong>：它居然能像数据库一样支持ACID事务，保证并发读写不出错。",
+          "<strong>数据治理</strong>：支持星型、雪花型等数仓模型架构。",
+          "<strong>BI支持</strong>：可以直接在源数据上用BI工具查，无延迟。",
+          "<strong>存算分离</strong>：存储和计算分开，扩展能力极强。",
+          "<strong>开放性</strong>：采用开放标准格式（如Parquet），Python、R语言可以直接访问。",
+          "<strong>支持多种数据类型</strong>：结构、半结构、非结构通吃。"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第13章的核心在于<strong>“对比”</strong>！对于零基础的你，今天的<strong>首要任务</strong>是："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "记住数据仓库的四大特征（面向主题、集成、相对稳定、反映历史变化）。",
+          "在脑子里把【数据仓库】想象成规矩森严、只准放精装书的书店；把【数据湖】想象成什么破铜烂铁（图片/视频/日志）都往里堆的大仓库，以此来应对它们两者的对比选择题。",
+          "知道【湖仓一体】是为了结合两者的优点诞生的。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "这套提纲你先消化一下，需要讲师顺手为你生成一份可在手机上随时随地背诵的 <strong>复习卡片（Flashcards）</strong>，或者出一份包含连线题和选择题的 <strong>测验（Quiz）</strong> 让你练练手吗？"
+      },
+      {
+        "type": "p",
+        "text": "同学们好！欢迎来到咱们《数据库系统原理》的期末冲刺特训营！我是你们的专属讲师。"
+      },
+      {
+        "type": "p",
+        "text": "今天我们要拿下的是本书的压轴大戏——<strong>第14章：SQL与大数据</strong>。前面的章节我们学了传统的数据库，但到了大数据时代，大家发现传统的写代码处理海量数据太难了，于是大厂的工程师们想了个好办法：<strong>给各种高大上的大数据技术套上一层“SQL”的外壳</strong>，让大家用熟悉的SQL语句就能玩转大数据技术，大大降低了开发门槛。"
+      },
+      {
+        "type": "p",
+        "text": "这份<strong>【内部速成提纲】</strong>我已经帮你把几十页PPT浓缩成了四大门派，咱们直接捞干货，直击核心考点！"
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "h3",
+        "text": "🔥 冲刺讲义：第14章 SQL与大数据 速成提纲",
+        "id": "冲刺讲义第14章-sql与大数据-速成提纲"
+      },
+      {
+        "type": "h4",
+        "text": "🌟 模块一：Hadoop上的数据仓库 —— Hive（必考对比题！）",
+        "id": "模块一hadoop上的数据仓库-hive必考对比题"
+      },
+      {
+        "type": "p",
+        "text": "Hive 是构建在Hadoop顶层的数据仓库工具，它定义了一门极其类似SQL的查询语言——<strong>HiveQL</strong>。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>底层干活的是谁？</strong> Hive本身不存数据也不算数据，它<strong>依赖 HDFS 来存储海量数据，依赖 MapReduce 来进行高性能计算</strong>。你只要写一句简单的HiveQL，底层会自动转换成复杂的MapReduce任务去执行。",
+          "<strong>核心搭档（各司其职）</strong>：Hive专门负责做历史报表分析（静态数据），而如果你需要“实时访问”数据，那就要请出它的老搭档 <strong>HBase</strong> 来互补了。",
+          "<strong>⚔️</strong> <strong>终极必考：Hive vs 传统关系数据库</strong>：",
+          "<strong>数据更新</strong>：传统库支持随时修改；Hive <strong>不支持更新</strong>，因为数据仓库里存的都是历史静态数据。",
+          "<strong>执行延迟</strong>：传统库一秒出结果；Hive的延迟很高（能达到分钟级），不适合着急的在线业务。",
+          "<strong>扩展性</strong>：传统库很难横向加机器；Hive天生基于集群，<strong>扩展性极好</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "⚡ 模块二：内存计算王者 —— Spark SQL",
+        "id": "模块二内存计算王者-spark-sql"
+      },
+      {
+        "type": "p",
+        "text": "传统Hadoop的MapReduce虽然稳，但总是把数据写在磁盘上，实在太慢了，于是诞生了<strong>基于内存计算</strong>的大数据框架 Spark。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>辉煌战绩</strong>：Spark在2014年打破了Hadoop保持的基准排序纪录，只用十分之一的计算资源，就跑出了比Hadoop快3倍的速度！",
+          "<strong>Spark全家桶（生态系统）</strong>：它不仅有管大数据的 Spark Core 和 Spark SQL，还包揽了流计算（Spark Streaming）、机器学习（MLlib）和图计算（GraphX）。",
+          "<strong>Spark SQL 为什么会诞生？</strong> 它的前身叫 <strong>Shark</strong>（直接把Hive的任务换成了Spark跑）。后来由于兼容等问题，重构并推出了 Spark SQL。它的核心价值在于填补了技术鸿沟：<strong>把传统SQL查询结构化数据的能力，与复杂的机器学习和高级分析算法完美融合在了一起</strong>。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🌊 模块三：流计算大师 —— Flink SQL",
+        "id": "模块三流计算大师-flink-sql"
+      },
+      {
+        "type": "p",
+        "text": "如果说Spark是批处理的王者，那 Flink 就是为了<strong>实时流处理</strong>而生的顶级框架。"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>核心特性</strong>：Flink 支持<strong>批流一体化</strong>、拥有精密的状态管理，还能保证“精确一次”的状态一致性保障，可以横向扩展到数千核心与TB级的状态。目前国内阿里、美团等大厂都在大规模使用它作为分布式引擎。",
+          "<strong>Flink SQL 的作用</strong>：为了让大家不用写复杂的流处理代码，它提供了一套符合标准语义的SQL开发语言。底层依靠 <strong>Apache Calcite</strong> 框架帮你解析SQL，并自动在语法规则层面进行性能优化。"
+        ]
+      },
+      {
+        "type": "h4",
+        "text": "🦅 模块四：HBase的专属“翻译官” —— Phoenix",
+        "id": "模块四hbase的专属翻译官-phoenix"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>它是谁？</strong> Phoenix 就像是一个内嵌在 HBase 中的 JDBC 驱动，是一个专门为 HBase 构建的 SQL 层。",
+          "<strong>有什么用？</strong> HBase 本来只能通过复杂的API去查数据，但有了 Phoenix，你就可以直接使用<strong>标准的 SQL 语句</strong>去操作 HBase 了。系统会自动把你的 SQL 翻译成一个或多个 HBase Scanner 并行执行，查询性能远超上一代的 Hive！"
+        ]
+      },
+      {
+        "type": "hr"
+      },
+      {
+        "type": "p",
+        "text": "<strong>👨‍🏫</strong> <strong>讲师冲刺寄语：</strong>"
+      },
+      {
+        "type": "p",
+        "text": "第14章的核心逻辑非常清晰：<strong>用大家都懂的SQL语言，去指挥底层那些复杂的大数据组件干活</strong>。"
+      },
+      {
+        "type": "p",
+        "text": "对于零基础的你，今天的<strong>首要任务</strong>是牢记这四大组件的“人设”对应关系，遇到连线题或选择题直接秒杀："
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>Hive</strong> $\\rightarrow$ 对应 Hadoop/MapReduce（处理静态数据、支持批处理、延迟很高）。",
+          "<strong>Spark SQL</strong> $\\rightarrow$ 对应 内存计算（速度极快、融合了机器学习分析等功能）。",
+          "<strong>Flink SQL</strong> $\\rightarrow$ 对应 实时流处理框架（批流一体化）。",
+          "<strong>Phoenix</strong> $\\rightarrow$ 对应 HBase专属的SQL接口（查询速度远高于Hive）。"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "这套提纲你先消化一下，需要讲师顺手为你生成一份可在手机上随时随地背诵的 <strong>复习卡片（Flashcards）</strong>，或者出几道 <strong>期末测验题（Quiz）</strong> 让你检验下速成效果吗？"
       }
     ],
-    "source": "posts/学习/2026-05-18-study-notes-template.md"
-  },
-  {
-    "id": "tcp-与-udp-核心区别速记",
-    "title": "TCP 与 UDP 核心区别速记",
-    "date": "2026-05-12",
-    "updated": "2026-05-13",
-    "category": "计算机网络",
-    "catL1": "计算机网络",
-    "catL2": "",
-    "tags": [
-      "TCP",
-      "UDP",
-      "网络"
-    ],
-    "excerpt": "TCP 更像稳定可靠的字节流，UDP 更像轻量快速的报文投递。理解它们的区别，要从连接、可靠性、首部开销和应用场景看。",
-    "content": [
-      {
-        "type": "p",
-        "text": "TCP 更像稳定可靠的字节流，UDP 更像轻量快速的报文投递。理解它们的区别，要从连接、可靠性、首部开销和应用场景看。"
-      },
-      {
-        "type": "h2",
-        "text": "核心区别",
-        "id": "核心区别"
-      },
-      {
-        "type": "p",
-        "text": "TCP 是面向连接的协议，需要三次握手建立连接，并通过确认、重传、流量控制和拥塞控制保证可靠传输。"
-      },
-      {
-        "type": "p",
-        "text": "UDP 是无连接协议，首部更小，延迟更低，但不保证可靠到达。它适合视频会议、直播、游戏同步、DNS 查询等场景。"
-      },
-      {
-        "type": "code",
-        "text": "TCP: reliable, ordered, connection-oriented\nUDP: fast, simple, message-oriented"
-      }
-    ],
-    "source": "posts/计算机网络/2026-05-12-tcp-udp-summary.md"
+    "source": "posts/大三下/数据库/期末总结.md"
   }
 ];

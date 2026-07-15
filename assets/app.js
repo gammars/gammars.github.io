@@ -123,8 +123,22 @@ function renderArticle(id) {
       </div>
     </article>
   `;
+  renderMath(app);
   renderToc(post);
   setupTocObserver();
+}
+
+function renderMath(element) {
+  if (typeof window.renderMathInElement !== "function") return;
+  window.renderMathInElement(element, {
+    delimiters: [
+      { left: "$$", right: "$$", display: true },
+      { left: "$", right: "$", display: false },
+      { left: "\\(", right: "\\)", display: false },
+      { left: "\\[", right: "\\]", display: true },
+    ],
+    throwOnError: false,
+  });
 }
 
 function renderBlock(block) {
@@ -133,7 +147,8 @@ function renderBlock(block) {
     const level = block.type[1];
     return `<h${level} id="${block.id}">${block.text}</h${level}>`;
   }
-  if (block.type === "ul") return `<ul>${block.items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+  if (block.type === "ul" || block.type === "ol") return `<${block.type}>${block.items.map((item) => `<li>${item}</li>`).join("")}</${block.type}>`;
+  if (block.type === "blockquote") return `<blockquote>${block.text}</blockquote>`;
   if (block.type === "code") return `<pre><code>${escapeHtml(block.text)}</code></pre>`;
   return `<p>${block.text}</p>`;
 }
