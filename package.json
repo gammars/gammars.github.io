@@ -1,7 +1,9 @@
 {
   "scripts": {
     "build:posts": "node scripts/build-posts.js",
-    "check": "npm run build:posts && node scripts/check-blog.js"
+    "build:posts:ci": "node scripts/build-posts.js --use-recorded-times",
+    "check": "npm run build:posts && node scripts/check-blog.js",
+    "check:ci": "npm run build:posts:ci && node scripts/check-blog.js"
   },
   "dependencies": {
     "markdown-it": "^14.3.0"

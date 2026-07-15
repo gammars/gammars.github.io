@@ -32,8 +32,10 @@ function unique(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b, "zh-CN"));
 }
 
-function formatDate(value) {
-  return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
+function formatDate(value, includeTime = false) {
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  if (includeTime) Object.assign(options, { hour: "2-digit", minute: "2-digit", hour12: false });
+  return new Intl.DateTimeFormat("zh-CN", options).format(new Date(value));
 }
 
 function escapeHtml(value) {
@@ -85,7 +87,7 @@ function renderPostCard(post) {
       <h3 class="post-title"><button type="button" data-open="${post.id}">${escapeHtml(post.title)}</button></h3>
       <div class="meta">
         <span>发表于 ${formatDate(post.date)}</span>
-        <span>更新于 ${formatDate(post.updated)}</span>
+        <span>更新于 ${formatDate(post.updated, true)}</span>
         <span>分类于 <button class="chip" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button></span>
       </div>
       <p class="excerpt">${escapeHtml(post.excerpt)}</p>
@@ -141,7 +143,7 @@ function renderArticle(id) {
     return false;
   }
   state.postId = post.id;
-  setHeader(post.title, `发表于 ${formatDate(post.date)}，分类于 ${post.category}`);
+  setHeader(post.title, `发表于 ${formatDate(post.date)}，更新于 ${formatDate(post.updated, true)}，分类于 ${post.category}`);
   setDocumentMeta(`${post.title} | ${site.title}`, post.excerpt || `${post.title} - ${site.name}`);
   const headings = post.headings || post.content.filter((block) => /^h[1-3]$/.test(block.type)).map((block) => ({
     id: block.id,

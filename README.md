@@ -21,6 +21,7 @@ posts/
 ---
 title: 文章标题
 date: 2026-05-22
+# updated 仅作为备用值；本地构建时以文件最后修改时间为准
 updated: 2026-05-22
 category: 建站
 tags: [GitHub Pages, 前端, 博客]
@@ -56,6 +57,10 @@ node scripts/build-posts.js
 脚本会扫描 `posts/**/*.md`，使用 Markdown It 解析标题、嵌套列表、表格、引用、
 链接、图片和代码块，并自动生成 `assets/posts.js`。页面另外使用 KaTeX 渲染
 `$...$` 与 `$$...$$` 数学公式。
+
+首页会按照 Markdown 文件在本地操作系统中的最后修改时间倒序排列。运行
+`npm run build:posts` 时，这些时间会记录到 `assets/post-modified-times.json`；
+GitHub Actions 会读取这份记录，避免 Git 检出文件时丢失原本的本地修改时间。
 
 分类会直接取自 Markdown 文件在 `posts/` 下的目录路径。例如
 `posts/操作系统/期末总结.md` 会归入“操作系统”，

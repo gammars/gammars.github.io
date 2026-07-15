@@ -5,11 +5,36 @@ const MarkdownIt = require("markdown-it");
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
 const outFile = path.join(root, "assets", "posts.js");
+const modifiedTimesFile = path.join(root, "assets", "post-modified-times.json");
+const useRecordedTimes = process.argv.includes("--use-recorded-times");
 const markdown = new MarkdownIt({
   html: false,
   linkify: true,
   typographer: false,
 });
+
+function readRecordedTimes() {
+  if (!fs.existsSync(modifiedTimesFile)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(modifiedTimesFile, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+const recordedTimes = readRecordedTimes();
+const nextRecordedTimes = {};
+
+function modifiedTimeFor(filePath, source, meta) {
+  let modified;
+  if (useRecordedTimes) {
+    modified = recordedTimes[source] || meta.updated || meta.date || fs.statSync(filePath).mtime.toISOString();
+  } else {
+    modified = fs.statSync(filePath).mtime.toISOString();
+  }
+  nextRecordedTimes[source] = modified;
+  return modified;
+}
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -120,11 +145,13 @@ const posts = walk(postsDir)
     const cat = deriveCategory(filePath);
     const rendered = renderMarkdown(body);
     const category = cat.category || meta.category || "未分类";
+    const source = path.relative(root, filePath).replace(/\\/g, "/");
+    const updated = modifiedTimeFor(filePath, source, meta);
     return {
       id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),
       date: meta.date || "1970-01-01",
-      updated: meta.updated || meta.date || "1970-01-01",
+      updated,
       category,
       catL1: cat.l1 || meta.catL1 || meta.category || "未分类",
       catL2: cat.category ? cat.l2 : (meta.catL2 || ""),
@@ -132,11 +159,14 @@ const posts = walk(postsDir)
       excerpt: meta.excerpt || rendered.excerpt,
       html: rendered.html,
       headings: rendered.headings,
-      source: path.relative(root, filePath).replace(/\\/g, "/"),
+      source,
     };
   })
-  .sort((a, b) => new Date(b.date) - new Date(a.date));
+  .sort((a, b) => new Date(b.updated) - new Date(a.updated));
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
+if (!useRecordedTimes) {
+  fs.writeFileSync(modifiedTimesFile, `${JSON.stringify(nextRecordedTimes, null, 2)}\n`, "utf8");
+}
 fs.writeFileSync(outFile, `window.BLOG_POSTS = ${JSON.stringify(posts)};\n`, "utf8");
 console.log(`Generated ${posts.length} posts -> ${path.relative(root, outFile)}`);
