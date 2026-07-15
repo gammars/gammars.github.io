@@ -98,15 +98,14 @@ function excerptFrom(blocks) {
 }
 
 function deriveCategory(filePath) {
-  // Extract relative path from posts/ to the file, then get folder parts
   const rel = path.relative(postsDir, filePath).replace(/\\/g, "/");
   const parts = rel.split("/");
-  parts.pop(); // Remove filename, keep folders
-  while (parts.length < 2) parts.unshift(""); // Pad to ensure length 2
+  parts.pop();
   return {
+    parts,
     l1: parts[0] || "",
-    l2: parts[1] || "",
-    category: parts.filter(Boolean).join(" / ") || "未分类"
+    l2: parts.slice(1).join(" / "),
+    category: parts.join(" / "),
   };
 }
 
@@ -116,14 +115,15 @@ const posts = walk(postsDir)
     const [meta, body] = parseFrontMatter(raw);
     const cat = deriveCategory(filePath);
     const content = parseMarkdown(body);
+    const category = cat.category || meta.category || "未分类";
     return {
       id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),
       date: meta.date || "1970-01-01",
       updated: meta.updated || meta.date || "1970-01-01",
-      category: meta.category || cat.category,
-      catL1: meta.catL1 || cat.l1,
-      catL2: meta.catL2 || cat.l2,
+      category,
+      catL1: cat.l1 || meta.catL1 || meta.category || "未分类",
+      catL2: cat.category ? cat.l2 : (meta.catL2 || ""),
       tags: Array.isArray(meta.tags) ? meta.tags : [],
       excerpt: meta.excerpt || excerptFrom(content),
       content,

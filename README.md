@@ -54,6 +54,12 @@ node scripts/build-posts.js
 
 脚本会扫描 `posts/**/*.md`，自动生成 `assets/posts.js`。
 
+分类会直接取自 Markdown 文件在 `posts/` 下的目录路径。例如
+`posts/操作系统/期末总结.md` 会归入“操作系统”，
+`posts/课程/操作系统/期末总结.md` 会归入“课程 / 操作系统”。只要文章位于子目录，
+目录分类会优先于 front matter 中的 `category`；直接放在 `posts/` 根目录的文章仍可使用
+front matter 的 `category`，未填写时归入“未分类”。
+
 发布到 GitHub 时，仓库里的 `.github/workflows/pages.yml` 会自动运行这个脚本，所以你只提交 Markdown 文件也可以发布。要使用这个自动发布方式，在仓库 `Settings > Pages` 中把 `Build and deployment > Source` 选为 `GitHub Actions`。
 
 ## 修改站点
