@@ -1,6 +1,6 @@
 const site = {
   name: "godmars",
-  bio: "待补充",
+  bio: "伽德玛斯",
   title: "godmars' Blog",
   github: "https://github.com/gammars",
   email: "811096909@qq.com",

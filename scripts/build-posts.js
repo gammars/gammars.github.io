@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
 const outFile = path.join(root, "assets", "posts.js");
 const modifiedTimesFile = path.join(root, "assets", "post-modified-times.json");
+const publishedDatesFile = path.join(root, "assets", "post-published-dates.json");
 const useRecordedTimes = process.argv.includes("--use-recorded-times");
 const markdown = new MarkdownIt({
   html: false,
@@ -13,17 +14,19 @@ const markdown = new MarkdownIt({
   typographer: false,
 });
 
-function readRecordedTimes() {
-  if (!fs.existsSync(modifiedTimesFile)) return {};
+function readJson(filePath) {
+  if (!fs.existsSync(filePath)) return {};
   try {
-    return JSON.parse(fs.readFileSync(modifiedTimesFile, "utf8"));
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch {
     return {};
   }
 }
 
-const recordedTimes = readRecordedTimes();
+const recordedTimes = readJson(modifiedTimesFile);
+const recordedPublishedDates = readJson(publishedDatesFile);
 const nextRecordedTimes = {};
+const nextPublishedDates = {};
 
 function modifiedTimeFor(filePath, source, meta) {
   let modified;
@@ -34,6 +37,27 @@ function modifiedTimeFor(filePath, source, meta) {
   }
   nextRecordedTimes[source] = modified;
   return modified;
+}
+
+function localDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function publishedDateFor(source, meta) {
+  const explicitDate = typeof meta.date === "string" ? meta.date.trim() : "";
+  let published = explicitDate || recordedPublishedDates[source];
+  if (!published) {
+    if (useRecordedTimes) {
+      throw new Error(`Missing recorded published date for ${source}; run npm run build:posts locally first.`);
+    }
+    published = localDateString();
+    console.log(`Recorded first published date ${published}: ${source}`);
+  }
+  nextPublishedDates[source] = published;
+  return published;
 }
 
 function walk(dir) {
@@ -138,19 +162,35 @@ function deriveCategory(filePath) {
   };
 }
 
-const posts = walk(postsDir)
+function ensureUniquePostIds(posts) {
+  const idCounts = new Map();
+  posts.forEach((post) => idCounts.set(post.id, (idCounts.get(post.id) || 0) + 1));
+
+  return posts.map((post) => {
+    if (idCounts.get(post.id) === 1) return post;
+    const sourceId = slugify(post.source.replace(/^posts\//, "").replace(/\.md$/i, ""));
+    return { ...post, id: `${post.id}-${sourceId}` };
+  });
+}
+
+const posts = ensureUniquePostIds(walk(postsDir)
   .map((filePath) => {
+    const source = path.relative(root, filePath).replace(/\\/g, "/");
     const raw = fs.readFileSync(filePath, "utf8");
     const [meta, body] = parseFrontMatter(raw);
+    if (!body.trim()) {
+      console.warn(`Skipped empty post: ${source}`);
+      return null;
+    }
     const cat = deriveCategory(filePath);
     const rendered = renderMarkdown(body);
     const category = cat.category || meta.category || "未分类";
-    const source = path.relative(root, filePath).replace(/\\/g, "/");
     const updated = modifiedTimeFor(filePath, source, meta);
+    const published = publishedDateFor(source, meta);
     return {
       id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),
-      date: meta.date || "1970-01-01",
+      date: published,
       updated,
       category,
       catL1: cat.l1 || meta.catL1 || meta.category || "未分类",
@@ -162,11 +202,13 @@ const posts = walk(postsDir)
       source,
     };
   })
+  .filter(Boolean))
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 if (!useRecordedTimes) {
   fs.writeFileSync(modifiedTimesFile, `${JSON.stringify(nextRecordedTimes, null, 2)}\n`, "utf8");
+  fs.writeFileSync(publishedDatesFile, `${JSON.stringify(nextPublishedDates, null, 2)}\n`, "utf8");
 }
 fs.writeFileSync(outFile, `window.BLOG_POSTS = ${JSON.stringify(posts)};\n`, "utf8");
 console.log(`Generated ${posts.length} posts -> ${path.relative(root, outFile)}`);
