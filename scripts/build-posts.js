@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 const MarkdownIt = require("markdown-it");
 
 const root = path.resolve(__dirname, "..");
@@ -46,15 +47,58 @@ function localDateString(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function publishedDateFor(source, meta) {
+function isDateOnly(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function firstGitPublishedTime(source, expectedDate) {
+  try {
+    const output = execFileSync(
+      "git",
+      ["log", "--follow", "--diff-filter=A", "--format=%aI", "--", source],
+      { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    ).trim();
+    const firstAdded = output.split(/\r?\n/).filter(Boolean).at(-1) || "";
+    return firstAdded.slice(0, 10) === expectedDate ? firstAdded : "";
+  } catch {
+    return "";
+  }
+}
+
+function expandLegacyPublishedDate(filePath, source, dateOnly, allowFileTime) {
+  const gitTime = firstGitPublishedTime(source, dateOnly);
+  if (gitTime) return gitTime;
+  if (!allowFileTime) return dateOnly;
+
+  const createdTime = fs.statSync(filePath).birthtime;
+  return localDateString(createdTime) === dateOnly ? createdTime.toISOString() : dateOnly;
+}
+
+function publishedDateFor(filePath, source, meta) {
   const explicitDate = typeof meta.date === "string" ? meta.date.trim() : "";
-  let published = explicitDate || recordedPublishedDates[source];
+  const recordedDate = recordedPublishedDates[source] || "";
+  const recordedExpandsExplicitDate = explicitDate
+    && isDateOnly(explicitDate)
+    && !isDateOnly(recordedDate)
+    && recordedDate.slice(0, 10) === explicitDate;
+  let published = useRecordedTimes
+    ? recordedDate || explicitDate
+    : recordedExpandsExplicitDate
+      ? recordedDate
+      : explicitDate || recordedDate;
+  if (!useRecordedTimes && isDateOnly(published)) {
+    const expanded = expandLegacyPublishedDate(filePath, source, published, !explicitDate);
+    if (expanded !== published) {
+      published = expanded;
+      console.log(`Expanded first published time ${published}: ${source}`);
+    }
+  }
   if (!published) {
     if (useRecordedTimes) {
       throw new Error(`Missing recorded published date for ${source}; run npm run build:posts locally first.`);
     }
-    published = localDateString();
-    console.log(`Recorded first published date ${published}: ${source}`);
+    published = new Date().toISOString();
+    console.log(`Recorded first published time ${published}: ${source}`);
   }
   nextPublishedDates[source] = published;
   return published;
@@ -186,7 +230,7 @@ const posts = ensureUniquePostIds(walk(postsDir)
     const rendered = renderMarkdown(body);
     const category = cat.category || meta.category || "未分类";
     const updated = modifiedTimeFor(filePath, source, meta);
-    const published = publishedDateFor(source, meta);
+    const published = publishedDateFor(filePath, source, meta);
     return {
       id: meta.slug || slugify(meta.title || filePath),
       title: meta.title || path.basename(filePath, ".md"),

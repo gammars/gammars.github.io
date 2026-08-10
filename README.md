@@ -61,9 +61,10 @@ node scripts/build-posts.js
 `npm run build:posts` 时，这些时间会记录到 `assets/post-modified-times.json`；
 GitHub Actions 会读取这份记录，避免 Git 检出文件时丢失原本的本地修改时间。
 
-如果没有填写 `date`，文章第一次被本地构建发现时会自动把当天日期记录到
-`assets/post-published-dates.json`，以后修改文章时不会改变。手写 `date` 只用于覆盖
-自动日期；`updated` 不需要填写。
+如果没有填写 `date`，文章第一次被本地构建发现时会自动把当时的精确时间记录到
+`assets/post-published-dates.json`，以后修改文章时不会改变。旧的日期记录会在存在可靠
+Git 历史或文件创建时间时自动补全到分钟。手写 `date` 只用于覆盖自动时间；`updated`
+不需要填写。
 
 分类会直接取自 Markdown 文件在 `posts/` 下的目录路径。例如
 `posts/操作系统/期末总结.md` 会归入“操作系统”，

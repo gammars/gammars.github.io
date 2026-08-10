@@ -38,6 +38,10 @@ function formatDate(value, includeTime = false) {
   return new Intl.DateTimeFormat("zh-CN", options).format(new Date(value));
 }
 
+function formatPublishedDate(value) {
+  return formatDate(value, /T\d{2}:\d{2}/.test(value));
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -98,7 +102,7 @@ function renderPostCard(post, index) {
         <div class="post-meta">
           <span class="post-date">
             <span class="post-meta-label">首次发布</span>
-            <time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time>
+            <time datetime="${escapeHtml(post.date)}">${formatPublishedDate(post.date)}</time>
           </span>
           <span class="post-date">
             <span class="post-meta-label">最后更新</span>
@@ -162,7 +166,7 @@ function renderArticle(id) {
     return false;
   }
   state.postId = post.id;
-  setHeader(post.title, `发表于 ${formatDate(post.date)}，更新于 ${formatDate(post.updated, true)}，分类于 ${post.category}`);
+  setHeader(post.title, `发表于 ${formatPublishedDate(post.date)}，更新于 ${formatDate(post.updated, true)}，分类于 ${post.category}`);
   setDocumentMeta(`${post.title} | ${site.title}`, post.excerpt || `${post.title} - ${site.name}`);
   const headings = post.headings || post.content.filter((block) => /^h[1-3]$/.test(block.type)).map((block) => ({
     id: block.id,

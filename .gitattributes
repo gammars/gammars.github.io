@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.png binary
+
+# Markdown permits trailing spaces for hard line breaks; never block publishing on them.
+*.md whitespace=-blank-at-eol,-blank-at-eof
