@@ -81,20 +81,34 @@ function matchesPost(post) {
   return true;
 }
 
-function renderPostCard(post) {
+function renderPostCard(post, index) {
+  const tags = post.tags.length
+    ? post.tags.map((tag) => `<button class="post-tag" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")
+    : "";
   return `
     <article class="post">
-      <h3 class="post-title"><button type="button" data-open="${post.id}">${escapeHtml(post.title)}</button></h3>
-      <div class="meta">
-        <span>发表于 ${formatDate(post.date)}</span>
-        <span>更新于 ${formatDate(post.updated, true)}</span>
-        <span>分类于 <button class="chip" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button></span>
+      <div class="post-order" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
+      <div class="post-main">
+        <div class="post-taxonomy">
+          <button class="post-category" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button>
+          ${tags}
+        </div>
+        <h3 class="post-title"><button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button></h3>
+        <p class="excerpt">${escapeHtml(post.excerpt)}</p>
+        <div class="post-meta">
+          <span class="post-date">
+            <span class="post-meta-label">首次发布</span>
+            <time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time>
+          </span>
+          <span class="post-date">
+            <span class="post-meta-label">最后更新</span>
+            <time datetime="${escapeHtml(post.updated)}">${formatDate(post.updated, true)}</time>
+          </span>
+        </div>
       </div>
-      <p class="excerpt">${escapeHtml(post.excerpt)}</p>
-      <div class="tag-row">
-        ${post.tags.map((tag) => `<button class="chip" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")}
-      </div>
-      <button class="read-more" type="button" data-open="${post.id}">阅读全文</button>
+      <button class="post-arrow" type="button" data-open="${escapeHtml(post.id)}" aria-label="阅读《${escapeHtml(post.title)}》">
+        <span aria-hidden="true">→</span>
+      </button>
     </article>
   `;
 }
@@ -102,7 +116,12 @@ function renderPostCard(post) {
 function renderHome() {
   const filtered = posts.filter(matchesPost);
   const label = state.filter ? `${state.filter.type === "tag" ? "标签" : "分类"}：${state.filter.value}` : "最新文章";
-  setHeader(label, state.query ? `搜索 "${state.query}" 的结果` : "像参考站一样，把文章、分类、标签和归档放在一个清爽的个人空间里。");
+  const description = state.query
+    ? `找到 ${filtered.length} 篇与“${state.query}”相关的文章`
+    : state.filter
+      ? `当前分类下共 ${filtered.length} 篇文章`
+      : `共 ${posts.length} 篇文章，按本地文件最后修改时间排列`;
+  setHeader(label, description);
   setDocumentMeta(site.title, `${site.name} 的个人博客`);
   app.innerHTML = filtered.length
     ? `<div class="post-list">${filtered.map(renderPostCard).join("")}</div>`
