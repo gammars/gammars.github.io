@@ -160,9 +160,54 @@ function inlineText(token) {
   return token.content || "";
 }
 
+function looksLikeGptMathBlock(lines) {
+  const value = lines.join("\n").trim();
+  if (!value) return false;
+  if (lines.some((line) => /^\s*(?:#{1,6}\s|[-*+]\s|>\s|```|~~~)/.test(line))) return false;
+  return /\\[A-Za-z]+|[_^]|(?:^|[^A-Za-z])(?:O|o|Ω|Θ)\s*\(|[=≤≥≈≠±×÷∑∏√∞]/m.test(value);
+}
+
+function normalizeGptMathBlocks(source) {
+  const lines = String(source ?? "").split(/\r?\n/);
+  const normalized = [];
+  let fence = "";
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const trimmed = line.trim();
+    const fenceMatch = trimmed.match(/^(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      const marker = fenceMatch[1];
+      if (!fence) fence = marker;
+      else if (marker[0] === fence[0] && marker.length >= fence.length) fence = "";
+      normalized.push(line);
+      continue;
+    }
+
+    if (!fence && trimmed === "[") {
+      let closeIndex = index + 1;
+      const limit = Math.min(lines.length, index + 82);
+      while (closeIndex < limit && lines[closeIndex].trim() !== "]") closeIndex += 1;
+      if (closeIndex < limit) {
+        const content = lines.slice(index + 1, closeIndex);
+        if (looksLikeGptMathBlock(content)) {
+          const indent = line.match(/^\s*/)?.[0] || "";
+          normalized.push(`${indent}$$`, ...content, `${indent}$$`);
+          index = closeIndex;
+          continue;
+        }
+      }
+    }
+
+    normalized.push(line);
+  }
+
+  return normalized.join("\n");
+}
+
 function renderMarkdown(source) {
   const env = {};
-  const tokens = markdown.parse(source, env);
+  const tokens = markdown.parse(normalizeGptMathBlocks(source), env);
   const headings = [];
   const slugCounts = new Map();
 
