@@ -15,12 +15,16 @@ const state = {
   filter: null,
   query: "",
   postId: null,
+  openCategoryPanels: new Set(),
+  categoryPanelsReady: false,
 };
 
 const app = document.querySelector("#app");
 const viewHeader = document.querySelector("#viewHeader");
 const searchInput = document.querySelector("#searchInput");
 const tocEl = document.querySelector("#toc");
+const categoryCardsEl = document.querySelector("#categoryCards");
+const tagCardsEl = document.querySelector("#tagCards");
 
 function plainTextFromHtml(html = "") {
   const template = document.createElement("template");
@@ -81,7 +85,9 @@ function matchesPost(post) {
   if (query && !text.includes(query)) return false;
   if (!state.filter) return true;
   if (state.filter.type === "tag") return post.tags.includes(state.filter.value);
-  if (state.filter.type === "category") return post.category === state.filter.value;
+  if (state.filter.type === "category") {
+    return post.category === state.filter.value || post.category.startsWith(`${state.filter.value} / `);
+  }
   return true;
 }
 
@@ -119,12 +125,12 @@ function renderPostCard(post, index) {
 
 function renderHome() {
   const filtered = posts.filter(matchesPost);
-  const label = state.filter ? `${state.filter.type === "tag" ? "标签" : "分类"}：${state.filter.value}` : "最新文章";
+  const label = state.filter ? `${state.filter.type === "tag" ? "标签" : "分类"}：${state.filter.value}` : "最新博文";
   const description = state.query
     ? `找到 ${filtered.length} 篇与“${state.query}”相关的文章`
     : state.filter
       ? `当前分类下共 ${filtered.length} 篇文章`
-      : `共 ${posts.length} 篇文章，按本地文件最后修改时间排列`;
+      : `共 ${posts.length} 篇博文，按本地文件最后修改时间排列`;
   setHeader(label, description);
   setDocumentMeta(site.title, `${site.name} 的个人博客`);
   app.innerHTML = filtered.length
@@ -236,59 +242,100 @@ function renderAbout() {
       <h3>站点特性</h3>
       <ul>
         <li>纯静态文件，适合 GitHub Pages。</li>
-        <li>支持首页、关于、分类、标签、归档和搜索。</li>
+        <li>支持首页、关于、归档、搜索以及分类和标签快捷筛选。</li>
         <li>响应式布局，手机和电脑都能阅读。</li>
       </ul>
     </article>
   `;
 }
 
-function renderTaxonomy(type) {
-  const isTag = type === "tags";
-  const map = countsBy(isTag ? "tags" : "category");
-  setHeader(isTag ? "标签" : "分类", isTag ? "按标签聚合文章。" : "按分类浏览文章。");
-  setDocumentMeta(`${isTag ? "标签" : "分类"} | ${site.title}`, `浏览 ${site.name} 的博客${isTag ? "标签" : "分类"}`);
-  app.innerHTML = `
-    <div class="grid-list">
-      ${[...map.entries()].map(([name, count]) => `
-        <div class="taxonomy-card">
-          <button type="button" data-${isTag ? "tag" : "category"}="${escapeHtml(name)}">
-            <strong>${escapeHtml(name)}</strong>
-            <span>${count} 篇文章</span>
-          </button>
-        </div>
-      `).join("")}
+function buildCategoryTree() {
+  const root = { children: new Map() };
+  posts.forEach((post) => {
+    const parts = String(post.category || "未分类").split(/\s*\/\s*/).filter(Boolean);
+    let parent = root;
+    parts.forEach((name, index) => {
+      if (!parent.children.has(name)) {
+        parent.children.set(name, {
+          name,
+          path: parts.slice(0, index + 1).join(" / "),
+          total: 0,
+          children: new Map(),
+        });
+      }
+      const node = parent.children.get(name);
+      node.total += 1;
+      parent = node;
+    });
+  });
+  return [...root.children.values()]
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "zh-CN"));
+}
+
+function sortedCategoryChildren(node) {
+  return [...node.children.values()]
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "zh-CN"));
+}
+
+let categoryPanelSequence = 0;
+
+function renderCategoryNode(node) {
+  const children = sortedCategoryChildren(node);
+  const active = state.filter?.type === "category" && state.filter.value === node.path;
+  if (!children.length) {
+    return `
+      <button class="discovery-item${active ? " is-active" : ""}" type="button" data-category="${escapeHtml(node.path)}" aria-pressed="${active}">
+        <span>${escapeHtml(node.name)}</span>
+        <strong>${node.total}</strong>
+      </button>
+    `;
+  }
+
+  const open = state.openCategoryPanels.has(node.path);
+  const panelId = `category-panel-${categoryPanelSequence += 1}`;
+  return `
+    <div class="category-group">
+      <button class="category-summary" type="button" data-category-toggle="${escapeHtml(node.path)}" aria-expanded="${open}" aria-controls="${panelId}">
+        <span class="category-chevron" aria-hidden="true">›</span>
+        <span class="category-group-name">${escapeHtml(node.name)}</span>
+        <strong>${node.total}</strong>
+      </button>
+      <div id="${panelId}" class="category-children"${open ? "" : " hidden"}>
+        <button class="discovery-item category-all${active ? " is-active" : ""}" type="button" data-category="${escapeHtml(node.path)}" aria-pressed="${active}">
+          <span>全部博文</span>
+          <strong>${node.total}</strong>
+        </button>
+        ${children.map(renderCategoryNode).join("")}
+      </div>
     </div>
   `;
 }
 
-function renderCategoryTree() {
-  const tree = {};
-  posts.forEach(p => {
-    const l1 = p.catL1 || "未分类";
-    const l2 = p.catL2 || "";
-    if (!tree[l1]) tree[l1] = {};
-    if (!tree[l1][l2]) tree[l1][l2] = 0;
-    tree[l1][l2]++;
-  });
+function renderDiscovery() {
+  const categoryTree = buildCategoryTree();
+  const tags = [...countsBy("tags").entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-CN"));
 
-  setHeader("分类", "浏览所有分类");
-  setDocumentMeta(`分类 | ${site.title}`, `浏览 ${site.name} 的博客分类`);
-  app.innerHTML = `
-    <div class="category-tree">
-      ${Object.entries(tree).map(([l1, l2obj]) => `
-        <div class="cat-l1">
-          <h3 class="cat-name">${escapeHtml(l1)}</h3>
-          <div class="cat-children">
-            ${Object.entries(l2obj).map(([l2, count]) => {
-              const fullCat = l2 ? `${l1} / ${l2}` : l1;
-              return `<button class="chip" type="button" data-category="${escapeHtml(fullCat)}">${escapeHtml(l2 || l1)} (${count})</button>`;
-            }).join("")}
-          </div>
-        </div>
-      `).join("")}
-    </div>
-  `;
+  if (!state.categoryPanelsReady) {
+    const firstExpandable = categoryTree.find((node) => node.children.size);
+    if (firstExpandable) state.openCategoryPanels.add(firstExpandable.path);
+    state.categoryPanelsReady = true;
+  }
+  if (state.filter?.type === "category") {
+    const parts = state.filter.value.split(" / ");
+    for (let index = 1; index < parts.length; index += 1) {
+      state.openCategoryPanels.add(parts.slice(0, index).join(" / "));
+    }
+  }
+
+  document.querySelector("#categoryTotal").textContent = `${categoryTree.length} 个一级分类`;
+  document.querySelector("#tagTotal").textContent = `${tags.length} 个`;
+  categoryPanelSequence = 0;
+  categoryCardsEl.innerHTML = categoryTree.map(renderCategoryNode).join("");
+  tagCardsEl.innerHTML = tags.map(([name, count]) => {
+    const active = state.filter?.type === "tag" && state.filter.value === name;
+    return `<button class="discovery-tag${active ? " is-active" : ""}" type="button" data-tag="${escapeHtml(name)}" aria-pressed="${active}"># ${escapeHtml(name)} <span>${count}</span></button>`;
+  }).join("") || `<span class="discovery-empty">暂无标签</span>`;
 }
 
 function renderArchive() {
@@ -309,6 +356,7 @@ function renderArchive() {
 
 function render() {
   document.body.classList.toggle("is-article", state.view === "post");
+  renderDiscovery();
   document.querySelectorAll(".nav a").forEach((link) => {
     const active = link.dataset.view === state.view;
     link.classList.toggle("is-active", active);
@@ -318,8 +366,6 @@ function render() {
 
   if (state.view === "post") return renderArticle(state.postId);
   if (state.view === "about") renderAbout();
-  else if (state.view === "tags") renderTaxonomy("tags");
-  else if (state.view === "categories") renderCategoryTree();
   else if (state.view === "archive") renderArchive();
   else renderHome();
   return true;
@@ -358,7 +404,8 @@ function applyHash() {
   }
   const parts = hash.split("/");
   const route = parts[0];
-  const supported = new Set(["home", "post", "about", "tags", "categories", "archive"]);
+  const supported = new Set(["home", "post", "about", "archive"]);
+  if (!supported.has(route)) history.replaceState(null, "", "#home");
   state.view = supported.has(route) ? route : "home";
   state.filter = null;
   state.postId = null;
@@ -401,6 +448,13 @@ function setupTocObserver() {
   headings.forEach(h => tocObserver.observe(h));
 }
 
+document.addEventListener("keydown", (event) => {
+  const toggle = event.target.closest?.("button[data-category-toggle]");
+  if (!toggle || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  toggle.click();
+});
+
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button, a");
   if (!target) return;
@@ -422,6 +476,17 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.open) {
     navigate(postHash(target.dataset.open));
+    return;
+  }
+
+  if (target.dataset.categoryToggle) {
+    const category = target.dataset.categoryToggle;
+    const expanded = target.getAttribute("aria-expanded") === "true";
+    const panel = document.getElementById(target.getAttribute("aria-controls"));
+    target.setAttribute("aria-expanded", String(!expanded));
+    if (panel) panel.hidden = expanded;
+    if (expanded) state.openCategoryPanels.delete(category);
+    else state.openCategoryPanels.add(category);
     return;
   }
 

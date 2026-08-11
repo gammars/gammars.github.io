@@ -21,8 +21,6 @@
       <nav class="nav" aria-label="主导航">
         <a href="#home" data-view="home">首页</a>
         <a href="#about" data-view="about">关于</a>
-        <a href="#tags" data-view="tags">标签</a>
-        <a href="#categories" data-view="categories">分类</a>
         <a href="#archive" data-view="archive">归档</a>
       </nav>
       <button class="theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">
@@ -78,6 +76,22 @@
         <div id="viewHeader" class="view-header"></div>
         <div id="app"></div>
       </section>
+      <aside class="discovery-panel" aria-label="分类与标签">
+        <section class="discovery-card">
+          <div class="discovery-heading">
+            <h2>分类</h2>
+            <span id="categoryTotal"></span>
+          </div>
+          <div id="categoryCards" class="discovery-list"></div>
+        </section>
+        <section class="discovery-card">
+          <div class="discovery-heading">
+            <h2>标签</h2>
+            <span id="tagTotal"></span>
+          </div>
+          <div id="tagCards" class="tag-cloud"></div>
+        </section>
+      </aside>
       <aside class="toc-panel" aria-label="文章目录">
         <nav id="toc" class="toc-nav"></nav>
       </aside>
