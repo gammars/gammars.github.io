@@ -464,59 +464,33 @@ body.is-article .toc-panel { display: block; }
   color: var(--muted);
 }
 
-.post-list { display: grid; gap: 14px; }
+.post-list { display: grid; }
 
 .post {
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr) 42px;
-  gap: 18px;
-  align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--soft) 72%, transparent), transparent 42%),
-    var(--panel);
-  padding: 20px;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
 }
 
-.post:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
-  box-shadow: 0 14px 34px rgba(37, 50, 63, 0.1);
-}
-
-.post-order {
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line));
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--soft) 82%, var(--panel));
-  color: var(--accent-strong);
-  font-size: 18px;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-}
+.post:first-child { padding-top: 4px; }
+.post:last-child { border-bottom: 0; padding-bottom: 4px; }
 
 .post-main { min-width: 0; }
 
 .post-taxonomy {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin-bottom: 7px;
 }
 
 .post-category,
 .post-tag {
   border: 0;
-  border-radius: 999px;
-  background: var(--soft);
-  padding: 3px 9px;
-  color: var(--accent-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--muted);
   font: inherit;
   font-size: 12px;
   line-height: 1.5;
@@ -536,12 +510,17 @@ body.is-article .toc-panel { display: block; }
 
 .post-title button { all: unset; cursor: pointer; }
 .post-title button:hover { color: var(--accent); }
+.post-title button:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .post-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 7px 22px;
-  margin-top: 13px;
+  margin-top: 12px;
   color: var(--muted);
   font-size: 12px;
 }
@@ -556,35 +535,14 @@ body.is-article .toc-panel { display: block; }
 
 .excerpt {
   display: -webkit-box;
-  margin: 7px 0 0;
+  margin: 8px 0 0;
   overflow: hidden;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.65;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.post-arrow {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--panel);
-  color: var(--accent-strong);
-  font-size: 19px;
-  cursor: pointer;
-  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
-}
-
-.post:hover .post-arrow,
-.post-arrow:hover {
-  transform: translateX(2px);
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--panel);
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 3;
 }
 
 .tag-row {
@@ -823,20 +781,8 @@ summary:focus-visible {
   .content-panel { padding: 18px; }
 
   .post {
-    grid-template-columns: 42px minmax(0, 1fr);
-    gap: 12px;
-    padding: 16px;
+    padding: 18px 0;
   }
-
-  .post-order {
-    align-self: start;
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    font-size: 14px;
-  }
-
-  .post-arrow { display: none; }
 
   .post-meta {
     display: grid;
@@ -851,6 +797,8 @@ summary:focus-visible {
 }
 
 @media (min-width: 881px) {
+  body { background: var(--panel); }
+
   .shell,
   body.is-article .shell {
     grid-template-columns: minmax(0, 1fr);
@@ -874,7 +822,7 @@ summary:focus-visible {
     gap: 22px;
     padding: 24px 20px 32px;
     border-right: 1px solid var(--line);
-    background: var(--panel);
+    background: var(--bg);
     scrollbar-width: thin;
   }
 
@@ -889,6 +837,8 @@ summary:focus-visible {
   .profile-panel .profile-card { overflow: visible; }
 
   .profile-panel .profile-cover { border-radius: 8px; }
+
+  .profile-panel .search-box input { background: var(--panel); }
 
   .profile-panel .side-section {
     padding: 20px 0 0;

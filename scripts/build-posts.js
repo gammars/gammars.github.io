@@ -14,6 +14,7 @@ const markdown = new MarkdownIt({
   linkify: true,
   typographer: false,
 });
+const EXCERPT_LIMIT = 180;
 
 function readJson(filePath) {
   if (!fs.existsSync(filePath)) return {};
@@ -160,6 +161,22 @@ function inlineText(token) {
   return token.content || "";
 }
 
+function excerptFromTokens(tokens, limit = EXCERPT_LIMIT) {
+  const parts = [];
+  tokens.forEach((token, index) => {
+    if (token.type !== "inline") return;
+    const container = tokens[index - 1]?.type || "";
+    if (!["heading_open", "paragraph_open", "td_open", "th_open"].includes(container)) {
+      return;
+    }
+    const text = inlineText(token).replace(/\s+/g, " ").trim();
+    if (text) parts.push(text);
+  });
+  const plain = parts.join(" ").replace(/\s+/g, " ").trim();
+  const characters = Array.from(plain);
+  return characters.length > limit ? `${characters.slice(0, limit).join("")}…` : plain;
+}
+
 function looksLikeGptMathBlock(lines) {
   const value = lines.join("\n").trim();
   if (!value) return false;
@@ -223,19 +240,10 @@ function renderMarkdown(source) {
     headings.push({ id, level: Number(token.tag.slice(1)), text });
   });
 
-  const paragraphs = [];
-  tokens.forEach((token, index) => {
-    if (token.type === "inline") {
-      const text = inlineText(token).trim();
-      if (tokens[index - 1]?.type === "paragraph_open" && text) paragraphs.push(text);
-    }
-  });
-
-  const excerpt = paragraphs[0] || "";
   return {
     html: markdown.renderer.render(tokens, markdown.options, env),
     headings,
-    excerpt: excerpt.length > 120 ? `${excerpt.slice(0, 120)}...` : excerpt,
+    excerpt: excerptFromTokens(tokens),
   };
 }
 

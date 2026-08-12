@@ -21,6 +21,7 @@ for (const post of posts) {
   if (Number.isNaN(Date.parse(post.date))) throw new Error(`Invalid date: ${post.source}`);
   if (post.date !== publishedDates[post.source]) throw new Error(`Published date is not recorded for: ${post.source}`);
   if (!post.html || !Array.isArray(post.headings)) throw new Error(`Missing rendered Markdown: ${post.source}`);
+  if (typeof post.excerpt !== "string" || !post.excerpt.trim()) throw new Error(`Missing article excerpt: ${post.source}`);
   if (post.updated !== modifiedTimes[post.source]) throw new Error(`Modified time is not recorded for: ${post.source}`);
   if (/\*{3,}\\?\*/.test(post.html)) throw new Error(`Malformed emphasis remains: ${post.source}`);
 

@@ -91,18 +91,13 @@ function matchesPost(post) {
   return true;
 }
 
-function renderPostCard(post, index) {
+function renderPostCard(post) {
   const tags = post.tags.length
     ? post.tags.map((tag) => `<button class="post-tag" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")
     : "";
   return `
     <article class="post">
-      <div class="post-order" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
       <div class="post-main">
-        <div class="post-taxonomy">
-          <button class="post-category" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button>
-          ${tags}
-        </div>
         <h3 class="post-title"><button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button></h3>
         <p class="excerpt">${escapeHtml(post.excerpt)}</p>
         <div class="post-meta">
@@ -114,11 +109,12 @@ function renderPostCard(post, index) {
             <span class="post-meta-label">最后更新</span>
             <time datetime="${escapeHtml(post.updated)}">${formatDate(post.updated, true)}</time>
           </span>
+          <span class="post-taxonomy">
+            <button class="post-category" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button>
+            ${tags}
+          </span>
         </div>
       </div>
-      <button class="post-arrow" type="button" data-open="${escapeHtml(post.id)}" aria-label="阅读《${escapeHtml(post.title)}》">
-        <span aria-hidden="true">→</span>
-      </button>
     </article>
   `;
 }
