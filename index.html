@@ -13,7 +13,7 @@
     <link rel="icon" href="assets/avatar.png">
     <title>godmars' Blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css" integrity="sha384-vlBdW0r3AcZO/HboRPznQNowvexd3fY8qHOWkBi5q7KGgqJ+F48+DceybYmrVbmB" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/styles.css?v=20260812-5">
   </head>
   <body>
     <header class="topbar">
@@ -72,24 +72,46 @@
         </section>
       </aside>
 
-      <section class="content-panel" aria-live="polite">
+      <section class="content-panel">
+        <details class="discovery-drawer">
+          <summary>
+            <span>浏览分类与标签</span>
+            <span class="discovery-drawer-summary" data-discovery-summary></span>
+          </summary>
+          <div class="discovery-drawer-body">
+            <section class="discovery-section" aria-labelledby="mobileCategoryHeading">
+              <div class="discovery-heading">
+                <h2 id="mobileCategoryHeading">分类目录</h2>
+                <span data-category-total></span>
+              </div>
+              <div class="discovery-list" data-category-cards></div>
+            </section>
+            <section class="discovery-section" aria-labelledby="mobileTagHeading">
+              <div class="discovery-heading">
+                <h2 id="mobileTagHeading">标签</h2>
+                <span data-tag-total></span>
+              </div>
+              <div class="tag-cloud" data-tag-cards></div>
+            </section>
+          </div>
+        </details>
         <div id="viewHeader" class="view-header"></div>
         <div id="app"></div>
       </section>
       <aside class="discovery-panel" aria-label="分类与标签">
         <section class="discovery-card">
           <div class="discovery-heading">
-            <h2>分类</h2>
-            <span id="categoryTotal"></span>
+            <h2>分类目录</h2>
+            <span data-category-total></span>
           </div>
-          <div id="categoryCards" class="discovery-list"></div>
+          <div class="discovery-list" data-category-cards></div>
         </section>
         <section class="discovery-card">
           <div class="discovery-heading">
             <h2>标签</h2>
-            <span id="tagTotal"></span>
+            <span data-tag-total></span>
           </div>
-          <div id="tagCards" class="tag-cloud"></div>
+          <div class="tag-cloud" data-tag-cards></div>
         </section>
       </aside>
       <aside class="toc-panel" aria-label="文章目录">
@@ -107,6 +129,6 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.js" integrity="sha384-AtrdNsnxl/75rvBneBVH7DtOvCxSVahR2zWqle1coBKd8DEmLoviqNeJSx64gNAs" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script>
     <script src="assets/posts.js"></script>
-    <script src="assets/app.js"></script>
+    <script src="assets/app.js?v=20260812-9"></script>
   </body>
 </html>

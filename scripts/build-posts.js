@@ -2,6 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 const MarkdownIt = require("markdown-it");
+const { rewritePostImages } = require("./post-assets");
 
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
@@ -222,11 +223,13 @@ function normalizeGptMathBlocks(source) {
   return normalized.join("\n");
 }
 
-function renderMarkdown(source) {
+function renderMarkdown(source, sourcePath) {
   const env = {};
   const tokens = markdown.parse(normalizeGptMathBlocks(source), env);
   const headings = [];
   const slugCounts = new Map();
+
+  rewritePostImages(tokens, { root, sourcePath });
 
   tokens.forEach((token, index) => {
     if (token.type !== "heading_open") return;
@@ -280,7 +283,7 @@ const posts = ensureUniquePostIds(walk(postsDir)
       return null;
     }
     const cat = deriveCategory(filePath);
-    const rendered = renderMarkdown(body);
+    const rendered = renderMarkdown(body, source);
     const category = cat.category || meta.category || "未分类";
     const updated = modifiedTimeFor(filePath, source, meta);
     const published = publishedDateFor(filePath, source, meta);

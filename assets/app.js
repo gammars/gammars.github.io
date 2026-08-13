@@ -15,6 +15,7 @@ const state = {
   filter: null,
   query: "",
   postId: null,
+  returnHash: "#home",
   openCategoryPanels: new Set(),
   categoryPanelsReady: false,
 };
@@ -23,8 +24,6 @@ const app = document.querySelector("#app");
 const viewHeader = document.querySelector("#viewHeader");
 const searchInput = document.querySelector("#searchInput");
 const tocEl = document.querySelector("#toc");
-const categoryCardsEl = document.querySelector("#categoryCards");
-const tagCardsEl = document.querySelector("#tagCards");
 
 function plainTextFromHtml(html = "") {
   const template = document.createElement("template");
@@ -64,7 +63,7 @@ function countsBy(key) {
 }
 
 function setHeader(title, description) {
-  viewHeader.innerHTML = `<h2>${escapeHtml(title)}</h2><p>${escapeHtml(description)}</p>`;
+  viewHeader.innerHTML = `<h2 tabindex="-1">${escapeHtml(title)}</h2><p role="status">${escapeHtml(description)}</p>`;
 }
 
 function setDocumentMeta(title, description) {
@@ -85,6 +84,7 @@ function matchesPost(post) {
   if (query && !text.includes(query)) return false;
   if (!state.filter) return true;
   if (state.filter.type === "tag") return post.tags.includes(state.filter.value);
+  if (state.filter.type === "category-direct") return post.category === state.filter.value;
   if (state.filter.type === "category") {
     return post.category === state.filter.value || post.category.startsWith(`${state.filter.value} / `);
   }
@@ -121,11 +121,18 @@ function renderPostCard(post) {
 
 function renderHome() {
   const filtered = posts.filter(matchesPost);
-  const label = state.filter ? `${state.filter.type === "tag" ? "标签" : "分类"}：${state.filter.value}` : "最新博文";
+  const filterLabel = state.filter?.type === "tag"
+    ? `标签：${state.filter.value}`
+    : state.filter?.type === "category-direct"
+      ? `分类：${state.filter.value}（仅本级）`
+      : state.filter
+        ? `分类：${state.filter.value}`
+        : "";
+  const label = filterLabel || "最新博文";
   const description = state.query
     ? `找到 ${filtered.length} 篇与“${state.query}”相关的文章`
     : state.filter
-      ? `当前分类下共 ${filtered.length} 篇文章`
+      ? `${state.filter.type === "tag" ? "当前标签" : "当前分类"}下共 ${filtered.length} 篇文章`
       : `共 ${posts.length} 篇博文，按本地文件最后修改时间排列`;
   setHeader(label, description);
   setDocumentMeta(site.title, `${site.name} 的个人博客`);
@@ -139,6 +146,7 @@ function renderToc(post) {
   if (!tocEl) return;
   if (!post) {
     tocEl.innerHTML = "";
+    teardownTocTracking();
     return;
   }
   const headings = post.headings || post.content.filter(b => /^h[1-3]$/.test(b.type));
@@ -156,6 +164,15 @@ function renderToc(post) {
       }).join("")}
     </ul>
   `;
+}
+
+function setActiveHeading(headingId) {
+  document.querySelectorAll("[data-heading]").forEach((link) => {
+    const active = link.dataset.heading === headingId;
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  });
 }
 
 function renderArticle(id) {
@@ -256,6 +273,7 @@ function buildCategoryTree() {
           name,
           path: parts.slice(0, index + 1).join(" / "),
           total: 0,
+          direct: 0,
           children: new Map(),
         });
       }
@@ -263,48 +281,65 @@ function buildCategoryTree() {
       node.total += 1;
       parent = node;
     });
+    parent.direct += 1;
   });
   return [...root.children.values()]
-    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "zh-CN"));
+    .sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
 }
 
 function sortedCategoryChildren(node) {
   return [...node.children.values()]
-    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "zh-CN"));
+    .sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
 }
 
 let categoryPanelSequence = 0;
 
-function renderCategoryNode(node) {
+function renderCategoryNode(node, depth = 0, idPrefix = "category-tree") {
   const children = sortedCategoryChildren(node);
   const active = state.filter?.type === "category" && state.filter.value === node.path;
-  if (!children.length) {
-    return `
-      <button class="discovery-item${active ? " is-active" : ""}" type="button" data-category="${escapeHtml(node.path)}" aria-pressed="${active}">
-        <span>${escapeHtml(node.name)}</span>
-        <strong>${node.total}</strong>
-      </button>
-    `;
-  }
-
+  const directActive = state.filter?.type === "category-direct" && state.filter.value === node.path;
   const open = state.openCategoryPanels.has(node.path);
-  const panelId = `category-panel-${categoryPanelSequence += 1}`;
+  const panelId = `${idPrefix}-panel-${categoryPanelSequence += 1}`;
   return `
-    <div class="category-group">
-      <button class="category-summary" type="button" data-category-toggle="${escapeHtml(node.path)}" aria-expanded="${open}" aria-controls="${panelId}">
-        <span class="category-chevron" aria-hidden="true">›</span>
-        <span class="category-group-name">${escapeHtml(node.name)}</span>
-        <strong>${node.total}</strong>
-      </button>
-      <div id="${panelId}" class="category-children"${open ? "" : " hidden"}>
-        <button class="discovery-item category-all${active ? " is-active" : ""}" type="button" data-category="${escapeHtml(node.path)}" aria-pressed="${active}">
-          <span>全部博文</span>
-          <strong>${node.total}</strong>
+    <div class="category-node" data-depth="${depth}">
+      <div class="category-row${children.length ? " has-children" : ""}">
+        <button class="category-link${active ? " is-active" : ""}" type="button" data-category="${escapeHtml(node.path)}" aria-pressed="${active}" title="查看“${escapeHtml(node.path)}”下的博文">
+          <span class="category-name">${escapeHtml(node.name)}</span>
+          <span class="category-count" aria-label="${node.total} 篇博文">${node.total}</span>
         </button>
-        ${children.map(renderCategoryNode).join("")}
+        ${children.length ? `
+          <button class="category-toggle" type="button" data-category-toggle="${escapeHtml(node.path)}" data-category-depth="${depth}" aria-expanded="${open}" aria-controls="${panelId}" aria-label="${open ? "收起" : "展开"}“${escapeHtml(node.name)}”">
+            <span class="category-chevron" aria-hidden="true">›</span>
+          </button>
+        ` : ""}
       </div>
+      ${children.length ? `
+        <div id="${panelId}" class="category-children"${open ? "" : " hidden"}>
+          ${node.direct ? `
+            <button class="category-link category-direct${directActive ? " is-active" : ""}" type="button" data-category-direct="${escapeHtml(node.path)}" aria-pressed="${directActive}" title="仅查看直接归入“${escapeHtml(node.path)}”的博文">
+              <span class="category-name">仅本级博文</span>
+              <span class="category-count" aria-label="${node.direct} 篇博文">${node.direct}</span>
+            </button>
+          ` : ""}
+          ${children.map((child) => renderCategoryNode(child, depth + 1, idPrefix)).join("")}
+        </div>
+      ` : ""}
     </div>
   `;
+}
+
+function countCategoryNodes(nodes) {
+  return nodes.reduce((total, node) => total + 1 + countCategoryNodes([...node.children.values()]), 0);
+}
+
+function setCategoryPanelExpanded(category, expanded) {
+  document.querySelectorAll("button[data-category-toggle]").forEach((button) => {
+    if (button.dataset.categoryToggle !== category) return;
+    button.setAttribute("aria-expanded", String(expanded));
+    button.setAttribute("aria-label", `${expanded ? "收起" : "展开"}“${button.dataset.categoryToggle.split(" / ").at(-1)}”`);
+    const panel = document.getElementById(button.getAttribute("aria-controls"));
+    if (panel) panel.hidden = !expanded;
+  });
 }
 
 function renderDiscovery() {
@@ -314,24 +349,50 @@ function renderDiscovery() {
 
   if (!state.categoryPanelsReady) {
     const firstExpandable = categoryTree.find((node) => node.children.size);
-    if (firstExpandable) state.openCategoryPanels.add(firstExpandable.path);
+    if (categoryTree.length <= 6 && firstExpandable) state.openCategoryPanels.add(firstExpandable.path);
     state.categoryPanelsReady = true;
   }
-  if (state.filter?.type === "category") {
+  if (["category", "category-direct"].includes(state.filter?.type)) {
     const parts = state.filter.value.split(" / ");
-    for (let index = 1; index < parts.length; index += 1) {
+    for (let index = 1; index <= parts.length; index += 1) {
       state.openCategoryPanels.add(parts.slice(0, index).join(" / "));
     }
   }
 
-  document.querySelector("#categoryTotal").textContent = `${categoryTree.length} 个一级分类`;
-  document.querySelector("#tagTotal").textContent = `${tags.length} 个`;
-  categoryPanelSequence = 0;
-  categoryCardsEl.innerHTML = categoryTree.map(renderCategoryNode).join("");
-  tagCardsEl.innerHTML = tags.map(([name, count]) => {
+  const categoryCount = countCategoryNodes(categoryTree);
+  document.querySelectorAll("[data-category-total]").forEach((element) => {
+    element.textContent = `${categoryTree.length} 组 · ${categoryCount} 类`;
+  });
+  document.querySelectorAll("[data-tag-total]").forEach((element) => {
+    element.textContent = `${tags.length} 个`;
+  });
+  document.querySelectorAll("[data-discovery-summary]").forEach((element) => {
+    element.textContent = state.filter?.type === "tag"
+      ? `标签：${state.filter.value}`
+      : state.filter?.type === "category-direct"
+        ? `分类：${state.filter.value}（仅本级）`
+        : state.filter
+          ? `分类：${state.filter.value}`
+          : `${categoryCount} 个分类`;
+  });
+  document.querySelectorAll("[data-category-cards]").forEach((element, index) => {
+    categoryPanelSequence = 0;
+    const allActive = state.view === "home" && !state.filter && !state.query;
+    element.innerHTML = `
+      <button class="category-link category-root${allActive ? " is-active" : ""}" type="button" data-view="home" aria-pressed="${allActive}">
+        <span class="category-name">全部博文</span>
+        <span class="category-count" aria-label="${posts.length} 篇博文">${posts.length}</span>
+      </button>
+      ${categoryTree.map((node) => renderCategoryNode(node, 0, `category-tree-${index}`)).join("")}
+    `;
+  });
+  const tagMarkup = tags.map(([name, count]) => {
     const active = state.filter?.type === "tag" && state.filter.value === name;
     return `<button class="discovery-tag${active ? " is-active" : ""}" type="button" data-tag="${escapeHtml(name)}" aria-pressed="${active}"># ${escapeHtml(name)} <span>${count}</span></button>`;
   }).join("") || `<span class="discovery-empty">暂无标签</span>`;
+  document.querySelectorAll("[data-tag-cards]").forEach((element) => {
+    element.innerHTML = tagMarkup;
+  });
 }
 
 function renderArchive() {
@@ -343,7 +404,7 @@ function renderArchive() {
       ${sorted.map((post) => `
         <div class="archive-item">
           <time datetime="${escapeHtml(post.date)}">${formatDate(post.date)}</time>
-          <button type="button" data-open="${post.id}">${escapeHtml(post.title)}</button>
+          <button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button>
         </div>
       `).join("")}
     </div>
@@ -372,6 +433,28 @@ function updateHash() {
   navigate(state.view === "home" ? `#home${filter}` : `#${state.view}`);
 }
 
+function closeTaxonomyDrawer() {
+  const drawer = document.querySelector(".discovery-drawer");
+  if (drawer) drawer.open = false;
+}
+
+function updateTaxonomyHash({ preserveViewport = false } = {}) {
+  const previousScrollY = window.scrollY;
+  if (preserveViewport) document.documentElement.classList.add("is-taxonomy-updating");
+  updateHash();
+  closeTaxonomyDrawer();
+  if (!preserveViewport) return;
+  const restoreViewport = () => window.scrollTo({ top: previousScrollY, behavior: "auto" });
+  restoreViewport();
+  requestAnimationFrame(() => {
+    restoreViewport();
+    requestAnimationFrame(() => {
+      restoreViewport();
+      document.documentElement.classList.remove("is-taxonomy-updating");
+    });
+  });
+}
+
 function navigate(hash, { replace = false } = {}) {
   history[replace ? "replaceState" : "pushState"](null, "", hash);
   applyHash();
@@ -385,10 +468,46 @@ function safeDecode(value) {
   }
 }
 
+function articleHeadingById(headingId) {
+  if (!headingId) return null;
+  return [...document.querySelectorAll(".article-body h1[id], .article-body h2[id], .article-body h3[id], .article-body h4[id], .article-body h5[id], .article-body h6[id]")]
+    .find((heading) => heading.id === headingId) || null;
+}
+
+function scrollToHeading(headingId, { smooth = true, focus = false } = {}) {
+  const target = articleHeadingById(headingId);
+  if (!target) return false;
+  const headerBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0;
+  const gap = 16;
+  const rect = target.getBoundingClientRect();
+  const visible = rect.top >= headerBottom + gap && rect.bottom <= window.innerHeight - gap;
+  if (!visible) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({
+      top: Math.max(0, window.scrollY + rect.top - headerBottom - gap),
+      behavior: smooth && !reducedMotion ? "smooth" : "auto",
+    });
+  }
+  if (focus) {
+    target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
+    target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
+  }
+  return true;
+}
+
 function scrollToRouteTarget(headingId) {
   requestAnimationFrame(() => {
-    const target = headingId ? document.getElementById(headingId) : document.querySelector(".content-panel");
-    target?.scrollIntoView({ block: "start" });
+    if (headingId && articleHeadingById(headingId)) {
+      setActiveHeading(headingId);
+      scrollToHeading(headingId, { smooth: false });
+      return;
+    }
+    const target = document.querySelector(".content-panel");
+    if (!target) return;
+    const headerBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0;
+    const top = window.scrollY + target.getBoundingClientRect().top - headerBottom - 16;
+    window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
   });
 }
 
@@ -401,8 +520,15 @@ function applyHash() {
   const parts = hash.split("/");
   const route = parts[0];
   const supported = new Set(["home", "post", "about", "archive"]);
-  if (!supported.has(route)) history.replaceState(null, "", "#home");
-  state.view = supported.has(route) ? route : "home";
+  const decodedFilter = safeDecode(parts[2]);
+  const validHomeFilter = !parts[1]
+    || (["category", "category-direct", "tag"].includes(parts[1]) && Boolean(decodedFilter) && parts.length === 3);
+  if (!supported.has(route) || (route === "home" && !validHomeFilter)) {
+    history.replaceState(null, "", "#home");
+    hash = "home";
+    parts.splice(0, parts.length, "home");
+  }
+  state.view = supported.has(parts[0]) ? parts[0] : "home";
   state.filter = null;
   state.postId = null;
 
@@ -414,42 +540,55 @@ function applyHash() {
     return;
   }
 
-  if (state.view === "home" && parts[1] && parts[2]) {
+  if (state.view === "home" && ["category", "category-direct", "tag"].includes(parts[1]) && parts[2]) {
     state.view = "home";
-    state.filter = { type: parts[1], value: safeDecode(parts[2]) };
+    state.filter = { type: parts[1], value: decodedFilter };
   }
   render();
 }
 
-let tocObserver = null;
+let tocScrollFrame = null;
+let tocScrollHandler = null;
 
-function setupTocObserver() {
-  if (tocObserver) tocObserver.disconnect();
-  if (!tocEl) return;
-  
-  const headings = document.querySelectorAll(".article-body h1, .article-body h2, .article-body h3, .article-body h4");
-  if (!headings.length) return;
-
-  const links = [...tocEl.querySelectorAll("a")];
-  
-  tocObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        links.forEach(l => l.classList.toggle("is-active", l.dataset.heading === id));
-      }
-    });
-  }, { rootMargin: "-80px 0px -70% 0px", threshold: 0 });
-
-  headings.forEach(h => tocObserver.observe(h));
+function teardownTocTracking() {
+  if (tocScrollHandler) {
+    window.removeEventListener("scroll", tocScrollHandler);
+    window.removeEventListener("resize", tocScrollHandler);
+    tocScrollHandler = null;
+  }
+  if (tocScrollFrame) {
+    cancelAnimationFrame(tocScrollFrame);
+    tocScrollFrame = null;
+  }
 }
 
-document.addEventListener("keydown", (event) => {
-  const toggle = event.target.closest?.("button[data-category-toggle]");
-  if (!toggle || (event.key !== "Enter" && event.key !== " ")) return;
-  event.preventDefault();
-  toggle.click();
-});
+function setupTocObserver() {
+  teardownTocTracking();
+  if (!tocEl) return;
+  
+  const headings = [...document.querySelectorAll(".article-body h1[id], .article-body h2[id], .article-body h3[id], .article-body h4[id], .article-body h5[id], .article-body h6[id]")];
+  if (!headings.length) return;
+
+  const updateActiveHeading = () => {
+    tocScrollFrame = null;
+    const activationY = (document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0) + 16;
+    let activeHeading = null;
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= activationY + 1) activeHeading = heading;
+      else break;
+    }
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+      activeHeading = headings.at(-1);
+    }
+    setActiveHeading(activeHeading?.id || "");
+  };
+  tocScrollHandler = () => {
+    if (!tocScrollFrame) tocScrollFrame = requestAnimationFrame(updateActiveHeading);
+  };
+  window.addEventListener("scroll", tocScrollHandler, { passive: true });
+  window.addEventListener("resize", tocScrollHandler);
+  tocScrollHandler();
+}
 
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button, a");
@@ -457,20 +596,30 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.heading) {
     event.preventDefault();
-    history.pushState(null, "", postHash(target.dataset.post, target.dataset.heading));
-    document.getElementById(target.dataset.heading)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const nextHash = postHash(target.dataset.post, target.dataset.heading);
+    if (location.hash !== nextHash) history.pushState(null, "", nextHash);
+    setActiveHeading(target.dataset.heading);
+    const mobileToc = target.closest(".mobile-toc");
+    if (mobileToc) mobileToc.open = false;
+    const keyboardActivated = event.detail === 0;
+    requestAnimationFrame(() => scrollToHeading(target.dataset.heading, { smooth: true, focus: keyboardActivated || Boolean(mobileToc) }));
     return;
   }
 
   if (target.dataset.view) {
     event.preventDefault();
+    const fromTaxonomy = target.classList.contains("category-root");
     state.view = target.dataset.view;
     state.filter = null;
-    updateHash();
+    state.query = "";
+    searchInput.value = "";
+    if (fromTaxonomy) updateTaxonomyHash({ preserveViewport: Boolean(target.closest(".discovery-panel")) });
+    else updateHash();
     return;
   }
 
   if (target.dataset.open) {
+    if (state.view === "home") state.returnHash = location.hash || "#home";
     navigate(postHash(target.dataset.open));
     return;
   }
@@ -478,32 +627,58 @@ document.addEventListener("click", (event) => {
   if (target.dataset.categoryToggle) {
     const category = target.dataset.categoryToggle;
     const expanded = target.getAttribute("aria-expanded") === "true";
-    const panel = document.getElementById(target.getAttribute("aria-controls"));
-    target.setAttribute("aria-expanded", String(!expanded));
-    if (panel) panel.hidden = expanded;
+    if (!expanded && target.dataset.categoryDepth === "0") {
+      const activeRoot = ["category", "category-direct"].includes(state.filter?.type)
+        ? state.filter.value.split(" / ")[0]
+        : "";
+      [...state.openCategoryPanels]
+        .filter((path) => !path.includes(" / ") && path !== category && path !== activeRoot)
+        .forEach((path) => {
+          state.openCategoryPanels.delete(path);
+          setCategoryPanelExpanded(path, false);
+        });
+    }
     if (expanded) state.openCategoryPanels.delete(category);
     else state.openCategoryPanels.add(category);
+    setCategoryPanelExpanded(category, !expanded);
     return;
   }
 
   if (target.dataset.tag) {
     state.view = "home";
-    state.filter = { type: "tag", value: target.dataset.tag };
-    updateHash();
+    state.filter = state.filter?.type === "tag" && state.filter.value === target.dataset.tag
+      ? null
+      : { type: "tag", value: target.dataset.tag };
+    state.query = "";
+    searchInput.value = "";
+    updateTaxonomyHash({ preserveViewport: Boolean(target.closest(".discovery-panel")) });
     return;
   }
 
   if (target.dataset.category) {
     state.view = "home";
-    state.filter = { type: "category", value: target.dataset.category };
-    updateHash();
+    state.filter = state.filter?.type === "category" && state.filter.value === target.dataset.category
+      ? null
+      : { type: "category", value: target.dataset.category };
+    state.query = "";
+    searchInput.value = "";
+    updateTaxonomyHash({ preserveViewport: Boolean(target.closest(".discovery-panel")) });
+    return;
+  }
+
+  if (target.dataset.categoryDirect) {
+    state.view = "home";
+    state.filter = state.filter?.type === "category-direct" && state.filter.value === target.dataset.categoryDirect
+      ? null
+      : { type: "category-direct", value: target.dataset.categoryDirect };
+    state.query = "";
+    searchInput.value = "";
+    updateTaxonomyHash({ preserveViewport: Boolean(target.closest(".discovery-panel")) });
     return;
   }
 
   if (target.dataset.back !== undefined) {
-    state.view = "home";
-    state.filter = null;
-    updateHash();
+    navigate(state.returnHash || "#home");
   }
 });
 
@@ -515,22 +690,33 @@ searchInput.addEventListener("input", (event) => {
   render();
 });
 
+function updateThemeToggle() {
+  const dark = document.documentElement.dataset.theme === "dark";
+  const toggle = document.querySelector(".theme-toggle");
+  toggle.setAttribute("aria-pressed", String(dark));
+  toggle.setAttribute("aria-label", dark ? "切换浅色模式" : "切换深色模式");
+  toggle.title = dark ? "切换浅色模式" : "切换深色模式";
+}
+
 document.querySelector(".theme-toggle").addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "dark" ? "" : "dark";
   document.documentElement.dataset.theme = next;
   localStorage.setItem("theme", next);
-  document.querySelector(".theme-toggle").setAttribute("aria-pressed", String(next === "dark"));
+  updateThemeToggle();
 });
 
-window.addEventListener("popstate", applyHash);
+window.addEventListener("popstate", () => {
+  applyHash();
+  if (state.view === "home" && state.filter) closeTaxonomyDrawer();
+});
 
 document.querySelector("#profileName").textContent = site.name;
 document.querySelector("#profileBio").textContent = site.bio;
 document.querySelector("#postCount").textContent = posts.length;
-document.querySelector("#categoryCount").textContent = unique(posts.map((post) => post.category)).length;
+document.querySelector("#categoryCount").textContent = countCategoryNodes(buildCategoryTree());
 document.querySelector("#tagCount").textContent = unique(posts.flatMap((post) => post.tags)).length;
 document.querySelector("#year").textContent = new Date().getFullYear();
 document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
-document.querySelector(".theme-toggle").setAttribute("aria-pressed", String(document.documentElement.dataset.theme === "dark"));
+updateThemeToggle();
 
 applyHash();

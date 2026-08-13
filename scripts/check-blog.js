@@ -1,6 +1,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 const vm = require("node:vm");
+const { IMAGE_EXTENSIONS } = require("./post-assets");
 
 const root = path.resolve(__dirname, "..");
 const generated = fs.readFileSync(path.join(root, "assets", "posts.js"), "utf8");
@@ -11,6 +13,63 @@ vm.runInNewContext(generated, context);
 
 const posts = context.window.BLOG_POSTS;
 if (!Array.isArray(posts)) throw new Error("BLOG_POSTS is not an array");
+
+function referencedLocalImages() {
+  const referenced = new Set();
+  for (const post of posts) {
+    for (const match of post.html.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/gi)) {
+      const imageUrl = new URL(match[1], "https://blog.invalid/");
+      if (imageUrl.origin !== "https://blog.invalid") continue;
+      let decoded;
+      try {
+        decoded = imageUrl.pathname.split("/").filter(Boolean).map(decodeURIComponent).join("/");
+      } catch {
+        throw new Error(`Invalid generated image URL in ${post.source}: ${match[1]}`);
+      }
+      referenced.add(decoded);
+    }
+  }
+  return referenced;
+}
+
+function articleAssetFiles(directory, output = []) {
+  if (!fs.existsSync(directory)) return output;
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isSymbolicLink()) continue;
+    if (entry.isDirectory()) {
+      articleAssetFiles(fullPath, output);
+    } else if (entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+      const relative = path.relative(root, fullPath).replace(/\\/g, "/");
+      if (relative.split("/").some((part) => part.toLowerCase().endsWith(".assets"))) output.push(relative);
+    }
+  }
+  return output;
+}
+
+function filesBelow(directory, output = []) {
+  if (!fs.existsSync(directory)) return output;
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isSymbolicLink()) continue;
+    if (entry.isDirectory()) filesBelow(fullPath, output);
+    else if (entry.isFile()) output.push(path.relative(root, fullPath).replace(/\\/g, "/"));
+  }
+  return output;
+}
+
+function assertNotIgnored(relativePath) {
+  try {
+    execFileSync("git", ["check-ignore", "--quiet", "--", relativePath], {
+      cwd: root,
+      stdio: "ignore",
+    });
+  } catch (error) {
+    if (error.status === 1) return;
+    throw error;
+  }
+  throw new Error(`Referenced image is ignored by Git: ${relativePath}`);
+}
 
 const postIds = new Set();
 for (const post of posts) {
@@ -41,4 +100,19 @@ for (let index = 1; index < posts.length; index += 1) {
   }
 }
 
-console.log(`Checked ${posts.length} posts: dates, metadata, Markdown output, ids and modified-time order are valid.`);
+const referencedImages = referencedLocalImages();
+for (const relativePath of referencedImages) {
+  if (relativePath.startsWith("posts/") || relativePath.startsWith("assets/")) {
+    assertNotIgnored(relativePath);
+  }
+}
+const unusedArticleImages = articleAssetFiles(path.join(root, "posts"))
+  .filter((relativePath) => !referencedImages.has(relativePath));
+for (const relativePath of unusedArticleImages) {
+  console.warn(`Unused article image (kept on disk): ${relativePath}`);
+}
+for (const relativePath of filesBelow(path.join(root, "assets", "uploads"))) {
+  console.warn(`Legacy upload file (kept on disk): ${relativePath}`);
+}
+
+console.log(`Checked ${posts.length} posts: dates, metadata, Markdown output, images, ids and modified-time order are valid.`);
