@@ -112,7 +112,7 @@ function renderCodeBlock(token) {
   if (trailingNewline && lines.at(-1) === "") lines.pop();
   const lineHtml = lines.map((line, index) => (
     `<span class="code-line"><span class="code-line-number" aria-hidden="true">${index + 1}</span><span class="code-line-content">${line}</span></span>`
-  )).join("\n");
+  )).join("");
   const languageClass = info.language ? ` language-${escapeHtml(info.language)}` : "";
   const label = escapeHtml(info.label);
   return `<div class="code-block" data-language="${label}" data-trailing-newline="${trailingNewline}">

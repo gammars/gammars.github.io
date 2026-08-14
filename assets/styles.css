@@ -774,6 +774,7 @@ body.is-article .toc-panel { display: block; }
   min-width: max-content;
   color: var(--text);
   font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  white-space: normal;
   tab-size: 2;
 }
 
