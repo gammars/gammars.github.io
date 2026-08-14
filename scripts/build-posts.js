@@ -1,8 +1,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
-const MarkdownIt = require("markdown-it");
 const { rewritePostImages } = require("./post-assets");
+const { createMarkdownRenderer } = require("./markdown-renderer");
 
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
@@ -10,11 +10,7 @@ const outFile = path.join(root, "assets", "posts.js");
 const modifiedTimesFile = path.join(root, "assets", "post-modified-times.json");
 const publishedDatesFile = path.join(root, "assets", "post-published-dates.json");
 const useRecordedTimes = process.argv.includes("--use-recorded-times");
-const markdown = new MarkdownIt({
-  html: false,
-  linkify: true,
-  typographer: false,
-});
+const markdown = createMarkdownRenderer();
 const EXCERPT_LIMIT = 180;
 
 function readJson(filePath) {
@@ -178,6 +174,21 @@ function excerptFromTokens(tokens, limit = EXCERPT_LIMIT) {
   return characters.length > limit ? `${characters.slice(0, limit).join("")}…` : plain;
 }
 
+function readingMinutesFromTokens(tokens) {
+  const text = [];
+  tokens.forEach((token, index) => {
+    if (token.type !== "inline") return;
+    const container = tokens[index - 1]?.type || "";
+    if (["heading_open", "paragraph_open", "td_open", "th_open", "list_item_open", "blockquote_open"].includes(container)) {
+      text.push(inlineText(token));
+    }
+  });
+  const plain = text.join(" ").replace(/\s+/g, " ").trim();
+  const cjk = (plain.match(/[\u3400-\u9fff]/g) || []).length;
+  const latinWords = (plain.match(/[A-Za-z0-9_]+/g) || []).length;
+  return Math.max(1, Math.ceil(cjk / 450 + latinWords / 180));
+}
+
 function looksLikeGptMathBlock(lines) {
   const value = lines.join("\n").trim();
   if (!value) return false;
@@ -247,6 +258,7 @@ function renderMarkdown(source, sourcePath) {
     html: markdown.renderer.render(tokens, markdown.options, env),
     headings,
     excerpt: excerptFromTokens(tokens),
+    readingMinutes: readingMinutesFromTokens(tokens),
   };
 }
 
@@ -297,6 +309,7 @@ const posts = ensureUniquePostIds(walk(postsDir)
       catL2: cat.category ? cat.l2 : (meta.catL2 || ""),
       tags: Array.isArray(meta.tags) ? meta.tags : [],
       excerpt: meta.excerpt || rendered.excerpt,
+      readingMinutes: rendered.readingMinutes,
       html: rendered.html,
       headings: rendered.headings,
       source,

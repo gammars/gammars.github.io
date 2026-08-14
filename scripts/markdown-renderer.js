@@ -1,0 +1,139 @@
+const MarkdownIt = require("markdown-it");
+const hljs = require("highlight.js/lib/common");
+
+const LANGUAGE_ALIASES = new Map([
+  ["js", "javascript"],
+  ["jsx", "javascript"],
+  ["ts", "typescript"],
+  ["tsx", "typescript"],
+  ["py", "python"],
+  ["sh", "bash"],
+  ["shell", "bash"],
+  ["zsh", "bash"],
+  ["yml", "yaml"],
+  ["md", "markdown"],
+  ["html", "xml"],
+  ["svg", "xml"],
+  ["c++", "cpp"],
+  ["cc", "cpp"],
+  ["hpp", "cpp"],
+  ["c#", "csharp"],
+  ["cs", "csharp"],
+  ["golang", "go"],
+  ["text", "plaintext"],
+  ["txt", "plaintext"],
+  ["plain", "plaintext"],
+]);
+
+const LANGUAGE_LABELS = new Map([
+  ["javascript", "JavaScript"],
+  ["typescript", "TypeScript"],
+  ["python", "Python"],
+  ["java", "Java"],
+  ["cpp", "C++"],
+  ["c", "C"],
+  ["csharp", "C#"],
+  ["bash", "Shell"],
+  ["sql", "SQL"],
+  ["json", "JSON"],
+  ["xml", "HTML/XML"],
+  ["css", "CSS"],
+  ["markdown", "Markdown"],
+  ["plaintext", "纯文本"],
+]);
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function languageInfo(info) {
+  const raw = String(info || "").trim().split(/\s+/, 1)[0] || "";
+  const clean = raw.replace(/^language-/, "").toLowerCase();
+  const language = LANGUAGE_ALIASES.get(clean) || clean;
+  const supported = Boolean(language && hljs.getLanguage(language));
+  return {
+    raw,
+    language: supported ? language : "",
+    label: LANGUAGE_LABELS.get(language) || raw || "纯文本",
+  };
+}
+
+function highlightCode(code, language) {
+  if (!language) return escapeHtml(code);
+  try {
+    return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+  } catch {
+    return escapeHtml(code);
+  }
+}
+
+// highlight.js may keep one <span> open across a newline (comments and
+// template strings are common examples). Split only after balancing tags so
+// each visual line remains valid HTML while preserving the highlighted text.
+function highlightedLines(html) {
+  const lines = [];
+  let current = "";
+  let openTags = [];
+  for (let index = 0; index < html.length;) {
+    if (html[index] === "\n") {
+      lines.push(`${current}${openTags.map(() => "</span>").reverse().join("")}`);
+      current = openTags.join("");
+      index += 1;
+      continue;
+    }
+    if (html[index] === "<") {
+      const end = html.indexOf(">", index);
+      if (end >= 0) {
+        const tag = html.slice(index, end + 1);
+        current += tag;
+        if (/^<span\b/i.test(tag)) openTags.push(tag);
+        else if (/^<\/span>/i.test(tag)) openTags.pop();
+        index = end + 1;
+        continue;
+      }
+    }
+    current += html[index];
+    index += 1;
+  }
+  lines.push(`${current}${openTags.map(() => "</span>").reverse().join("")}`);
+  return lines;
+}
+
+function renderCodeBlock(token) {
+  const info = languageInfo(token.info);
+  const highlighted = highlightCode(token.content, info.language);
+  const trailingNewline = token.content.endsWith("\n");
+  const lines = highlightedLines(highlighted);
+  if (trailingNewline && lines.at(-1) === "") lines.pop();
+  const lineHtml = lines.map((line, index) => (
+    `<span class="code-line"><span class="code-line-number" aria-hidden="true">${index + 1}</span><span class="code-line-content">${line}</span></span>`
+  )).join("\n");
+  const languageClass = info.language ? ` language-${escapeHtml(info.language)}` : "";
+  const label = escapeHtml(info.label);
+  return `<div class="code-block" data-language="${label}" data-trailing-newline="${trailingNewline}">
+  <div class="code-toolbar"><span class="code-language">${label}</span><button class="code-copy" type="button" data-copy-code aria-label="复制${label}代码">复制</button></div>
+  <pre class="hljs code-pre"><code class="code-content${languageClass}">${lineHtml}</code></pre>
+</div>\n`;
+}
+
+function createMarkdownRenderer() {
+  const markdown = new MarkdownIt({
+    html: false,
+    linkify: true,
+    typographer: false,
+  });
+  markdown.renderer.rules.fence = (tokens, index) => renderCodeBlock(tokens[index]);
+  return markdown;
+}
+
+module.exports = {
+  createMarkdownRenderer,
+  escapeHtml,
+  languageInfo,
+  renderCodeBlock,
+};

@@ -91,6 +91,14 @@ function matchesPost(post) {
   return true;
 }
 
+function readingMinutesForPost(post) {
+  if (Number.isFinite(Number(post.readingMinutes)) && Number(post.readingMinutes) > 0) return Number(post.readingMinutes);
+  const plain = plainTextFromHtml(post.html || "").replace(/\s+/g, " ").trim();
+  const cjk = (plain.match(/[\u3400-\u9fff]/g) || []).length;
+  const latinWords = (plain.match(/[A-Za-z0-9_]+/g) || []).length;
+  return Math.max(1, Math.ceil(cjk / 450 + latinWords / 180));
+}
+
 function renderPostCard(post) {
   const tags = post.tags.length
     ? post.tags.map((tag) => `<button class="post-tag" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")
@@ -185,7 +193,7 @@ function renderArticle(id) {
     return false;
   }
   state.postId = post.id;
-  setHeader(post.title, `发表于 ${formatPublishedDate(post.date)}，更新于 ${formatDate(post.updated, true)}，分类于 ${post.category}`);
+  setHeader(post.title, `发表于 ${formatPublishedDate(post.date)}，更新于 ${formatDate(post.updated, true)}，分类于 ${post.category}，预计阅读 ${readingMinutesForPost(post)} 分钟`);
   setDocumentMeta(`${post.title} | ${site.title}`, post.excerpt || `${post.title} - ${site.name}`);
   const headings = post.headings || post.content.filter((block) => /^h[1-3]$/.test(block.type)).map((block) => ({
     id: block.id,
@@ -202,14 +210,26 @@ function renderArticle(id) {
       </ul>
     </details>
   ` : "";
+  const postIndex = posts.findIndex((item) => item.id === post.id);
+  const older = posts[postIndex + 1];
+  const newer = posts[postIndex - 1];
+  const shareUrl = `${location.origin}${location.pathname}${postHash(post.id)}`;
+  const postNavigation = older || newer ? `
+    <nav class="article-nav" aria-label="文章导航">
+      ${older ? `<button type="button" class="article-nav-link" data-open="${escapeHtml(older.id)}"><span>较早文章</span><strong>${escapeHtml(older.title)}</strong></button>` : "<span></span>"}
+      ${newer ? `<button type="button" class="article-nav-link article-nav-next" data-open="${escapeHtml(newer.id)}"><span>较新文章</span><strong>${escapeHtml(newer.title)}</strong></button>` : "<span></span>"}
+    </nav>
+  ` : "";
   app.innerHTML = `
     <article class="article-body">
       <div class="tag-row">${post.tags.map((tag) => `<button class="chip" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")}</div>
       ${mobileToc}
       ${post.html || post.content.map(renderBlock).join("")}
       <div class="article-actions">
+        <button class="text-button" type="button" data-copy-link data-copy-url="${escapeHtml(shareUrl)}">复制文章链接</button>
         <button class="text-button" type="button" data-back>返回文章列表</button>
       </div>
+      ${postNavigation}
     </article>
   `;
   renderMath(app);
@@ -229,6 +249,19 @@ function renderMath(element) {
     ],
     throwOnError: false,
   });
+}
+
+function copyText(value) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value);
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.style.cssText = "position:fixed;inset:-9999px;opacity:0";
+  document.body.append(textarea);
+  textarea.select();
+  let copied = false;
+  try { copied = document.execCommand("copy"); } catch { copied = false; }
+  textarea.remove();
+  return copied ? Promise.resolve() : Promise.reject(new Error("clipboard unavailable"));
 }
 
 function renderBlock(block) {
@@ -593,6 +626,40 @@ function setupTocObserver() {
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button, a");
   if (!target) return;
+
+  if (target.dataset.copyCode !== undefined) {
+    event.preventDefault();
+    event.stopPropagation();
+    const block = target.closest(".code-block");
+    const code = block ? [...block.querySelectorAll(".code-line-content")].map((line) => line.textContent || "").join("\n") + (block.dataset.trailingNewline === "true" ? "\n" : "") : "";
+    const restore = () => {
+      target.textContent = "复制";
+      target.removeAttribute("data-copy-state");
+    };
+    copyText(code).then(() => {
+      target.textContent = "已复制";
+      target.dataset.copyState = "success";
+      window.setTimeout(restore, 1600);
+    }).catch(() => {
+      target.textContent = "复制失败";
+      target.dataset.copyState = "error";
+      window.setTimeout(restore, 1800);
+    });
+    return;
+  }
+
+  if (target.dataset.copyLink !== undefined) {
+    event.preventDefault();
+    event.stopPropagation();
+    copyText(target.dataset.copyUrl || location.href).then(() => {
+      target.textContent = "链接已复制";
+      window.setTimeout(() => { target.textContent = "复制文章链接"; }, 1600);
+    }).catch(() => {
+      target.textContent = "复制失败";
+      window.setTimeout(() => { target.textContent = "复制文章链接"; }, 1800);
+    });
+    return;
+  }
 
   if (target.dataset.heading) {
     event.preventDefault();
