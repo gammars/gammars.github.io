@@ -1,44 +1,31 @@
-这篇 Milvus 教程很适合作为 **Advanced RAG 的“地图型材料”**。它本身不是论文，也不追求把每个方法讲深，而是把 RAG 优化按照流水线位置拆成了几个模块：**Query → Index → Retriever → Generator → Pipeline/Agent**。Milvus 官方也是按这个思路组织全文的。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
-
-我建议你不要把它背成“十几个 RAG trick”，而要建立一个统一认识：
-
-> **Advanced RAG 的本质，是在解决标准 RAG 中“查什么、怎么存、怎么查、怎么筛、怎么喂给 LLM、什么时候重新查”这六个问题。**
-
-------
-
 # Milvus《如何提高 RAG pipeline的性能》学习笔记
+
+https://milvus.io/docs/zh/how_to_enhance_your_rag.md
 
 ## 先理解：标准 RAG 的问题
 
 最基础的 RAG 可以写成：
+
 $$
-q
-\rightarrow
-Embedding(q)
-\rightarrow
-Retriever
-\rightarrow
-TopK(D)
-\rightarrow
-LLM(q,D)
-\rightarrow
-Answer
+q \rightarrow Embedding(q) \rightarrow Retriever \rightarrow TopK(D) \rightarrow LLM(q,D) \rightarrow Answer
 $$
+
+
 也就是：
 
-```text
+```
 用户问题
-   ↓
+   ↓
 Embedding
-   ↓
+   ↓
 向量数据库retrive一下
-   ↓
+   ↓
 Top-K Chunk
-   ↓
+   ↓
 Prompt
-   ↓
+   ↓
 LLM
-   ↓
+   ↓
 Answer
 ```
 
@@ -46,28 +33,17 @@ Answer
 
 问题在于：
 
-[
 $$
 \boxed{\text{最终回答质量} \neq \text{只取决于 LLM}}
 $$
-]
+
 
 更接近：
 
-[
 $$
-Quality =
-f(
-Query,,
-Chunk,,
-Index,,
-Retriever,,
-Reranker,,
-Context,,
-Generator
-)
+Quality = f(Query, Chunk, Index, Retriever, Reranker, Context, Generator)
 $$
-]
+
 
 例如用户问：
 
@@ -88,11 +64,29 @@ $$
 
 Milvus 把这些优化概括为五大类：**查询增强、索引增强、检索器增强、生成器增强、整个 RAG pipeline 增强。** 
 
-------
+---
 
-## 一、查询增强：先把“问题”改造成适合搜索的问题
+## 五大模块总览
 
-这是我认为你最应该理解的一层。
+这篇教程可以按 RAG pipeline 的五个阶段来理解：
+
+| 模块 | 核心问题 | 代表方法 |
+| --- | --- | --- |
+| **1. 查询增强** | 查什么？如何把用户问题变成更适合检索的表达？ | Hypothetical Questions、HyDE、Query Decomposition、Step-Back、Query2doc |
+| **2. 索引增强** | 文档怎么切、怎么组织、怎么存？ | Auto-Merging、Hierarchical Index |
+| **3. 检索器增强** | 怎么召回、融合、过滤和重排？ | Dense + BM25、SPLADE、RRF、Reranker、Metadata Filtering |
+| **4. 生成器增强** | 检索结果怎么组织给 LLM，才能让它更好利用？ | Sentence Window、Context Compression、Context Reordering |
+| **5. Pipeline 增强** | 什么时候检索、失败后怎么办、是否需要其他工具？ | Self-RAG、CRAG、Routing、Retry、Agentic RAG |
+
+可以把主线记成：
+
+$$
+Query \rightarrow Index \rightarrow Retriever \rightarrow Generator \rightarrow Adaptive\ Pipeline
+$$
+
+---
+
+## 模块一：查询增强（Query Enhancement）——先把“问题”改造成适合搜索的问题
 
 很多时候不是数据库检索能力差，而是：
 
@@ -100,37 +94,37 @@ Milvus 把这些优化概括为五大类：**查询增强、索引增强、检�
 
 于是有：
 
-```text
+```
 User Query
-     ↓
+     ↓
 Query Transformation
-     ↓
+     ↓
 Retrieval Query
-     ↓
+     ↓
 Retriever
 ```
 
 Milvus 介绍了四种典型方案。
 
-------
+---
 
 ### 1.1 Hypothetical Questions：给文档预先生成“可能的问题”
 
-思路很有意思。
+![image-20260815154927192](./RAG优化方法.assets/image-20260815154927192.png)
 
-假设原始 Chunk：
+假设原始 Chunk内容如下：
 
 > Milvus supports distributed vector similarity search and can scale horizontally...
 
 传统方法存：
 
-```text
+```
 chunk → embedding → vector DB
 ```
 
 而 Hypothetical Question 方法先让 LLM 给这个 chunk 生成：
 
-```text
+```
 Q1: Milvus 是否支持分布式部署？
 Q2: Milvus 如何进行水平扩展？
 Q3: Milvus 能否进行大规模向量检索？
@@ -138,7 +132,7 @@ Q3: Milvus 能否进行大规模向量检索？
 
 然后存：
 
-```text
+```
 question embedding → original chunk
 ```
 
@@ -147,20 +141,22 @@ question embedding → original chunk
 > Milvus 能横向扩展吗？
 
 这时变成：
-$$
-Question_{user}
-\leftrightarrow
-Question_{generated}
-$$
-而不是：
-$$
-Question
-\leftrightarrow
-Document
-$$
-Milvus 把它解释为缓解 **query-document asymmetric problem**：查询通常很短，而文档是陈述句且比较长，二者在表示空间中天然存在形式差异。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
-### 优点
+$$
+Question_{user} \leftrightarrow Question_{generated}
+$$
+
+
+而不是：
+
+$$
+Question \leftrightarrow Document
+$$
+
+
+Milvus 把它解释为缓解 **query-document asymmetric problem**：查询通常很短，而文档是陈述句且比较长，二者在表示空间中天然存在形式差异。
+
+#### 优点
 
 特别适合：
 
@@ -169,11 +165,11 @@ Milvus 把它解释为缓解 **query-document asymmetric problem**：查询通�
 - API 文档；
 - 知识库 QA。
 
-### 缺点
+#### 缺点
 
 离线成本增加：
 
-```text
+```
 100 万 chunks
 × 每 chunk 5 个 question
 = 500 万 question embeddings
@@ -181,43 +177,35 @@ Milvus 把它解释为缓解 **query-document asymmetric problem**：查询通�
 
 数据库规模直接上去了。
 
-------
+---
 
-### 1.2HyDE：先“编一个答案”，再拿它去搜索
-
-这个方法一定要记。
+### 1.2 HyDE：先“编一个答案”，再拿它去搜索
 
 论文：
 
-**Gao et al., Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)**。([arXiv](https://arxiv.org/abs/2212.10496?utm_source=chatgpt.com))
+**Gao et al., Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)**。
 
 HyDE =
 
 > **Hypothetical Document Embeddings**
 
 普通 Retrieval：
+
 $$
-q
-\xrightarrow{Encoder}
-e_q
-\xrightarrow{ANN}
-Documents
+q \xrightarrow{Encoder} e_q \xrightarrow{ANN} Documents
 $$
+
+
 HyDE：
 
+$$
+q \xrightarrow{LLM} \hat d \xrightarrow{Encoder} e_{\hat d} \xrightarrow{ANN} Documents
+$$
 
-$$
-q
-\xrightarrow{LLM}
-\hat d
-\xrightarrow{Encoder}
-e_{\hat d}
-\xrightarrow{ANN}
-Documents
-$$
+
 即：
 
-```text
+```
 问题
  ↓
 LLM
@@ -239,29 +227,31 @@ LLM 先凭参数知识生成：
 
 然后：
 
-```text
+```
 embedding(假答案)
 ```
 
 再拿这个 embedding 搜论文/教材。
 
-### 为什么有效？
+#### 为什么有效？
 
 因为 embedding 检索真正希望找到的是：
 
-[
+$$
 Document \leftrightarrow Document
-]
+$$
+
 
 而不是：
 
-[
+$$
 Question \leftrightarrow Document
-]
+$$
+
 
 也就是把：
 
-```text
+```
 短 Query
 vs
 长 Document
@@ -269,7 +259,7 @@ vs
 
 转换成：
 
-```text
+```
 Hypothetical Document
 vs
 Real Document
@@ -277,9 +267,11 @@ Real Document
 
 作者的核心观点也是：假想文档即使包含错误细节，其 embedding 仍可能把检索引向正确语义区域，再由真实 corpus 对它进行 grounding。
 
-------
+---
 
-### 1.3Query Decomposition：复杂问题拆成子问题
+### 1.3 Query Decomposition：复杂问题拆成子问题
+
+<img src="./RAG优化方法.assets/image-20260815154859768.png" alt="image-20260815154859768"  />
 
 例如：
 
@@ -289,26 +281,26 @@ Real Document
 
 不要直接：
 
-```text
+```
 一个 Query
-    ↓
+    ↓
 一次检索
 ```
 
 而是：
 
-```text
+```
 原问题
-   ↓
+   ↓
 LLM decomposition
-   ├── Milvus 架构是什么？
-   ├── Elasticsearch 架构是什么？
-   ├── 两者如何进行向量检索？
-   └── 两者扩展性如何？
-       ↓
-     分别检索
-       ↓
-   evidence aggregation
+   ├── Milvus 架构是什么？
+   ├── Elasticsearch 架构是什么？
+   ├── 两者如何进行向量检索？
+   └── 两者扩展性如何？
+       ↓
+     分别检索
+       ↓
+   evidence aggregation
 ```
 
 Milvus 也将这一方法称为 **创建子查询**：对于知识库里未必存在“一块文档直接回答整个问题”的复杂 Query，通过拆解可以分别找到证据。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
@@ -319,13 +311,13 @@ Milvus 也将这一方法称为 **创建子查询**：对于知识库里未必�
 
 因为系统不再是：
 
-```text
+```
 retrieve once → answer
 ```
 
 而是：
 
-```text
+```
 plan
 → retrieve
 → retrieve
@@ -333,9 +325,9 @@ plan
 → answer
 ```
 
-------
+---
 
-### 1.4.Step-Back Prompting：不要搜问题本身，先搜它背后的原理
+### 1.4 Step-Back Prompting：不要搜问题本身，先搜它背后的原理
 
 Milvus 把这个叫创建“回溯问题”。
 
@@ -349,11 +341,9 @@ Milvus 把这个叫创建“回溯问题”。
 
 也就是：
 
-[
-Specific\ Question
-\rightarrow
-Abstract\ Question
-]
+$$
+Specific\ Question \rightarrow Abstract\ Question
+$$
 
 这和 Google DeepMind 提出的 **Step-Back Prompting** 思路高度一致。
 
@@ -363,51 +353,51 @@ Abstract\ Question
 
 例如：
 
-```text
+```
 原问题：
 为什么 Adam 通常比 SGD 更容易训练 Transformer？
-
+​
 Step-back：
 自适应学习率优化器和固定学习率优化器有什么本质区别？
 ```
 
 先检索 general principle，再回答具体问题。
 
-------
+---
 
-#### 1.5 Query Enhancement 总结
+### 1.5 Query Enhancement 总结
 
 可以把这一部分压缩成：
 
-| 方法                   | 核心思想                    | 解决的问题              |
-| ---------------------- | --------------------------- | ----------------------- |
-| Hypothetical Questions | 文档 → 可能的问题           | Query / Document 不对称 |
-| HyDE                   | Query → 假想文档            | Query / Document 不对称 |
-| Sub-query              | 一个复杂 Query → 多个 Query | Multi-hop / comparison  |
-| Step-back              | 具体 Query → 抽象 Query     | 太具体、缺背景知识      |
+| 方法 | 核心思想 | 解决的问题 |
+| --- | --- | --- |
+| Hypothetical Questions | 文档 → 可能的问题            | Query / Document 不对称   |
+| HyDE                   | Query → 假想文档          | Query / Document 不对称   |
+| Sub-query              | 一个复杂 Query → 多个 Query | Multi-hop / comparison |
+| Step-back              | 具体 Query → 抽象 Query   | 太具体、缺背景知识              |
 
 其中还有一个非常值得补充、Milvus 这页没重点展开的方法：
 
-### Query2doc
+### 1.6 Query2doc：用 LLM 做查询扩展
 
 *Query2doc: Query Expansion with Large Language Models* 会让 LLM 生成 pseudo-document，再用它扩展 Query；论文报告这种方法既能改善 BM25，也能改善 dense retriever。([arXiv](https://arxiv.org/abs/2303.07678?utm_source=chatgpt.com))
 
 所以可以把 Query Transformation 看成一个更大的家族：
 
-```text
-               Query Transformation
-                      │
-        ┌─────────────┼─────────────┐
-        ↓             ↓             ↓
-      Rewrite      Expansion    Decomposition
-        ↓             ↓             ↓
-     Step-back       HyDE       Sub-query
-                     Query2doc
+```
+               Query Transformation
+                      │
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+      Rewrite      Expansion    Decomposition
+        ↓             ↓             ↓
+     Step-back       HyDE       Sub-query
+                     Query2doc
 ```
 
-------
+---
 
-## 二、索引增强：不是只调 Retriever，文档怎么存也很重要
+## 模块二：索引增强（Index Enhancement）——文档怎么组织和存储
 
 第二层是：
 
@@ -415,7 +405,7 @@ Step-back：
 
 最 naive 的方法：
 
-```text
+```
 Document
  ↓
 固定长度切块
@@ -427,7 +417,7 @@ Embedding
 
 例如：
 
-```text
+```
 512 tokens
 512 tokens
 512 tokens
@@ -440,25 +430,27 @@ Embedding
 
 这是 Advanced RAG 一个非常重要的思想。
 
-------
+---
 
-# 7. Auto-Merging：小块负责“搜”，大块负责“读”
+### 2.1 Auto-Merging：小块负责“搜”，大块负责“读”
 
 Milvus 描述的是一种父子 Chunk 结构。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
+![image-20260815155017062](./RAG优化方法.assets/image-20260815155017062.png)
+
 例如：
 
-```text
-                Parent Chunk
-              1500 tokens
-            /      |       \
-         C1       C2        C3
-       300t      300t      300t
+```
+                Parent Chunk
+              1500 tokens
+            /      |       \
+         C1       C2        C3
+       300t      300t      300t
 ```
 
 检索：
 
-```text
+```
 Query
  ↓
 检索小 Chunk
@@ -476,45 +468,43 @@ Merge
 
 因为：
 
-### Retrieval 希望
+#### Retrieval 希望
 
 Chunk 越小：
 
-[
+$$
 Semantic\ Specificity \uparrow
-]
+$$
 
 容易精准匹配。
 
-### Generation 希望
+#### Generation 希望
 
 Chunk 越大：
 
-[
+$$
 Context\ Completeness \uparrow
-]
+$$
 
 上下文完整。
 
 所以：
 
-[
-\boxed{
-Retrieval\ Granularity
-\neq
-Generation\ Granularity
-}
-]
+$$
+\boxed{ Retrieval\ Granularity \neq Generation\ Granularity }
+$$
 
 Auto-Merging 就是在解决这个矛盾。
 
-------
+---
 
-# 8. Hierarchical Index：先找文档，再找 Chunk
+### 2.2 Hierarchical Index：先根据文档摘要选择文档，再找文档内部的Chunk
+
+![image-20260815155054527](./RAG优化方法.assets/image-20260815155054527.png)
 
 假设知识库：
 
-```text
+```
 10000 篇论文
 每篇论文 100 chunks
 = 100 万 chunks
@@ -522,7 +512,7 @@ Auto-Merging 就是在解决这个矛盾。
 
 Naive：
 
-```text
+```
 query
  ↓
 100 万 chunks 中直接 search
@@ -530,7 +520,7 @@ query
 
 Hierarchical：
 
-```text
+```
 query
  ↓
 Document Summary Index
@@ -544,55 +534,53 @@ Chunk Index
 
 即：
 
-[
-Query
-\rightarrow
-Document
-\rightarrow
-Section
-\rightarrow
-Chunk
-]
+$$
+Query \rightarrow Document \rightarrow Section \rightarrow Chunk
+$$
 
 Milvus 的教程就是用“文档摘要一级索引 + chunk 二级索引”来解释这种方法。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
 这个思想其实很像数据库：
 
-```text
+```
 先 pruning
 再 fine-grained search
 ```
 
-------
+---
 
-# 9. Hybrid Retrieval：Dense 不够，Sparse 也不能丢
+## 模块三：检索器增强（Retriever Enhancement）——召回、融合、过滤与重排
+
+### 3.1 Hybrid Retrieval：Dense 不够，Sparse 来凑
+
+![image-20260815155128562](./RAG优化方法.assets/image-20260815155128562.png)
 
 这应该是工程 RAG 里最重要的 enhancement 之一。
 
 传统：
 
-[
+$$
 Dense Retrieval
-]
+$$
 
 升级：
 
-[
+$$
 Dense + Sparse
-]
+$$
 
 例如：
 
-```text
-                Query
-               /     \
-              ↓       ↓
-          Dense      BM25
-             \       /
-              \     /
-                RRF
-                 ↓
-               Top-K
+```
+                Query
+               /     \
+              ↓       ↓
+          Dense      BM25
+             \       /
+              \     /
+                RRF
+                 ↓
+               Top-K
 ```
 
 Milvus 明确列举了：
@@ -603,16 +591,16 @@ Milvus 明确列举了：
 - RRF；
 - Cross-Encoder reranking。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
-------
+---
 
-# 10. BM25 和 Dense 为什么互补？
+### 3.2 BM25 和 Dense 为什么互补？
 
 Dense 擅长语义：
 
-```text
+```
 Query:
 大模型如何减少显存占用？
-
+​
 Document:
 techniques for reducing LLM memory footprint
 ```
@@ -623,7 +611,7 @@ Dense 很强。
 
 但是：
 
-```text
+```
 CUDA error 802
 milvus.exceptions.MilvusException
 RFC 7231
@@ -641,23 +629,23 @@ BM25 往往非常重要。
 
 因此：
 
-[
+$$
 Dense = semantic matching
-]
+$$
 
-[
+$$
 Sparse = lexical matching
-]
+$$
 
 组合通常比单一路线鲁棒。
 
-------
+---
 
-# 11. SPLADE：Sparse Retrieval 也可以是神经网络
+### 3.3 SPLADE：Sparse Retrieval 也可以是神经网络
 
 不要形成：
 
-```text
+```
 Sparse = BM25
 Dense = Neural
 ```
@@ -674,27 +662,27 @@ SPLADE 就是：
 
 所以可以画：
 
-```text
+```
 Retrieval
 │
 ├── Sparse
-│    ├── BM25
-│    └── SPLADE
+│    ├── BM25
+│    └── SPLADE
 │
 └── Dense
-     ├── DPR
-     ├── BGE
-     ├── E5
-     └── ...
+     ├── DPR
+     ├── BGE
+     ├── E5
+     └── ...
 ```
 
-------
+---
 
-# 12. RRF：Hybrid Retrieval 怎么合并？
+### 3.4 RRF：Hybrid Retrieval 怎么合并？
 
 假如 Dense：
 
-```text
+```
 D1
 D3
 D5
@@ -703,7 +691,7 @@ D7
 
 BM25：
 
-```text
+```
 D3
 D2
 D1
@@ -712,7 +700,7 @@ D8
 
 不能直接比较：
 
-```text
+```
 cosine_score = 0.82
 BM25_score = 14.7
 ```
@@ -721,11 +709,9 @@ BM25_score = 14.7
 
 于是 RRF：
 
-# [ RRF(d)
-
-\sum_r
-\frac{1}{k+\operatorname{rank}_r(d)}
-]
+$$
+RRF(d) = \sum_r \frac{1}{k + \operatorname{rank}_r(d)}
+$$
 
 它根本不在乎原始 score。
 
@@ -735,25 +721,32 @@ BM25_score = 14.7
 
 例如 D3：
 
-```text
+```
 Dense rank = 2
 BM25 rank = 1
 ```
 
 所以：
 
-# [ score(D3)
+$$
+score(D3) = \frac{1}{k+2} + \frac{1}{k+1}
+$$
 
-\frac1{k+2}
-+
-\frac1{k+1}
-]
+
 
 RRF 是很经典的 rank fusion 方法，原始工作来自 Cormack、Clarke 和 Büttcher。([ACM数字图书馆](https://dl.acm.org/doi/10.1145/1571941.1572114?utm_source=chatgpt.com))
 
-------
+**K值对RRF结果的影响：**
 
-# 13. Reranker：Recall 和 Precision 分工
+![image-20260815155918736](./RAG优化方法.assets/image-20260815155918736.png)
+
+K越小，意味着获得一个顶部排名的权重会非常大
+
+![image-20260815155827346](./RAG优化方法.assets/image-20260815155827346.png)
+
+K越大，意味着获得一个顶部排名的权重会变小
+
+### 3.5 Reranker：Recall 和 Precision 分工
 
 这是非常重要的一层设计。
 
@@ -767,17 +760,17 @@ Reranker 的目标：
 
 因此：
 
-```text
+```
 100 万 chunks
-     ↓
+     ↓
 Retriever
-     ↓
+     ↓
 Top 50
-     ↓
+     ↓
 Reranker
-     ↓
+     ↓
 Top 5
-     ↓
+     ↓
 LLM
 ```
 
@@ -785,15 +778,15 @@ LLM
 
 因为 Cross-Encoder 通常需要：
 
-[
+$$
 f(query, document)
-]
+$$
 
 对 query-document pair 做联合编码，计算贵。
 
 Dense Retriever 可以：
 
-```text
+```
 document embedding
 ```
 
@@ -801,25 +794,97 @@ document embedding
 
 这也是现代 IR 很典型的：
 
-[
-Recall
-\rightarrow
-Rerank
-]
+$$
+Recall \rightarrow Rerank
+$$
 
 架构。
 
 ColBERT 则走了一个中间路线：通过 late interaction 保留 token-level 的细粒度匹配能力，同时让文档表示可以预计算。([arXiv](https://arxiv.org/abs/2004.12832?utm_source=chatgpt.com))
 
-------
+---
 
-# 14. Sentence Window Retrieval：搜索小块，返回大窗口
+### 3.6 Metadata Filtering（元数据过滤）：很多问题根本不应该靠向量相似度解决
+
+![image-20260815155530649](./RAG优化方法.assets/image-20260815155530649.png)
+
+例如用户问：
+
+> 2025 年苹果公司的财务报告中……
+
+如果 vector retrieval 搜出：
+
+```
+2022
+2023
+2024
+2025
+```
+
+你再希望 LLM 自己判断，非常浪费。
+
+应该：
+
+```
+metadata:
+company = Apple
+year = 2025
+type = annual_report
+```
+
+先过滤：
+
+$$
+D' = \{d \mid year = 2025\}
+$$
+
+再：
+
+$$
+VectorSearch(q,D')
+$$
+
+Milvus 也把年份、类别等 metadata filter 作为提高检索精确度的重要技术。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
+
+一个很重要的工程原则：
+
+> **能用结构化约束解决的问题，不要全部丢给 embedding。**
+
+---
+
+## 模块四：生成器增强（Generator Enhancement）——让 LLM 更好地使用证据
+
+很多 RAG 系统会犯一个错误：
+
+> Top-K 找对了，所以答案一定对。
+
+不是。
+
+Retriever：
+
+```
+Evidence Recall
+```
+
+Generator：
+
+```
+Evidence Utilization
+```
+
+是两个独立问题。
+
+---
+
+### 4.1 Sentence Window Retrieval：搜索小块，返回大窗口
+
+![image-20260815155459607](./RAG优化方法.assets/image-20260815155459607.png)
 
 和 Auto-Merging 很像，但实现逻辑不同。
 
 假设文章：
 
-```text
+```
 S1
 S2
 S3
@@ -831,13 +896,13 @@ S7
 
 检索命中：
 
-```text
+```
 S4
 ```
 
 真正给 LLM：
 
-```text
+```
 S2
 S3
 [S4]
@@ -847,16 +912,15 @@ S6
 
 即：
 
-[
+$$
 RetrievalChunk = S_4
-]
+$$
 
 但：
 
-[
-GenerationContext =
-S_{2:6}
-]
+$$
+GenerationContext = S_{2:6}
+$$
 
 Milvus 明确指出，这种做法把 **用于 embedding 的文本范围** 和 **最终提供给 LLM 的上下文范围** 分离开来。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
@@ -864,84 +928,15 @@ Milvus 明确指出，这种做法把 **用于 embedding 的文本范围** 和 *
 
 > **检索粒度和阅读粒度解耦。**
 
-------
+---
 
-# 15. Metadata Filtering：很多问题根本不应该靠向量相似度解决
+### 4.2 Context Compression（压缩上下文）：不是文档越多越好
 
-例如用户问：
-
-> 2025 年苹果公司的财务报告中……
-
-如果 vector retrieval 搜出：
-
-```text
-2022
-2023
-2024
-2025
-```
-
-你再希望 LLM 自己判断，非常浪费。
-
-应该：
-
-```text
-metadata:
-company = Apple
-year = 2025
-type = annual_report
-```
-
-先过滤：
-
-# [ D'
-
-{d\mid year=2025}
-]
-
-再：
-
-[
-VectorSearch(q,D')
-]
-
-Milvus 也把年份、类别等 metadata filter 作为提高检索精确度的重要技术。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
-
-一个很重要的工程原则：
-
-> **能用结构化约束解决的问题，不要全部丢给 embedding。**
-
-------
-
-# 16. Generator Enhancement：检索到了，不代表 LLM 会正确使用
-
-很多 RAG 系统会犯一个错误：
-
-> Top-K 找对了，所以答案一定对。
-
-不是。
-
-Retriever：
-
-```text
-Evidence Recall
-```
-
-Generator：
-
-```text
-Evidence Utilization
-```
-
-是两个独立问题。
-
-------
-
-# 17. Context Compression：不是文档越多越好
+![image-20260815155549894](./RAG优化方法.assets/image-20260815155549894.png)
 
 假设 Retriever 返回：
 
-```text
+```
 Chunk1 1000 tokens
 Chunk2 1000 tokens
 Chunk3 1000 tokens
@@ -951,57 +946,51 @@ Chunk10
 
 总共：
 
-```text
+```
 10000 tokens
 ```
 
 真正和问题有关的：
 
-```text
+```
 800 tokens
 ```
 
 那么可以：
 
-```text
+```
 retrieved chunks
-      ↓
+      ↓
 compressor
-      ↓
+      ↓
 relevant sentences
-      ↓
+      ↓
 LLM
 ```
 
 本质：
 
-[
-Context
-\rightarrow
-Relevant(Context,q)
-]
+$$
+Context \rightarrow Relevant(Context,q)
+$$
 
 Milvus 将它称为压缩 LLM prompt，通过去除无关细节、强调关键段落来减少噪声和上下文长度。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
 所以：
 
-[
-More\ Context
-\not\Rightarrow
-Better\ Answer
-]
+$$
+More\ Context \not\Rightarrow Better\ Answer
+$$
 
 有时反而：
 
-[
-Noise \uparrow
-\Rightarrow
-Accuracy \downarrow
-]
+$$
+Noise \uparrow \Rightarrow Accuracy \downarrow
+$$
 
-------
+---
 
-# 18. Lost in the Middle：上下文的位置居然也影响结果
+### 4.3 Lost in the Middle：上下文的位置也影响结果
 
 非常值得读的一篇：
 
@@ -1013,21 +1002,21 @@ Accuracy \downarrow
 
 大概：
 
-```text
+```
 Attention / Utilization
-
-高 ┐                 ┌ 高
-   │\               /│
-   │ \             / │
-   │  \___________/  │
+​
+高 ┐                 ┌ 高
+   │\               /│
+   │ \             / │
+   │  \___________/  │
 低 └─────────────────┘
-
- beginning      middle       end
+​
+ beginning      middle       end
 ```
 
 所以 Milvus 提出：
 
-```text
+```
 高置信度 Chunk
 低置信度
 低置信度
@@ -1040,19 +1029,19 @@ Attention / Utilization
 
 > **RAG 不只是“Retrieve What”，还包括“Present How”。**
 
-------
+---
 
-# 19. 最重要的一层：Pipeline Enhancement
+## 模块五：Pipeline Enhancement——从固定流程走向自适应 RAG
 
 前面这些仍然基本是：
 
-```text
+```
 固定 Pipeline
 ```
 
 例如：
 
-```text
+```
 Rewrite
 ↓
 Hybrid Search
@@ -1070,25 +1059,25 @@ LLM
 
 比如：
 
-```text
+```
 Q1：1+1 等于多少？
 ```
 
 根本不需要 RAG。
 
-```text
+```
 Q2：我们的项目退款规则是什么？
 ```
 
 需要 RAG。
 
-```text
+```
 Q3：比较 A、B 两份合同的差异
 ```
 
 需要 multi-query。
 
-```text
+```
 Q4：这个知识库里没有，帮我查最新信息
 ```
 
@@ -1096,21 +1085,21 @@ Q4：这个知识库里没有，帮我查最新信息
 
 所以 pipeline 应该从：
 
-[
+$$
 Static
-]
+$$
 
 变成：
 
-[
+$$
 Adaptive
-]
+$$
 
 这就是 **Agentic RAG** 的入口。
 
-------
+---
 
-# 20. Self-RAG：模型自己决定“要不要检索”
+### 5.1 Self-RAG：模型自己决定“要不要检索”
 
 这篇建议认真读：
 
@@ -1118,7 +1107,7 @@ Adaptive
 
 Naive RAG：
 
-```text
+```
 任何问题
  ↓
 Retrieve Top-K
@@ -1128,20 +1117,20 @@ Generate
 
 Self-RAG：
 
-```text
+```
 Query
  ↓
 需要 retrieval 吗？
  ├── No → Generate
  │
  └── Yes
-      ↓
-    Retrieve
-      ↓
+      ↓
+    Retrieve
+      ↓
   Document relevant?
-      ↓
-    Generate
-      ↓
+      ↓
+    Generate
+      ↓
  Answer supported?
 ```
 
@@ -1160,9 +1149,9 @@ Query
 
 > **Adaptive Retrieval + Self-Reflection。**
 
-------
+---
 
-# 21. CRAG：检索错了怎么办？
+### 5.2 CRAG：检索错了怎么办？
 
 这是另一个非常重要的思路。
 
@@ -1172,23 +1161,23 @@ Query
 
 普通 RAG 最大的问题：
 
-```text
+```
 Retriever 错
-   ↓
+   ↓
 LLM 根据错误证据生成
-   ↓
+   ↓
 非常自信的错误答案
 ```
 
 CRAG 加一个：
 
-```text
+```
 Retrieval Evaluator
 ```
 
 流程：
 
-```text
+```
 Query
  ↓
 Retrieve
@@ -1197,85 +1186,77 @@ Evaluator
  ↓
 检索质量怎么样？
  ├── Good
- │     ↓
- │   Generate
+ │     ↓
+ │   Generate
  │
  ├── Ambiguous
- │     ↓
+ │     ↓
  │ Additional retrieval
  │
  └── Bad
-       ↓
-    Corrective action
-       ↓
-      Web Search
+       ↓
+    Corrective action
+       ↓
+      Web Search
 ```
 
 原论文的核心就是设计一个轻量级 retrieval evaluator，对检索结果质量给出置信判断，并依据结果触发不同的知识获取动作；它还引入 web search 作为静态 corpus 的补充。([arXiv](https://arxiv.org/abs/2401.15884?utm_source=chatgpt.com))
 
 所以：
 
-[
-RAG
-\rightarrow
-Retrieve + Generate
-]
+$$
+RAG \rightarrow Retrieve + Generate
+$$
 
 CRAG：
 
-[
-Retrieve
-\rightarrow
-Evaluate
-\rightarrow
-Correct
-\rightarrow
-Generate
-]
+$$
+Retrieve \rightarrow Evaluate \rightarrow Correct \rightarrow Generate
+$$
 
-------
+---
 
-# 22. Self-RAG 和 CRAG 的区别
+### 5.3 Self-RAG 和 CRAG 的区别
 
 这个很适合面试问。
 
-|              | Self-RAG                       | CRAG                            |
-| ------------ | ------------------------------ | ------------------------------- |
-| 核心         | 自我反思                       | 纠正错误检索                    |
-| 是否需要检索 | 动态决定                       | 通常先检索                      |
-| 谁判断       | LLM reflection                 | Retrieval evaluator             |
-| 重点         | Retrieve / Generate / Critique | Retrieval quality               |
-| 错误后       | Reflection / regenerate        | Web search 等 corrective action |
+| 对比维度 | Self-RAG | CRAG |
+| --- | --- | --- |
+| 核心               | 自我反思                           | 纠正错误检索                         |
+| 是否需要检索           | 动态决定                           | 通常先检索                          |
+| 谁判断              | LLM reflection                 | Retrieval evaluator            |
+| 重点               | Retrieve / Generate / Critique | Retrieval quality              |
+| 错误后              | Reflection / regenerate        | Web search 等 corrective action |
 
 一句话：
 
 > **Self-RAG 更关注“模型该不该检索、生成得对不对”；CRAG 更关注“Retriever 找到的东西靠谱吗，不靠谱怎么办”。**
 
-------
+---
 
-# 23. Query Routing：真正进入 Agentic RAG
+### 5.4 Query Routing：真正进入 Agentic RAG
 
 Milvus 最后一部分其实已经非常接近现代 Agentic RAG。
 
 它明确提出可以增加 Router：
 
-```text
-                 Query
-                   ↓
-                 Router
-        ┌──────────┼──────────┐
-        ↓          ↓          ↓
-       LLM        RAG      Web Search
-                   ↓
-             Query Decompose?
-                   ↓
-               Retrieve
-                   ↓
-               Evaluate
-              ↙         ↘
-          sufficient    insufficient
-             ↓              ↓
-          answer        retrieve again
+```
+                 Query
+                   ↓
+                 Router
+        ┌──────────┼──────────┐
+        ↓          ↓          ↓
+       LLM        RAG      Web Search
+                   ↓
+             Query Decompose?
+                   ↓
+               Retrieve
+                   ↓
+               Evaluate
+              ↙         ↘
+          sufficient    insufficient
+             ↓              ↓
+          answer        retrieve again
 ```
 
 Router 可以是：
@@ -1293,13 +1274,13 @@ Milvus 也明确指出，路由不仅可以决定 **是否使用 RAG**，还可�
 
 这一步开始，系统已经不是简单 pipeline，而是：
 
-[
+$$
 \boxed{State + Policy + Actions}
-]
+$$
 
-------
+---
 
-# 24. 用一个统一框架理解整篇教程
+## 五个模块的统一框架
 
 读完之后，不建议背：
 
@@ -1307,132 +1288,112 @@ Milvus 也明确指出，路由不仅可以决定 **是否使用 RAG**，还可�
 
 而是记下面这个图：
 
-```text
-                         Advanced RAG
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        ↓                     ↓                     ↓
-      Query                 Index               Retrieval
-        │                     │                     │
-   Query Rewrite         Chunk Strategy        Dense Search
-   HyDE                  Parent-Child           BM25/SPLADE
-   Sub-query             Hierarchical           Hybrid Search
-   Step-back                                  Metadata Filter
-                                                Rerank
-        │
-        └─────────────────────┬──────────────────────┐
-                              ↓                      ↓
-                         Generation              Pipeline
-                              │                      │
-                     Context Compression        Routing
-                     Context Ordering           Reflection
-                     Prompt Construction        Retry
-                                               Web Search
-                                               Agent
+```
+                         Advanced RAG
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ↓                     ↓                     ↓
+      Query                 Index               Retrieval
+        │                     │                     │
+   Query Rewrite         Chunk Strategy        Dense Search
+   HyDE                  Parent-Child           BM25/SPLADE
+   Sub-query             Hierarchical           Hybrid Search
+   Step-back                                  Metadata Filter
+                                                Rerank
+        │
+        └─────────────────────┬──────────────────────┐
+                              ↓                      ↓
+                         Generation              Pipeline
+                              │                      │
+                     Context Compression        Routing
+                     Context Ordering           Reflection
+                     Prompt Construction        Retry
+                                               Web Search
+                                               Agent
 ```
 
 这才是这篇教程真正值得学的东西。
 
-------
+---
 
-# 25. 可以把整个 Advanced RAG 压缩成 6 个问题
+## 把整个 Advanced RAG 压缩成 5 个模块
 
-以后老师问：
+### ① 查询增强：查什么？
 
-> “RAG 有哪些优化方式？”
-
-不要机械回答十几个名词。
-
-可以说：
-
-> 我一般从六个阶段看 RAG 优化。
-
-### ① 查什么？
-
-[
+$$
 Query\ Transformation
-]
+$$
 
 - Rewrite
 - HyDE
-- Sub-query
+- Sub-query / Query Decomposition
 - Step-back
+- Query2doc
 
-### ② 怎么存？
+### ② 索引增强：怎么存？
 
-[
+$$
 Indexing
-]
+$$
 
 - Chunking
-- Parent-child
-- Hierarchical index
+- Parent-child / Auto-Merging
+- Hierarchical Index
 
-### ③ 怎么召回？
+### ③ 检索器增强：怎么召回、融合与筛选？
 
-[
-Retrieval
-]
+$$
+Retrieval \rightarrow Fusion \rightarrow Rerank
+$$
 
-- Dense
-- BM25
-- SPLADE
-- Hybrid
-
-### ④ 怎么筛？
-
-[
-Ranking
-]
-
+- Dense Retrieval
+- BM25 / SPLADE
+- Hybrid Retrieval
 - RRF
-- Cross-Encoder
-- Reranker
+- Metadata Filtering
+- Cross-Encoder / Reranker
 
-### ⑤ 怎么给 LLM？
+### ④ 生成器增强：怎么把证据给 LLM？
 
-[
-Context\ Construction
-]
+$$
+Context\ Construction \rightarrow Generation
+$$
 
-- Window retrieval
-- Compression
-- Reordering
+- Sentence Window Retrieval
+- Context Compression
+- Context Reordering
+- Lost-in-the-Middle mitigation
 
-### ⑥ 检索错了怎么办？
+### ⑤ Pipeline 增强：什么时候检索，检索错了怎么办？
 
-[
+$$
 Adaptive\ RAG
-]
+$$
 
 - Self-RAG
 - CRAG
-- Routing
-- Retry
-- Agent
+- Query Routing
+- Retry / Additional Retrieval
+- Web Search / Tool Use
+- Agentic RAG
 
-这已经是一个比较完整的 Advanced RAG 框架。
+这五个模块对应一个很清晰的演进逻辑：**先优化每个静态环节，再让系统根据状态动态选择下一步动作。**
 
-------
+---
+## 论文阅读路线
 
-# 26. 这篇教程对应的论文阅读路线
-
-如果不是想纯粹“会用 RAG”，而是想建立论文框架，我建议按这个顺序。
-
-| 优先级 | 论文                           | 要掌握什么                        |
-| ------ | ------------------------------ | --------------------------------- |
-| ⭐⭐⭐⭐⭐  | **Lewis et al., RAG (2020)**   | RAG 的原始范式                    |
-| ⭐⭐⭐⭐⭐  | **HyDE (2022)**                | Query transformation              |
-| ⭐⭐⭐⭐⭐  | **Lost in the Middle (2023)**  | 为什么 Context 构造重要           |
-| ⭐⭐⭐⭐⭐  | **Self-RAG (2023)**            | Adaptive retrieval / reflection   |
-| ⭐⭐⭐⭐⭐  | **CRAG (2024)**                | Retrieval evaluation / correction |
-| ⭐⭐⭐⭐   | **Step-Back Prompting (2023)** | Query abstraction                 |
-| ⭐⭐⭐⭐   | **SPLADE (2021)**              | Learned sparse retrieval          |
-| ⭐⭐⭐⭐   | **ColBERT (2020)**             | Late interaction retrieval        |
-| ⭐⭐⭐    | **Query2doc (2023)**           | LLM query expansion               |
-| ⭐⭐⭐    | **RRF (2009)**                 | Multi-retriever fusion            |
-
-其中最值得你读原论文的是：
+| 优先级 | 论文 | 要掌握什么 |
+| --- | --- | --- |
+| ⭐⭐⭐⭐⭐          | **Lewis et al., RAG (2020)**   | RAG 的原始范式                         |
+| ⭐⭐⭐⭐⭐          | **HyDE (2022)**                | Query transformation              |
+| ⭐⭐⭐⭐⭐          | **Lost in the Middle (2023)**  | 为什么 Context 构造重要                  |
+| ⭐⭐⭐⭐⭐          | **Self-RAG (2023)**            | Adaptive retrieval / reflection   |
+| ⭐⭐⭐⭐⭐          | **CRAG (2024)**                | Retrieval evaluation / correction |
+| ⭐⭐⭐⭐           | **Step-Back Prompting (2023)** | Query abstraction                 |
+| ⭐⭐⭐⭐           | **SPLADE (2021)**              | Learned sparse retrieval          |
+| ⭐⭐⭐⭐           | **ColBERT (2020)**             | Late interaction retrieval        |
+| ⭐⭐⭐            | **Query2doc (2023)**           | LLM query expansion               |
+| ⭐⭐⭐            | **RRF (2009)**                 | Multi-retriever fusion            |
 
 ### ① RAG
 
@@ -1440,7 +1401,7 @@ Lewis et al.
 
 **Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks**。([arXiv](https://arxiv.org/abs/2005.11401?utm_source=chatgpt.com))
 
-------
+---
 
 ### ② HyDE
 
@@ -1450,17 +1411,11 @@ Gao et al.
 
 记住：
 
-[
-Query
-\rightarrow
-Hypothetical\ Document
-\rightarrow
-Embedding
-\rightarrow
-Retrieval
-]
+$$
+Query \rightarrow Hypothetical\ Document \rightarrow Embedding \rightarrow Retrieval
+$$
 
-------
+---
 
 ### ③ Lost in the Middle
 
@@ -1470,13 +1425,11 @@ Liu et al.
 
 记住：
 
-[
-Context\ Position
-\rightarrow
-Information\ Utilization
-]
+$$
+Context\ Position \rightarrow Information\ Utilization
+$$
 
-------
+---
 
 ### ④ Self-RAG
 
@@ -1486,19 +1439,11 @@ Asai et al.
 
 记住：
 
-[
-Retrieve?
-\rightarrow
-Retrieve
-\rightarrow
-Critique
-\rightarrow
-Generate
-\rightarrow
-Critique
-]
+$$
+Retrieve? \rightarrow Retrieve \rightarrow Critique \rightarrow Generate \rightarrow Critique
+$$
 
-------
+---
 
 ### ⑤ CRAG
 
@@ -1508,94 +1453,7 @@ Yan et al.
 
 记住：
 
-[
-Retrieve
-\rightarrow
-Evaluate
-\rightarrow
-Correct
-]
+$$
+Retrieve \rightarrow Evaluate \rightarrow Correct
+$$
 
-------
-
-# 27. 和你的项目放在一起看
-
-你现在的 RAG baseline 其实已经覆盖了这篇教程里的不少“中间层能力”：
-
-```text
-Dense
-+
-BM25
-+
-RRF
-+
-Auto-merging
-+
-Rerank
-```
-
-所以如果从科研/保研项目角度继续往上走，我反而不建议继续无脑往 Retriever 上堆组件。
-
-更有价值的是从：
-
-```text
-Retrieval Optimization
-```
-
-推进到：
-
-```text
-Adaptive Retrieval
-```
-
-也就是：
-
-```text
-                 Query
-                   ↓
-             Query Analysis
-                   ↓
-          ┌────────┼────────┐
-          ↓        ↓        ↓
-       Simple    Complex   Out-of-KB
-          ↓        ↓        ↓
-       direct   decompose   web/tool
-                   ↓
-              Hybrid Search
-                   ↓
-           Retrieval Evaluate
-              ↙          ↘
-          enough        poor
-            ↓             ↓
-         answer       rewrite/retrieve
-```
-
-这样你项目里的“路由、失败补检索、多轮补证据”才能在理论上对应到：
-
-- Self-RAG；
-- CRAG；
-- Query decomposition；
-- Adaptive retrieval；
-- Agentic RAG。
-
-而不是老师一看：
-
-> “Dense + BM25 + RRF + rerank，这些都是现成组件拼起来的。”
-
-这会是你把工程项目讲成“有研究问题的 RAG 系统”的关键一步。([arXiv](https://arxiv.org/abs/2310.11511?utm_source=chatgpt.com))
-
-------
-
-# 28. 最后给你一个背诵版
-
-如果保研面试老师问：
-
-> **“Advanced RAG 相比普通 RAG，到底 Advanced 在哪里？”**
-
-可以回答：
-
-> 普通 RAG 基本是固定的 Retrieve-then-Generate 流程，而 Advanced RAG 会优化整个 pipeline。我一般把它分为五层：首先在查询侧通过 query rewrite、HyDE、query decomposition 等提高检索表达；其次在索引侧使用 parent-child chunk、hierarchical index 等改善知识组织；检索阶段使用 Dense 和 BM25 等混合检索，再通过 RRF 和 reranker 提高召回和排序质量；生成阶段通过 context compression 和 context reordering 减少噪声以及 Lost-in-the-Middle 问题；再进一步就是 Self-RAG、CRAG 和 Agentic RAG，让系统根据检索质量动态决定是否检索、是否重写 Query、是否再次检索或者调用其他工具。
->
-> 所以 Advanced RAG 的关键变化，是从一个**固定的 Retrieve → Generate pipeline**，逐渐变成一个**能够感知检索状态并动态选择动作的自适应系统**。
-
-我认为这一段基本就是这篇 Milvus 教程最值得真正掌握的“主干”。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
