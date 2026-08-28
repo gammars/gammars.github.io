@@ -9,6 +9,13 @@ const site = {
 const posts = Array.isArray(window.BLOG_POSTS)
   ? window.BLOG_POSTS.map((post) => ({ ...post, searchText: plainTextFromHtml(post.html) }))
   : [];
+const about = window.BLOG_ABOUT && typeof window.BLOG_ABOUT === "object"
+  ? window.BLOG_ABOUT
+  : {
+    title: "关于",
+    description: "个人资料与博客说明。",
+    html: "<p>请编辑仓库根目录的 <code>about.md</code> 来填写自我介绍。</p>",
+  };
 
 const state = {
   view: "home",
@@ -277,22 +284,11 @@ function renderBlock(block) {
 }
 
 function renderAbout() {
-  setHeader("关于", "godmars 的个人资料与博客说明。");
-  setDocumentMeta(`关于 | ${site.title}`, `${site.name} 的个人介绍`);
-  app.innerHTML = `
-    <article class="article-body">
-      <p>你好，我是 ${site.name}。个人简介待补充。</p>
-      <p>GitHub：<a href="${site.github}" target="_blank" rel="noreferrer">${site.github}</a></p>
-      <p>邮箱：<a href="mailto:${site.email}">${site.email}</a></p>
-      <p>你只需要在 posts 文件夹里新增 Markdown 文件，然后运行 npm run build:posts 生成文章数据。</p>
-      <h3>站点特性</h3>
-      <ul>
-        <li>纯静态文件，适合 GitHub Pages。</li>
-        <li>支持首页、关于、归档、搜索以及分类和标签快捷筛选。</li>
-        <li>响应式布局，手机和电脑都能阅读。</li>
-      </ul>
-    </article>
-  `;
+  setHeader(about.title || "关于", about.description || "个人资料与博客说明。");
+  setDocumentMeta(`${about.title || "关于"} | ${site.title}`, about.description || `${site.name} 的个人介绍`);
+  app.innerHTML = `<article class="article-body">${about.html}</article>`;
+  renderMath(app);
+  renderToc(null);
 }
 
 function buildCategoryTree() {

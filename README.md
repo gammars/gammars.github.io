@@ -49,7 +49,7 @@ def hello(name):
 ````
 
 支持常见的 `js`、`ts`、`python`、`java`、`cpp`、`bash`、`sql`、`json`、`html`、
-`css` 和 `markdown` 等别名。代码高亮在构建端和本地编辑器预览端使用同一套规则。
+`css` 和 `markdown` 等别名。代码高亮由构建脚本统一生成，Obsidian 与网页端看到的源码保持一致。
 
 本地预览前，运行：
 
@@ -95,6 +95,7 @@ npm run check
 ## 修改站点
 
 - 个人信息：编辑 `assets/app.js` 顶部的 `site`。
+- “关于”页自我介绍：编辑仓库根目录的 `about.md`，支持普通 Markdown、公式、表格和代码块。
 - 头像/封面：替换 `assets/profile-card.png`。
 - 样式：编辑 `assets/styles.css`。
 

@@ -7,6 +7,8 @@ const { createMarkdownRenderer } = require("./markdown-renderer");
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "posts");
 const outFile = path.join(root, "assets", "posts.js");
+const aboutFile = path.join(root, "about.md");
+const aboutOutFile = path.join(root, "assets", "about.js");
 const modifiedTimesFile = path.join(root, "assets", "post-modified-times.json");
 const publishedDatesFile = path.join(root, "assets", "post-published-dates.json");
 const useRecordedTimes = process.argv.includes("--use-recorded-times");
@@ -240,7 +242,7 @@ function renderMarkdown(source, sourcePath) {
   const headings = [];
   const slugCounts = new Map();
 
-  rewritePostImages(tokens, { root, sourcePath });
+  if (sourcePath) rewritePostImages(tokens, { root, sourcePath });
 
   tokens.forEach((token, index) => {
     if (token.type !== "heading_open") return;
@@ -318,10 +320,29 @@ const posts = ensureUniquePostIds(walk(postsDir)
   .filter(Boolean))
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
 
+function buildAbout() {
+  const fallback = {
+    title: "关于",
+    description: "个人资料与博客说明。",
+    html: "<p>请编辑仓库根目录的 <code>about.md</code> 来填写自我介绍。</p>\n",
+  };
+  if (!fs.existsSync(aboutFile)) return fallback;
+  const [meta, body] = parseFrontMatter(fs.readFileSync(aboutFile, "utf8"));
+  const rendered = renderMarkdown(body);
+  return {
+    title: meta.title || fallback.title,
+    description: meta.description || rendered.excerpt || fallback.description,
+    html: rendered.html || fallback.html,
+  };
+}
+
+const about = buildAbout();
+
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 if (!useRecordedTimes) {
   fs.writeFileSync(modifiedTimesFile, `${JSON.stringify(nextRecordedTimes, null, 2)}\n`, "utf8");
   fs.writeFileSync(publishedDatesFile, `${JSON.stringify(nextPublishedDates, null, 2)}\n`, "utf8");
 }
 fs.writeFileSync(outFile, `window.BLOG_POSTS = ${JSON.stringify(posts)};\n`, "utf8");
+fs.writeFileSync(aboutOutFile, `window.BLOG_ABOUT = ${JSON.stringify(about)};\n`, "utf8");
 console.log(`Generated ${posts.length} posts -> ${path.relative(root, outFile)}`);
