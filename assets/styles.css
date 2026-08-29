@@ -638,6 +638,25 @@ body.is-article .toc-panel { display: block; }
 
 .article-body li + li { margin-top: 0.45rem; }
 
+.article-body .task-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.article-body .task-list .task-list { margin: 0.45rem 0 0 1.4rem; }
+
+.article-body li.task-list-item { list-style: none; }
+
+.article-body .task-list-checkbox {
+  width: 1em;
+  height: 1em;
+  margin: 0 0.45em 0 0;
+  vertical-align: -0.1em;
+  accent-color: var(--accent);
+  opacity: 1;
+  pointer-events: none;
+}
+
 .article-body blockquote {
   padding: 0.8rem 1rem;
   border-left: 4px solid var(--accent);

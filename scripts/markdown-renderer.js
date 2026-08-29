@@ -127,6 +127,46 @@ function createMarkdownRenderer() {
     linkify: true,
     typographer: false,
   });
+
+  // Markdown-It parses GFM task markers as ordinary inline text by default.
+  // Turn the leading "[ ]" / "[x]" in a list item into a safe, read-only
+  // checkbox after inline parsing, without enabling arbitrary HTML in posts.
+  markdown.core.ruler.after("inline", "task_lists", (state) => {
+    const listStack = [];
+    for (const token of state.tokens) {
+      if (token.type === "bullet_list_open" || token.type === "ordered_list_open") {
+        listStack.push(token);
+        continue;
+      }
+      if (token.type === "bullet_list_close" || token.type === "ordered_list_close") {
+        listStack.pop();
+        continue;
+      }
+      if (token.type !== "list_item_open") continue;
+
+      const inline = state.tokens.slice(state.tokens.indexOf(token) + 1)
+        .find((next) => next.type === "inline" || next.type === "list_item_close");
+      if (!inline || inline.type !== "inline") continue;
+
+      const marker = inline.content.match(/^\[([ xX])\][ \t]+/);
+      if (!marker) continue;
+
+      const checked = marker[1].toLowerCase() === "x";
+      inline.content = inline.content.slice(marker[0].length);
+      const firstText = inline.children?.find((child) => child.type === "text" && /^\[([ xX])\][ \t]+/.test(child.content));
+      if (firstText) firstText.content = firstText.content.replace(/^\[([ xX])\][ \t]+/, "");
+      inline.children?.unshift({ type: "task_checkbox", meta: { checked } });
+      token.attrJoin("class", "task-list-item");
+      const parentList = listStack.at(-1);
+      if (parentList && !(parentList.attrGet("class") || "").split(/\s+/).includes("task-list")) {
+        parentList.attrJoin("class", "task-list");
+      }
+    }
+  });
+  markdown.renderer.rules.task_checkbox = (tokens, index) => {
+    const checked = tokens[index].meta?.checked ? " checked" : "";
+    return `<input class="task-list-checkbox" type="checkbox" disabled${checked} aria-label="任务${checked ? "已完成" : "未完成"}"> `;
+  };
   markdown.renderer.rules.fence = (tokens, index) => renderCodeBlock(tokens[index]);
   return markdown;
 }
