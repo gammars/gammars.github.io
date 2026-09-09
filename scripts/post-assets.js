@@ -28,8 +28,7 @@ function normalizePostSource(sourcePath) {
 
 function articleAssetDirectory(sourcePath) {
   const source = normalizePostSource(sourcePath);
-  const extension = path.posix.extname(source);
-  return source.slice(0, -extension.length) + ".assets";
+  return path.posix.join(path.posix.dirname(source), "assets");
 }
 
 function encodePathSegment(value) {
@@ -114,7 +113,7 @@ function resolvePostImage(rootDirectory, sourcePath, imageSource) {
   if (!isOwnAsset && !isGlobalAsset) {
     throw new PostAssetError(
       "IMAGE_OUTSIDE_ARTICLE_ASSETS",
-      `文章图片必须位于同名 .assets 目录或全局 assets 目录：${source} -> ${raw}`,
+      `文章图片必须位于文章目录下的 assets 目录或全局 assets 目录：${source} -> ${raw}`,
       { sourcePath: source, image: raw, relativeFile },
     );
   }

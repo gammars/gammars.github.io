@@ -41,7 +41,7 @@ function articleAssetFiles(directory, output = []) {
       articleAssetFiles(fullPath, output);
     } else if (entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
       const relative = path.relative(root, fullPath).replace(/\\/g, "/");
-      if (relative.split("/").some((part) => part.toLowerCase().endsWith(".assets"))) output.push(relative);
+      if (relative.split("/").some((part) => part.toLowerCase() === "assets")) output.push(relative);
     }
   }
   return output;

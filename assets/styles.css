@@ -605,7 +605,13 @@ body.is-article .toc-panel { display: block; }
   cursor: pointer;
 }
 
-.article-body { display: grid; gap: 16px; }
+.article-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.article-body > * { min-width: 0; }
 
 .article-body [id] { scroll-margin-top: 84px; }
 

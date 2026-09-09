@@ -110,7 +110,7 @@ Milvus 介绍了四种典型方案。
 
 ### 1.1 Hypothetical Questions：给文档预先生成“可能的问题”
 
-![image-20260815154927192](./RAG优化方法.assets/image-20260815154927192.png)
+![image-20260815154927192](./assets/image-20260815154927192.png)
 
 假设原始 Chunk内容如下：
 
@@ -271,7 +271,7 @@ Real Document
 
 ### 1.3 Query Decomposition：复杂问题拆成子问题
 
-<img src="./RAG优化方法.assets/image-20260815154859768.png" alt="image-20260815154859768"  />
+<img src="./assets/image-20260815154859768.png" alt="image-20260815154859768"  />
 
 例如：
 
@@ -436,7 +436,7 @@ Embedding
 
 Milvus 描述的是一种父子 Chunk 结构。([Milvus](https://milvus.io/docs/zh/how_to_enhance_your_rag.md))
 
-![image-20260815155017062](./RAG优化方法.assets/image-20260815155017062.png)
+![image-20260815155017062](./assets/image-20260815155017062.png)
 
 例如：
 
@@ -500,7 +500,7 @@ Auto-Merging 就是在解决这个矛盾。
 
 ### 2.2 Hierarchical Index：先根据文档摘要选择文档，再找文档内部的Chunk
 
-![image-20260815155054527](./RAG优化方法.assets/image-20260815155054527.png)
+![image-20260815155054527](./assets/image-20260815155054527.png)
 
 假设知识库：
 
@@ -553,7 +553,7 @@ Milvus 的教程就是用“文档摘要一级索引 + chunk 二级索引”来�
 
 ### 3.1 Hybrid Retrieval：Dense 不够，Sparse 来凑
 
-![image-20260815155128562](./RAG优化方法.assets/image-20260815155128562.png)
+![image-20260815155128562](./assets/image-20260815155128562.png)
 
 这应该是工程 RAG 里最重要的 enhancement 之一。
 
@@ -738,11 +738,11 @@ RRF 是很经典的 rank fusion 方法，原始工作来自 Cormack、Clarke 和
 
 **K值对RRF结果的影响：**
 
-![image-20260815155918736](./RAG优化方法.assets/image-20260815155918736.png)
+![image-20260815155918736](./assets/image-20260815155918736.png)
 
 K越小，意味着获得一个顶部排名的权重会非常大
 
-![image-20260815155827346](./RAG优化方法.assets/image-20260815155827346.png)
+![image-20260815155827346](./assets/image-20260815155827346.png)
 
 K越大，意味着获得一个顶部排名的权重会变小
 
@@ -806,7 +806,7 @@ ColBERT 则走了一个中间路线：通过 late interaction 保留 token-level
 
 ### 3.6 Metadata Filtering（元数据过滤）：很多问题根本不应该靠向量相似度解决
 
-![image-20260815155530649](./RAG优化方法.assets/image-20260815155530649.png)
+![image-20260815155530649](./assets/image-20260815155530649.png)
 
 例如用户问：
 
@@ -878,7 +878,7 @@ Evidence Utilization
 
 ### 4.1 Sentence Window Retrieval：搜索小块，返回大窗口
 
-![image-20260815155459607](./RAG优化方法.assets/image-20260815155459607.png)
+![image-20260815155459607](./assets/image-20260815155459607.png)
 
 和 Auto-Merging 很像，但实现逻辑不同。
 
@@ -932,7 +932,7 @@ Milvus 明确指出，这种做法把 **用于 embedding 的文本范围** 和 *
 
 ### 4.2 Context Compression（压缩上下文）：不是文档越多越好
 
-![image-20260815155549894](./RAG优化方法.assets/image-20260815155549894.png)
+![image-20260815155549894](./assets/image-20260815155549894.png)
 
 假设 Retriever 返回：
 
