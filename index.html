@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="godmars 的个人博客">
-    <meta name="theme-color" content="#256d85">
+    <meta name="theme-color" content="#dce5e4">
     <meta property="og:type" content="website">
     <meta property="og:title" content="godmars' Blog">
     <meta property="og:description" content="godmars 的个人博客">
@@ -13,9 +13,11 @@
     <link rel="icon" href="assets/avatar.png">
     <title>godmars' Blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css" integrity="sha384-vlBdW0r3AcZO/HboRPznQNowvexd3fY8qHOWkBi5q7KGgqJ+F48+DceybYmrVbmB" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/styles.css?v=20260908-1">
+    <link rel="preload" href="assets/images/hero-mountain.webp" as="image" type="image/webp">
+    <link rel="stylesheet" href="assets/styles.css?v=20260912-1">
   </head>
   <body>
+    <div class="site-backdrop" aria-hidden="true"></div>
     <header class="topbar">
       <a class="brand" href="#home" data-view="home" aria-label="返回首页">godmars' Blog</a>
       <nav class="nav" aria-label="主导航">
@@ -27,6 +29,12 @@
         <span aria-hidden="true">◐</span>
       </button>
     </header>
+
+    <section class="site-hero" aria-labelledby="heroTitle">
+      <div class="hero-eyebrow">NOTES · CODE · THINKING</div>
+      <h1 id="heroTitle">在代码与山海之间，<br>记录清晰的思考。</h1>
+      <p>算法复习、工程实践与沿途所得。</p>
+    </section>
 
     <main class="shell">
       <aside class="profile-panel" aria-label="个人信息">
@@ -130,6 +138,6 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script>
     <script src="assets/posts.js"></script>
     <script src="assets/about.js"></script>
-    <script src="assets/app.js?v=20260829-1"></script>
+    <script src="assets/app.js?v=20260912-1"></script>
   </body>
 </html>

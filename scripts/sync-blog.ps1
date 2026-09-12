@@ -26,15 +26,6 @@ function Invoke-External {
   }
 }
 
-# GitHub over HTTPS can fail while rewinding a large RPC request when Git uses
-# the default HTTP settings. Keep the transport options on the network calls
-# so the sync script works without changing the user's global Git config.
-$gitHttpOptions = @(
-  "-c", "http.sslBackend=openssl",
-  "-c", "http.version=HTTP/1.1",
-  "-c", "http.postBuffer=524288000"
-)
-
 try {
   $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
   Set-Location -LiteralPath $repoRoot
@@ -65,7 +56,7 @@ try {
 
   if (-not $CheckOnly) {
     Write-Step "拉取 GitHub 最新内容"
-    Invoke-External "git.exe" ($gitHttpOptions + @("pull", "--rebase", "--autostash", "origin", $branch))
+    Invoke-External "git.exe" @("pull", "--rebase", "--autostash", "origin", $branch)
   }
 
   if (-not (Test-Path -LiteralPath (Join-Path $repoRoot "node_modules\markdown-it"))) {
@@ -103,7 +94,7 @@ try {
   }
 
   Write-Step "推送到 GitHub"
-  Invoke-External "git.exe" ($gitHttpOptions + @("push", "origin", $branch))
+  Invoke-External "git.exe" @("push", "origin", $branch)
 
   Write-Step "同步成功"
   Invoke-External "git.exe" @("status", "-sb")

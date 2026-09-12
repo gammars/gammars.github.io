@@ -6,6 +6,15 @@ const site = {
   email: "811096909@qq.com",
 };
 
+// repoId 与 categoryId 是公开标识，不是密钥。启用 GitHub Discussions 并在
+// https://giscus.app/ 选择“博客评论”分类后，将配置器给出的值填到这里。
+const giscus = {
+  repo: "gammars/gammars.github.io",
+  repoId: "",
+  category: "博客评论",
+  categoryId: "",
+};
+
 const posts = Array.isArray(window.BLOG_POSTS)
   ? window.BLOG_POSTS.map((post) => ({ ...post, searchText: plainTextFromHtml(post.html) }))
   : [];
@@ -106,23 +115,31 @@ function readingMinutesForPost(post) {
   return Math.max(1, Math.ceil(cjk / 450 + latinWords / 180));
 }
 
-function renderPostCard(post) {
+function renderPostCard(post, index, featured = false) {
   const tags = post.tags.length
     ? post.tags.map((tag) => `<button class="post-tag" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")
     : "";
   return `
-    <article class="post">
+    <article class="post${featured ? " post-featured" : ""}">
+      <div class="post-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
       <div class="post-main">
+        ${featured ? `
+          <div class="featured-code" aria-hidden="true">
+            <span><i>const</i> next = ideas.<b>map</b>(build);</span>
+            <span><i>while</i> (curious) learn();</span>
+            <span><em>// keep thinking clearly</em></span>
+          </div>
+        ` : ""}
         <h3 class="post-title"><button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button></h3>
         <p class="excerpt">${escapeHtml(post.excerpt)}</p>
         <div class="post-meta">
           <span class="post-date">
-            <span class="post-meta-label">首次发布</span>
+            <span class="post-meta-label">发布</span>
             <time datetime="${escapeHtml(post.date)}">${formatPublishedDate(post.date)}</time>
           </span>
           <span class="post-date">
-            <span class="post-meta-label">最后更新</span>
-            <time datetime="${escapeHtml(post.updated)}">${formatDate(post.updated, true)}</time>
+            <span class="post-meta-label">阅读</span>
+            <span>${readingMinutesForPost(post)} 分钟</span>
           </span>
           <span class="post-taxonomy">
             <button class="post-category" type="button" data-category="${escapeHtml(post.category)}">${escapeHtml(post.category)}</button>
@@ -151,8 +168,9 @@ function renderHome() {
       : `共 ${posts.length} 篇博文，按本地文件最后修改时间排列`;
   setHeader(label, description);
   setDocumentMeta(site.title, `${site.name} 的个人博客`);
+  const allowFeatured = !state.query && !state.filter;
   app.innerHTML = filtered.length
-    ? `<div class="post-list">${filtered.map(renderPostCard).join("")}</div>`
+    ? `<div class="post-list">${filtered.map((post, index) => renderPostCard(post, index, allowFeatured && index === 0)).join("")}</div>`
     : `<div class="empty">没有找到匹配的文章。</div>`;
   renderToc(null);
 }
@@ -188,6 +206,74 @@ function setActiveHeading(headingId) {
     if (active) link.setAttribute("aria-current", "location");
     else link.removeAttribute("aria-current");
   });
+}
+
+function giscusIsConfigured() {
+  return Boolean(giscus.repoId && giscus.categoryId);
+}
+
+function giscusTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark_dimmed" : "light";
+}
+
+function renderCommentsSection(post) {
+  const discussionUrl = `https://github.com/${giscus.repo}/discussions`;
+  const status = giscusIsConfigured()
+    ? "评论由 GitHub Discussions 提供，首次加载可能需要几秒。"
+    : "评论区尚需在 GitHub 仓库启用 Discussions 并填写 Giscus 的公开配置 ID。";
+  return `
+    <section class="comments" id="comments" aria-labelledby="comments-title" data-giscus-term="godmars-blog:${escapeHtml(post.id)}">
+      <div class="comments-heading">
+        <div>
+          <span class="section-kicker">DISCUSSION</span>
+          <h2 id="comments-title">一起讨论</h2>
+        </div>
+        <a href="${discussionUrl}" target="_blank" rel="noreferrer">前往 GitHub Discussions</a>
+      </div>
+      <p class="comments-status" data-giscus-status>${status}</p>
+      <div class="giscus-mount" data-giscus-mount></div>
+    </section>
+  `;
+}
+
+function loadGiscus(post) {
+  const mount = app.querySelector("[data-giscus-mount]");
+  if (!mount || !giscusIsConfigured()) return;
+  const script = document.createElement("script");
+  const attributes = {
+    src: "https://giscus.app/client.js",
+    "data-repo": giscus.repo,
+    "data-repo-id": giscus.repoId,
+    "data-category": giscus.category,
+    "data-category-id": giscus.categoryId,
+    "data-mapping": "specific",
+    "data-term": `godmars-blog:${post.id}`,
+    "data-strict": "1",
+    "data-reactions-enabled": "1",
+    "data-emit-metadata": "0",
+    "data-input-position": "top",
+    "data-theme": giscusTheme(),
+    "data-lang": "zh-CN",
+    "data-loading": "lazy",
+    crossorigin: "anonymous",
+  };
+  Object.entries(attributes).forEach(([name, value]) => script.setAttribute(name, value));
+  script.async = true;
+  script.addEventListener("load", () => {
+    const status = app.querySelector("[data-giscus-status]");
+    if (status) status.textContent = "使用 GitHub 账号登录后即可留言。";
+  });
+  script.addEventListener("error", () => {
+    const status = app.querySelector("[data-giscus-status]");
+    if (status) status.textContent = "评论组件暂时无法加载，请稍后重试或前往 GitHub Discussions。";
+  });
+  mount.replaceChildren(script);
+}
+
+function syncGiscusTheme() {
+  const frame = document.querySelector("iframe.giscus-frame");
+  if (!frame?.contentWindow) return;
+  frame.contentWindow.postMessage({ giscus: { setConfig: { theme: giscusTheme() } } }, "https://giscus.app");
 }
 
 function renderArticle(id) {
@@ -237,11 +323,13 @@ function renderArticle(id) {
         <button class="text-button" type="button" data-back>返回文章列表</button>
       </div>
       ${postNavigation}
+      ${renderCommentsSection(post)}
     </article>
   `;
   renderMath(app);
   renderToc(post);
   setupTocObserver();
+  loadGiscus(post);
   return true;
 }
 
@@ -766,6 +854,7 @@ document.querySelector(".theme-toggle").addEventListener("click", () => {
   document.documentElement.dataset.theme = next;
   localStorage.setItem("theme", next);
   updateThemeToggle();
+  syncGiscusTheme();
 });
 
 window.addEventListener("popstate", () => {
