@@ -1493,36 +1493,149 @@ body.is-article .toc-panel { display: block; padding: 18px 14px; }
 }
 
 /* Single-column layout: navigation scrolls with the document and content matches its width. */
+:root {
+  --serif: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+  --code-bg: #f1f3f5;
+  --code-text: #263238;
+  --code-muted: #68737d;
+  --code-line: #8e99a4;
+}
+
+[data-theme="dark"] {
+  --code-bg: #0e1717;
+  --code-text: #dce8e3;
+  --code-muted: #a8bbb5;
+  --code-line: #718680;
+}
+
+.brand,
+.view-header h2,
+.post-title,
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.discovery-heading h2 { font-family: var(--sans); }
+
+.article-body pre,
+.code-block { background: var(--code-bg); }
+.code-content { color: var(--code-text); }
+.code-toolbar { border-bottom-color: color-mix(in srgb, var(--code-text) 16%, transparent); color: var(--code-muted); }
+.code-line-number { color: var(--code-line); }
+.code-copy { background: color-mix(in srgb, var(--code-bg) 72%, var(--panel)); color: var(--code-muted); }
+
+[data-theme="dark"] .code-block .hljs-keyword,
+[data-theme="dark"] .code-block .hljs-selector-tag,
+[data-theme="dark"] .code-block .hljs-literal,
+[data-theme="dark"] .code-block .hljs-type,
+[data-theme="dark"] .code-block .hljs-built_in { color: #d4a7f2; }
+[data-theme="dark"] .code-block .hljs-title,
+[data-theme="dark"] .code-block .hljs-title.class_,
+[data-theme="dark"] .code-block .hljs-title.function_ { color: #82c7ff; }
+[data-theme="dark"] .code-block .hljs-string,
+[data-theme="dark"] .code-block .hljs-meta .hljs-string,
+[data-theme="dark"] .code-block .hljs-regexp { color: #93d7b4; }
+[data-theme="dark"] .code-block .hljs-number,
+[data-theme="dark"] .code-block .hljs-symbol,
+[data-theme="dark"] .code-block .hljs-variable { color: #ffb67b; }
+[data-theme="dark"] .code-block .hljs-comment,
+[data-theme="dark"] .code-block .hljs-quote { color: #81968f; }
+
+:root:not([data-theme="dark"]) .code-block .hljs-keyword,
+:root:not([data-theme="dark"]) .code-block .hljs-selector-tag,
+:root:not([data-theme="dark"]) .code-block .hljs-literal,
+:root:not([data-theme="dark"]) .code-block .hljs-type,
+:root:not([data-theme="dark"]) .code-block .hljs-built_in { color: #7c3f98; }
+:root:not([data-theme="dark"]) .code-block .hljs-title,
+:root:not([data-theme="dark"]) .code-block .hljs-title.class_,
+:root:not([data-theme="dark"]) .code-block .hljs-title.function_ { color: #075985; }
+:root:not([data-theme="dark"]) .code-block .hljs-string,
+:root:not([data-theme="dark"]) .code-block .hljs-meta .hljs-string,
+:root:not([data-theme="dark"]) .code-block .hljs-regexp { color: #176b45; }
+:root:not([data-theme="dark"]) .code-block .hljs-number,
+:root:not([data-theme="dark"]) .code-block .hljs-symbol,
+:root:not([data-theme="dark"]) .code-block .hljs-variable { color: #a13d00; }
+:root:not([data-theme="dark"]) .code-block .hljs-comment,
+:root:not([data-theme="dark"]) .code-block .hljs-quote { color: #61707b; }
+
 .topbar {
   position: relative;
   top: auto;
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  grid-template-columns: auto minmax(0, 1fr) 42px 38px;
   width: min(1160px, calc(100% - 32px));
   margin: 14px auto 0;
 }
 
-.topbar::before { content: ""; }
 .topbar .nav { grid-column: 2; justify-content: center; }
-.topbar .theme-toggle { grid-column: 3; }
+.topbar .search-popover { grid-column: 3; }
+.topbar .theme-toggle { grid-column: 4; }
+
+.search-popover { position: relative; display: grid; place-items: center; }
+.search-toggle {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+.search-toggle:hover,
+.search-toggle:focus-visible { border-color: var(--line); color: var(--accent-strong); }
+.search-popover-input {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  display: none;
+  width: 280px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel-solid);
+  box-shadow: var(--shadow);
+}
+.search-popover.is-open .search-popover-input { display: block; }
 
 .shell,
 body.is-article .shell {
+  position: relative;
   display: block;
   width: min(1160px, calc(100% - 32px));
   margin: 30px auto 34px;
 }
 
 .content-panel { width: 100%; }
+.post .excerpt { max-width: none; }
+.featured-code { display: none; }
 
-.content-search {
-  display: block;
-  width: min(420px, 100%);
-  margin: 0 0 22px auto;
+.discovery-panel {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  left: auto;
+  display: grid;
+  width: 224px;
+  max-height: calc(100vh - 110px);
+  gap: 14px;
+  overflow-y: auto;
 }
 
-.content-search input { background: var(--panel-solid); }
-body.is-article .content-search { display: none; }
+body.is-article .discovery-panel { display: none; }
+body.is-article .toc-panel {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  left: auto;
+  display: block;
+  width: 224px;
+  padding: 18px 14px;
+}
 
 body:not(.is-article) .discovery-drawer {
   display: block;
@@ -1530,6 +1643,10 @@ body:not(.is-article) .discovery-drawer {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: color-mix(in srgb, var(--soft) 64%, transparent);
+}
+
+@media (min-width: 881px) {
+  body:not(.is-article) .discovery-drawer { display: none; }
 }
 
 .discovery-drawer > summary {
@@ -1603,7 +1720,7 @@ body:not(.is-article) .discovery-drawer {
 @media (max-width: 560px) {
   .topbar {
     top: auto;
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    grid-template-columns: auto minmax(0, 1fr) 38px 34px;
     width: calc(100% - 16px);
     margin-top: 8px;
   }
@@ -1614,8 +1731,17 @@ body:not(.is-article) .discovery-drawer {
     margin-top: 18px;
   }
 
-  .content-search { width: 100%; }
+  .search-popover-input { right: -42px; width: min(280px, calc(100vw - 32px)); }
+  .discovery-panel,
+  body.is-article .toc-panel { display: none; }
+  body:not(.is-article) .discovery-drawer { display: block; }
   .discovery-drawer-body { grid-template-columns: 1fr; gap: 4px; }
   .about-profile { grid-template-columns: 76px minmax(0, 1fr); gap: 16px; }
   .about-avatar { width: 76px; height: 76px; border-width: 3px; }
+}
+
+@media (min-width: 881px) and (max-width: 1399px) {
+  .discovery-panel,
+  body.is-article .toc-panel { display: none; }
+  body:not(.is-article) .discovery-drawer { display: block; }
 }

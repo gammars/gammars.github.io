@@ -19,11 +19,21 @@
   <body>
     <div class="site-backdrop" aria-hidden="true"></div>
     <header class="topbar">
+      <a class="brand" href="#home" data-view="home" aria-label="返回首页">godmars' Blog</a>
       <nav class="nav" aria-label="主导航">
         <a href="#home" data-view="home">首页</a>
         <a href="#about" data-view="about">关于</a>
         <a href="#archive" data-view="archive">归档</a>
       </nav>
+      <div class="search-popover">
+        <button class="search-toggle" type="button" aria-label="展开搜索" aria-expanded="false" title="搜索">
+          <span aria-hidden="true">⌕</span>
+        </button>
+        <label class="search-box search-popover-input">
+          <span class="sr-only">搜索标题、标签和内容</span>
+          <input id="searchInput" type="search" placeholder="搜索标题、标签和内容">
+        </label>
+      </div>
       <button class="theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">
         <span aria-hidden="true">◐</span>
       </button>
@@ -31,10 +41,6 @@
 
     <main class="shell">
       <section class="content-panel">
-        <label class="content-search search-box">
-          <span class="sr-only">搜索文章</span>
-          <input id="searchInput" type="search" placeholder="搜索标题、标签、内容">
-        </label>
         <details class="discovery-drawer">
           <summary>
             <span>浏览分类与标签</span>
@@ -60,7 +66,25 @@
         <div id="viewHeader" class="view-header"></div>
         <div id="app"></div>
       </section>
-      <nav id="toc" class="toc-nav sr-only" aria-label="文章目录"></nav>
+      <aside class="discovery-panel" aria-label="分类与标签">
+        <section class="discovery-card">
+          <div class="discovery-heading">
+            <h2>分类目录</h2>
+            <span data-category-total></span>
+          </div>
+          <div class="discovery-list" data-category-cards></div>
+        </section>
+        <section class="discovery-card">
+          <div class="discovery-heading">
+            <h2>标签</h2>
+            <span data-tag-total></span>
+          </div>
+          <div class="tag-cloud" data-tag-cards></div>
+        </section>
+      </aside>
+      <aside class="toc-panel" aria-label="文章目录">
+        <nav id="toc" class="toc-nav"></nav>
+      </aside>
     </main>
 
     <footer class="footer">

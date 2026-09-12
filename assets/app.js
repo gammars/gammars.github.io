@@ -123,13 +123,6 @@ function renderPostCard(post, index, featured = false) {
     <article class="post${featured ? " post-featured" : ""}">
       <div class="post-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
       <div class="post-main">
-        ${featured ? `
-          <div class="featured-code" aria-hidden="true">
-            <span><i>const</i> next = ideas.<b>map</b>(build);</span>
-            <span><i>while</i> (curious) learn();</span>
-            <span><em>// keep thinking clearly</em></span>
-          </div>
-        ` : ""}
         <h3 class="post-title"><button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button></h3>
         <p class="excerpt">${escapeHtml(post.excerpt)}</p>
         <div class="post-meta">
@@ -855,6 +848,15 @@ searchInput.addEventListener("input", (event) => {
   state.filter = null;
   history.replaceState(null, "", "#home");
   render();
+});
+
+document.querySelector(".search-toggle").addEventListener("click", () => {
+  const popover = document.querySelector(".search-popover");
+  const expanded = popover.classList.toggle("is-open");
+  const toggle = document.querySelector(".search-toggle");
+  toggle.setAttribute("aria-expanded", String(expanded));
+  toggle.setAttribute("aria-label", expanded ? "收起搜索" : "展开搜索");
+  if (expanded) searchInput.focus();
 });
 
 function updateThemeToggle() {
