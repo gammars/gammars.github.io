@@ -374,7 +374,23 @@ function renderBlock(block) {
 function renderAbout() {
   setHeader(about.title || "关于", about.description || "个人资料与博客说明。");
   setDocumentMeta(`${about.title || "关于"} | ${site.title}`, about.description || `${site.name} 的个人介绍`);
-  app.innerHTML = `<article class="article-body">${about.html}</article>`;
+  app.innerHTML = `
+    <article class="article-body about-page">
+      <section class="about-profile" aria-label="个人信息">
+        <img class="about-avatar" src="assets/avatar.png" alt="${escapeHtml(site.name)} 的头像">
+        <div>
+          <span class="section-kicker">PROFILE</span>
+          <h1>${escapeHtml(site.name)}</h1>
+          <p>${escapeHtml(site.bio)}</p>
+          <div class="about-links">
+            <a href="${escapeHtml(site.github)}" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="mailto:${escapeHtml(site.email)}">Email</a>
+          </div>
+        </div>
+      </section>
+      ${about.html}
+    </article>
+  `;
   renderMath(app);
   renderToc(null);
 }
@@ -862,11 +878,6 @@ window.addEventListener("popstate", () => {
   if (state.view === "home" && state.filter) closeTaxonomyDrawer();
 });
 
-document.querySelector("#profileName").textContent = site.name;
-document.querySelector("#profileBio").textContent = site.bio;
-document.querySelector("#postCount").textContent = posts.length;
-document.querySelector("#categoryCount").textContent = countCategoryNodes(buildCategoryTree());
-document.querySelector("#tagCount").textContent = unique(posts.flatMap((post) => post.tags)).length;
 document.querySelector("#year").textContent = new Date().getFullYear();
 document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
 updateThemeToggle();

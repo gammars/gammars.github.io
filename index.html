@@ -19,7 +19,6 @@
   <body>
     <div class="site-backdrop" aria-hidden="true"></div>
     <header class="topbar">
-      <a class="brand" href="#home" data-view="home" aria-label="返回首页">godmars' Blog</a>
       <nav class="nav" aria-label="主导航">
         <a href="#home" data-view="home">首页</a>
         <a href="#about" data-view="about">关于</a>
@@ -31,50 +30,11 @@
     </header>
 
     <main class="shell">
-      <aside class="profile-panel" aria-label="个人信息">
-        <div class="profile-card">
-          <img class="profile-cover" src="assets/profile-card.png" alt="博客封面图">
-          <img class="avatar" src="assets/avatar.png" alt="godmars 的头像">
-          <h1 id="profileName">godmars</h1>
-          <p id="profileBio">待补充</p>
-          <dl class="stats" aria-label="站点概览">
-            <div>
-              <dt id="postCount">0</dt>
-              <dd>日志</dd>
-            </div>
-            <div>
-              <dt id="categoryCount">0</dt>
-              <dd>分类</dd>
-            </div>
-            <div>
-              <dt id="tagCount">0</dt>
-              <dd>标签</dd>
-            </div>
-          </dl>
-          <div class="links">
-            <a href="https://github.com/gammars" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="mailto:811096909@qq.com">Email</a>
-          </div>
-        </div>
-
-        <section class="side-section">
-          <h2>搜索</h2>
-          <label class="search-box">
-            <span class="sr-only">搜索文章</span>
-            <input id="searchInput" type="search" placeholder="搜索标题、标签、内容">
-          </label>
-        </section>
-
-        <section class="side-section">
-          <h2>链接</h2>
-          <ul class="plain-list">
-            <li><a href="https://pages.github.com/" target="_blank" rel="noreferrer">GitHub Pages</a></li>
-            <li><a href="https://hexo.io/" target="_blank" rel="noreferrer">Hexo</a></li>
-          </ul>
-        </section>
-      </aside>
-
       <section class="content-panel">
+        <label class="content-search search-box">
+          <span class="sr-only">搜索文章</span>
+          <input id="searchInput" type="search" placeholder="搜索标题、标签、内容">
+        </label>
         <details class="discovery-drawer">
           <summary>
             <span>浏览分类与标签</span>
@@ -100,30 +60,15 @@
         <div id="viewHeader" class="view-header"></div>
         <div id="app"></div>
       </section>
-      <aside class="discovery-panel" aria-label="分类与标签">
-        <section class="discovery-card">
-          <div class="discovery-heading">
-            <h2>分类目录</h2>
-            <span data-category-total></span>
-          </div>
-          <div class="discovery-list" data-category-cards></div>
-        </section>
-        <section class="discovery-card">
-          <div class="discovery-heading">
-            <h2>标签</h2>
-            <span data-tag-total></span>
-          </div>
-          <div class="tag-cloud" data-tag-cards></div>
-        </section>
-      </aside>
-      <aside class="toc-panel" aria-label="文章目录">
-        <nav id="toc" class="toc-nav"></nav>
-      </aside>
+      <nav id="toc" class="toc-nav sr-only" aria-label="文章目录"></nav>
     </main>
 
     <footer class="footer">
       <span>© <span id="year"></span> godmars</span>
-      <span>Built for GitHub Pages</span>
+      <span class="footer-links">
+        <a href="https://pages.github.com/" target="_blank" rel="noreferrer">GitHub Pages</a>
+        <a href="https://hexo.io/" target="_blank" rel="noreferrer">Hexo</a>
+      </span>
     </footer>
 
     <noscript>此博客需要启用 JavaScript 才能浏览文章。</noscript>
