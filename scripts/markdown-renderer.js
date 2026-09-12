@@ -167,6 +167,17 @@ function createMarkdownRenderer() {
     const checked = tokens[index].meta?.checked ? " checked" : "";
     return `<input class="task-list-checkbox" type="checkbox" disabled${checked} aria-label="任务${checked ? "已完成" : "未完成"}"> `;
   };
+  // Article images can be numerous and relatively large. Defer their
+  // network request until they are near the viewport and decode them off the
+  // critical rendering path so opening an image-heavy post stays responsive.
+  markdown.renderer.rules.image = (tokens, index, options, env, self) => {
+    const token = tokens[index];
+    const src = escapeHtml(token.attrGet("src") || "");
+    const alt = escapeHtml(token.content || "");
+    const title = token.attrGet("title");
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+    return `<img src="${src}" alt="${alt}" loading="lazy" decoding="async"${titleAttr}>`;
+  };
   markdown.renderer.rules.fence = (tokens, index) => renderCodeBlock(tokens[index]);
   return markdown;
 }

@@ -1589,7 +1589,7 @@ body.is-article .toc-panel { display: block; padding: 18px 14px; }
 .search-toggle:focus-visible { border-color: var(--line); color: var(--accent-strong); }
 .search-popover-input {
   position: absolute;
-  top: calc(100% + 10px);
+  top: 50%;
   right: 0;
   z-index: 20;
   display: none;
@@ -1599,6 +1599,7 @@ body.is-article .toc-panel { display: block; padding: 18px 14px; }
   border-radius: 12px;
   background: var(--panel-solid);
   box-shadow: var(--shadow);
+  transform: translateY(-50%);
 }
 .search-popover.is-open .search-popover-input { display: block; }
 
@@ -1613,6 +1614,8 @@ body.is-article .shell {
 .content-panel { width: 100%; }
 .post .excerpt { max-width: none; }
 .featured-code { display: none; }
+.post:first-child { padding-top: 22px; }
+.post:last-child { padding-bottom: 22px; }
 
 .discovery-panel {
   position: fixed;
@@ -1731,7 +1734,7 @@ body:not(.is-article) .discovery-drawer {
     margin-top: 18px;
   }
 
-  .search-popover-input { right: -42px; width: min(280px, calc(100vw - 32px)); }
+  .search-popover-input { right: 0; width: min(280px, calc(100vw - 32px)); }
   .discovery-panel,
   body.is-article .toc-panel { display: none; }
   body:not(.is-article) .discovery-drawer { display: block; }

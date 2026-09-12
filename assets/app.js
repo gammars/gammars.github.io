@@ -115,12 +115,12 @@ function readingMinutesForPost(post) {
   return Math.max(1, Math.ceil(cjk / 450 + latinWords / 180));
 }
 
-function renderPostCard(post, index, featured = false) {
+function renderPostCard(post, index) {
   const tags = post.tags.length
     ? post.tags.map((tag) => `<button class="post-tag" type="button" data-tag="${escapeHtml(tag)}"># ${escapeHtml(tag)}</button>`).join("")
     : "";
   return `
-    <article class="post${featured ? " post-featured" : ""}">
+    <article class="post">
       <div class="post-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
       <div class="post-main">
         <h3 class="post-title"><button type="button" data-open="${escapeHtml(post.id)}">${escapeHtml(post.title)}</button></h3>
@@ -161,9 +161,8 @@ function renderHome() {
       : `共 ${posts.length} 篇博文，按本地文件最后修改时间排列`;
   setHeader(label, description);
   setDocumentMeta(site.title, `${site.name} 的个人博客`);
-  const allowFeatured = !state.query && !state.filter;
   app.innerHTML = filtered.length
-    ? `<div class="post-list">${filtered.map((post, index) => renderPostCard(post, index, allowFeatured && index === 0)).join("")}</div>`
+    ? `<div class="post-list">${filtered.map((post, index) => renderPostCard(post, index)).join("")}</div>`
     : `<div class="empty">没有找到匹配的文章。</div>`;
   renderToc(null);
 }
@@ -603,14 +602,13 @@ function articleHeadingById(headingId) {
 function scrollToHeading(headingId, { smooth = true, focus = false } = {}) {
   const target = articleHeadingById(headingId);
   if (!target) return false;
-  const headerBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0;
   const gap = 16;
   const rect = target.getBoundingClientRect();
-  const visible = rect.top >= headerBottom + gap && rect.bottom <= window.innerHeight - gap;
+  const visible = rect.top >= gap && rect.bottom <= window.innerHeight - gap;
   if (!visible) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({
-      top: Math.max(0, window.scrollY + rect.top - headerBottom - gap),
+      top: Math.max(0, window.scrollY + rect.top - gap),
       behavior: smooth && !reducedMotion ? "smooth" : "auto",
     });
   }
@@ -631,8 +629,7 @@ function scrollToRouteTarget(headingId) {
     }
     const target = document.querySelector(".content-panel");
     if (!target) return;
-    const headerBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0;
-    const top = window.scrollY + target.getBoundingClientRect().top - headerBottom - 16;
+    const top = window.scrollY + target.getBoundingClientRect().top - 16;
     window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
   });
 }
@@ -697,7 +694,8 @@ function setupTocObserver() {
 
   const updateActiveHeading = () => {
     tocScrollFrame = null;
-    const activationY = (document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0) + 16;
+    const headerBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom || 0;
+    const activationY = Math.max(16, headerBottom + 16);
     let activeHeading = null;
     for (const heading of headings) {
       if (heading.getBoundingClientRect().top <= activationY + 1) activeHeading = heading;
