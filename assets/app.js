@@ -10,9 +10,9 @@ const site = {
 // https://giscus.app/ 选择“博客评论”分类后，将配置器给出的值填到这里。
 const giscus = {
   repo: "gammars/gammars.github.io",
-  repoId: "",
+  repoId: "R_kgDOSk3-7w",
   category: "博客评论",
-  categoryId: "",
+  categoryId: "DIC_kwDOSk3-784DFcJn",
 };
 
 const posts = Array.isArray(window.BLOG_POSTS)
